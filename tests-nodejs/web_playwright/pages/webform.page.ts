@@ -71,4 +71,4 @@ class WebformPage {
 
 }
 
-export default WebformPage;
+export { WebformPage };
