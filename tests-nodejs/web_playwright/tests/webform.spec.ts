@@ -1,4 +1,4 @@
-const { test, expect, Page } = require('@playwright/test');
+import { test, expect, Page } from '@playwright/test';
 const fs = require('node:fs');
 import * as allure from "allure-js-commons";
 
