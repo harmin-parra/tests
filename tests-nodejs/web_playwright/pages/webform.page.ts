@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
 
-export class WebformPage {
+class WebformPage {
 
   page: Page;
   input: Locator;
@@ -71,4 +71,4 @@ export class WebformPage {
 
 }
 
-///export { WebformPage };
+export default WebformPage;
