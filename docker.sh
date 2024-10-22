@@ -67,13 +67,13 @@ fi
 #
 # Node.js tests
 #
-if [ $DOCKER = "playwright/node.js" ] || [ $DOCKER = "cypress" ]; then
+if [ $DOCKER = "playwright/node.js" ] || export { WebFormPage };[ $DOCKER = "cypress" ]; then
   cd tests-nodejs
   npm install
-  npx playwright install-deps
-  npx playwright install
 
   if [ $DOCKER = "playwright/node.js" ]; then
+    npx playwright install-deps
+    npx playwright install
     npx cucumber-js cucumber/features/petstore.feature
     npx playwright test --project $BROWSER
 
