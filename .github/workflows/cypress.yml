@@ -27,7 +27,7 @@ jobs:
       - name: Test
         run: |
           ./docker.sh --browser "${{ inputs.browser }}" --docker cypress
-          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
+          # echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
