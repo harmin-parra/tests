@@ -5,12 +5,11 @@ on:
     inputs:
       browser:
         description: 'The browser to use'
-        default: 'chromium'
+        default: 'chrome'
         required: true
         type: choice
         options:
         - chrome
-        - chromium
         - edge
         - electron
         - firefox
