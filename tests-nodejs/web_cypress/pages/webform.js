@@ -58,4 +58,5 @@ class WebFormPage {
 
 }
 
-module.exports = WebFormPage;
+//module.exports = WebFormPage;
+export default WebFormPage;
