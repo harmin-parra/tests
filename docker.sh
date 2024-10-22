@@ -67,7 +67,7 @@ fi
 #
 # Node.js tests
 #
-if [ $DOCKER = "playwright/node.js" ] || export { WebFormPage };[ $DOCKER = "cypress" ]; then
+if [ $DOCKER = "playwright/node.js" ] || [ $DOCKER = "cypress" ]; then
   cd tests-nodejs
   npm install
 
