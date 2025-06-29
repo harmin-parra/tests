@@ -33,9 +33,9 @@ echo "################"
 echo "python: "  $(python3 --version)
 cd python
 # pip install --break-system-packages -r requirements.txt
-pip install -r requirements.txt
-playwright install
-rfbrowser init
+pip install -r requirements.txt > /dev/null
+playwright install > /dev/null
+rfbrowser init > /dev/null
 
 echo =================
 echo Python - Cucumber
@@ -118,7 +118,7 @@ echo =======================
 echo Node.js - Cucumber-html
 echo =======================
 cd cucumber_html
-npm install
+npm install > /dev/null
 npx cucumber-js features/catalog.feature
 cd ..
 
@@ -126,8 +126,8 @@ echo ====================
 echo Node.js - Playwright
 echo ====================
 cd playwright
-npm install
-npx playwright install
+npm install > /dev/null
+npx playwright install > /dev/null
 HEAD_OPT=""
 if [ $HEADLESS = "false" ]; then
   HEAD_OPT = "--headed"
@@ -140,7 +140,7 @@ echo =================
 echo Node.js - Cypress
 echo =================
 cd cypress
-npm install
+npm install > /dev/null
 # npx cypress run --spec tests/webform.cy.ts
 HEAD_OPT=""
 if [ $HEADLESS = "false" ]; then
@@ -162,28 +162,11 @@ echo "java: " $(java --version)
 echo "maven: " $(mvn --version)
 cd java
 
-echo ===============
-echo Java - Serenity
-echo ===============
-cd serenity
-mvn dependency:resolve
-mvn -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER clean verify
-mv target/site/serenity ../../reporting/report-serenity
-cd ..
-
-echo ===================
-echo Java - Rest-Assured
-echo ===================
-cd rest_assured
-mvn dependency:resolve
-mvn -Dtest="rest_api/CatalogTest" test
-cd ..
-
 echo =================
 echo Java - Playwright
 echo =================
 cd playwright
-mvn dependency:resolve
+mvn dependency:resolve > /dev/null
 # mvn -Dtest="web_playwright/WebFormTest" test
 mvn -Dtest="web_playwright/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
 cd ..
@@ -192,15 +175,32 @@ echo ===============
 echo Java - Selenium
 echo ===============
 cd selenium
-mvn dependency:resolve
+mvn dependency:resolve > /dev/null
 mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test  # -Dhub=$HUB test
+cd ..
+
+echo ===================
+echo Java - Rest-Assured
+echo ===================
+cd rest_assured
+mvn dependency:resolve > /dev/null
+mvn -Dtest="rest_api/CatalogTest" test
+cd ..
+
+echo ===============
+echo Java - Serenity
+echo ===============
+cd serenity
+mvn dependency:resolve > /dev/null
+mvn -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER clean verify
+mv target/site/serenity ../../reporting/report-serenity
 cd ..
 
 echo =============
 echo Java - Karate
 echo =============
 cd karate
-mvn dependency:resolve
+mvn dependency:resolve > /dev/null
 # mvn -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
 mvn -Dtest="web/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
 
