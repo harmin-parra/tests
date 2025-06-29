@@ -1,1 +1,0 @@
-mvn -Dheadless.mode=true -Dwebdriver.driver=chrome clean verify
