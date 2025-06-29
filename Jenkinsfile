@@ -21,17 +21,19 @@ pipeline {
       agent {
         docker { 
           image 'harmin/qa-runner-debian'
-          args '--user test:test --workdir /home/test --env PATH=/usr/local/bin:/usr/bin:/home/test/.local/bin'
+          
         }
       }
       steps {
         sh '''
-          export PATH=$PATH:$HOME/.local/bin
-          echo $PATH
-          python3 -m venv $HOME/venv
-          . $HOME/venv/bin/activate
-          ./docker.sh --browser $Browser --docker playwright/python
-          echo "$BUILD_URL/console" > reporting/allure-results/python/job.url
+          export PATH=$PATH:/tmp/venv/bin
+          python3 -m venv /tmp/venv
+          . /tmp/venv/bin/activate
+          cd tests-python
+          export PYTHONPATH=$(pwd)
+          pip install -r requirements.txt
+          which behave
+          find / -name behave
         '''
         stash includes: 'reporting/**', name: 'artifact_test'
       }
