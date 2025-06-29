@@ -14,7 +14,7 @@ The web pages under test:
 
 The REST api under test:
 
-- https://petstore.swagger.io/
+- https://restful-api.dev/
 
 
 ## Test reports

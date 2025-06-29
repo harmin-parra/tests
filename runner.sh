@@ -24,18 +24,14 @@ done
 
 # Change variable values to lowercase
 BROWSER=${BROWSER,,}
-
-mkdir /tmp/test
-cp tests-python/file.xml /tmp/test/
+cp python/file.xml /tmp/
 
 
 echo "################"
 echo "# Python tests #"
 echo "################"
 echo "python: "  $(python3 --version)
-cd tests-python
-export PYTHONPATH=$(pwd)
-
+cd python
 # pip install --break-system-packages -r requirements.txt
 pip install -r requirements.txt
 playwright install
@@ -44,34 +40,62 @@ rfbrowser init
 echo =================
 echo Python - Cucumber
 echo =================
-behave cucumber/features/petstore.feature
+cd cucumber
+behave features/catalog.feature
+cd ..
+
 echo ===================
 echo Python - Playwright
 echo ===================
-# pytest web_playwright/tests/webform_test.py
-if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
-  pytest web_playwright/tests/ --browser-channel $BROWSER
-else
-  pytest web_playwright/tests/ --browser $BROWSER
+cd playwright
+unset PYTHONPATH
+export PYTHONPATH=$(pwd)
+HEAD_OPT=""
+if [ $HEADLESS = "false" ]; then
+  HEAD_OPT = "--headed --slowmo 1000"
 fi
+if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
+  pytest --browser-channel $BROWSER $HEAD_OPT tests/
+else
+  pytest --browser $BROWSER $HEAD_OPT tests/
+fi
+cd ..
+
 echo =================
 echo Python - Selenium
 echo =================
-pytest web_selenium/tests/ --driver $BROWSER  # --hub $HUB
+cd selenium
+unset PYTHONPATH
+export PYTHONPATH=$(pwd)
+pytest --driver $BROWSER --headless $HEADLESS  tests/  # --hub $HUB
+cd ..
+
 echo ===============
 echo Python - Pytest
 echo ===============
-pytest web_pytest/tests/ --driver $BROWSER \
-    --alluredir /tmp \
-    --html=../reporting/report-pytest/index.html \
-    --css=report.css
+cd web_pytest
+unset PYTHONPATH
+export PYTHONPATH=$(pwd)
+if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
+  pytest --driver $BROWSER --headless $HEADLESS --browser-channel $BROWSER $HEAD_OPT
+else
+  pytest --driver $BROWSER --headless $HEADLESS --browser $BROWSER $HEAD_OPT
+fi
+cd ..
+
 echo ========================
 echo Python - Robot Framework
 echo ========================
-robot --outputdir ../reporting/report-robot --variable BROWSER:${BROWSER} --variable DRIVER:headless${BROWSER} \
-      --listener allure_robotframework:../reporting/allure-results/python ./
-
-unset PYTHONPATH
+cd robotframework
+HEAD_OPT=""
+if [ $HEADLESS = "true" ]; then
+  HEAD_OPT="headless"
+fi
+robot --outputdir ../../reporting/report-robot \
+      --listener allure_robotframework:../../reporting/allure-results/python \
+      --variable BROWSER:${BROWSER} --variable HEADLESS:${HEADLESS} \
+      --variable DRIVER:${HEAD_OPT}${BROWSER} ./
+cd ..
 cd ..
 
 
@@ -80,29 +104,54 @@ echo "# Node.js tests #"
 echo "#################"
 echo "node.js: " $(nodejs --version)
 echo "npm: " $(npm --version)
-cd tests-nodejs
-
-npm install
-npx playwright install
+cd nodejs
 
 echo ==================
 echo Node.js - Cucumber
 echo ==================
-npx cucumber-js cucumber/features/petstore.feature
+#cd cucumber
+#npm install
+#npx cucumber-js features/petstore.feature
+#cd ..
+
+echo =======================
+echo Node.js - Cucumber-html
+echo =======================
+cd cucumber_html
+npm install
+npx cucumber-js features/catalog.feature
+cd ..
+
 echo ====================
 echo Node.js - Playwright
 echo ====================
+cd playwright
+npm install
+npx playwright install
+HEAD_OPT=""
+if [ $HEADLESS = "false" ]; then
+  HEAD_OPT = "--headed"
+fi
 # npx playwright test webform.spec.ts
-npx playwright test --project $BROWSER
+npx playwright test --project $BROWSER $HEAD_OPT
+cd ..
+
 echo =================
 echo Node.js - Cypress
 echo =================
-# npx cypress run --spec web_cypress/tests/webform.cy.js
-if [ $BROWSER = "msedge" ]; then
-  npx cypress run --browser edge --headless
-else
-  npx cypress run --browser $BROWSER --headless
+cd cypress
+npm install
+# npx cypress run --spec tests/webform.cy.ts
+HEAD_OPT=""
+if [ $HEADLESS = "false" ]; then
+  HEAD_OPT="--headed"
 fi
+BROWSER_OPT=$BROWSER
+if [ $BROWSER = "msedge" ]; then
+  BROWSER_OPT="edge"
+fi
+npx cypress run --browser $BROWSER_OPT $HEAD_OPT
+cd ..
 cd ..
 
 
@@ -111,36 +160,57 @@ echo "# Java tests #"
 echo "##############"
 echo "java: " $(java --version)
 echo "maven: " $(mvn --version)
-cd tests-java
+cd java
 
+echo ===============
+echo Java - Serenity
+echo ===============
+cd serenity
 mvn dependency:resolve
+mvn -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER clean verify
+mv target/site/serenity ../../reporting/report-serenity
+cd ..
 
 echo ===================
 echo Java - Rest-Assured
 echo ===================
-mvn -Dtest="rest_api_rest_assured/**" test
+cd rest_assured
+mvn dependency:resolve
+mvn -Dtest="rest_api/CatalogTest" test
+cd ..
+
 echo =================
 echo Java - Playwright
 echo =================
+cd playwright
+mvn dependency:resolve
 # mvn -Dtest="web_playwright/WebFormTest" test
-mvn -Dtest="web_playwright/**" -Dbrowser=$BROWSER test
+mvn -Dtest="web_playwright/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+cd ..
+
 echo ===============
 echo Java - Selenium
 echo ===============
-mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER test  # -Dhub=$HUB test
+cd selenium
+mvn dependency:resolve
+mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test  # -Dhub=$HUB test
+cd ..
+
 echo =============
 echo Java - Karate
 echo =============
-# mvn -Dtest="web_karate/**, rest_api_karate/**" -Dbrowser=$BROWSER test
-# mvn -Dtest="karate/TestRunner#modularityTest" -Dbrowser=firefox test
-mvn -Dtest="karate/TestRunner#allTests" -Dbrowser=$BROWSER test
+cd karate
+mvn dependency:resolve
+# mvn -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+mvn -Dtest="web/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
 
 # Purge weird Allure Karate entries
-cd ..
-mv tests-java/target/karate-reports reporting/report-karate
-for filename in reporting/allure-results/java/*result.json; do
+mv target/karate-reports ../../reporting/report-karate
+for filename in ../../reporting/allure-results/java/*result.json; do
   RES=$(egrep '"testCaseName":"\[[0-9]+:[0-9]+\]' $filename)
   if [ -n "$RES" ]; then
     rm -f $filename
   fi
 done
+cd ..
+cd ..

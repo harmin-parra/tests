@@ -1,0 +1,31 @@
+Feature: Ajax page
+
+  @allure.label.epic:Web_interface_(Karate)
+  @allure.label.suite:Web_interface_(Karate)
+  Scenario: Using star notation
+    * driver url_ajax_page
+    * screenshot()
+    * click('#button')
+    * match enabled('#button') == false
+    * screenshot()
+    * waitFor('#title')
+    # * retry(5, 2000).waitFor('#title')
+    * match text('#title') == "AJAX"
+    * match enabled('#button') == true
+    * screenshot()
+
+
+  @allure.label.epic:Web_interface_(Karate)
+  @allure.label.suite:Web_interface_(Karate)
+  Scenario: Using Gherkin syntax
+    Given driver url_ajax_page
+    And screenshot()
+
+    When click('#button')
+    Then match enabled('#button') == false
+    And screenshot()
+
+    When waitFor('#title')
+    Then match text('#title') == "AJAX"
+    And  match enabled('#button') == true
+    And screenshot()

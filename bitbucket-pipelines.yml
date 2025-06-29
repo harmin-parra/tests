@@ -18,7 +18,6 @@ pipelines:
             - python3 -m venv ~/venv
             - . ~/venv/bin/activate
             - ./runner.sh --browser $BROWSER
-            - ./serenity.sh --browser $BROWSER
             - CI_JOB_URL="https://bitbucket.org/${BITBUCKET_REPO_FULL_NAME}/pipelines/results/${BITBUCKET_BUILD_NUMBER}"
             - echo $CI_JOB_URL > reporting/allure-results/java/job.url
             - echo $CI_JOB_URL > reporting/allure-results/nodejs/job.url

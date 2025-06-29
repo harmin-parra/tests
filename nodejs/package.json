@@ -1,0 +1,20 @@
+{
+  "name": "tests-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "dependencies": {
+    "@cucumber/cucumber": "^11.2.0",
+    "@playwright/test": "^1.50.0",
+    "allure-cucumberjs": "^3.1.0",
+    "allure-cypress": "^3.1.0",
+    "allure-js-commons": "^3.1.0",
+    "allure-playwright": "^3.1.0",
+    "axios": "^1.7.9",
+    "cypress": "^14.0.0",
+    "cypress-mochawesome-reporter": "^3.8.2",
+    "playwright": "^1.50.0"
+  }
+}

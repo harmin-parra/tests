@@ -1,0 +1,15 @@
+{
+  "name": "tests-cypress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "dependencies": {
+    "allure-cypress": "^3.3.0",
+    "allure-js-commons": "^3.3.0",
+    "cypress": "^14.5.0",
+    "cypress-mochawesome-reporter": "^3.8.2",
+    "typescript": "^5.8.3"
+  }
+}

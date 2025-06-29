@@ -1,0 +1,15 @@
+allure-behave==2.14.3
+allure-pytest==2.14.3
+allure-robotframework==2.14.3
+behave==1.2.6
+playwright==1.53.0
+pytest
+pytest-html
+pytest-playwright==0.7.0
+pytest-report-extras
+requests
+robotframework==7.3.1
+robotframework-browser==19.6.1
+robotframework-seleniumlibrary==6.7.1
+RESTinstance==1.5.2
+selenium==4.34.0

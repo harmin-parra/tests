@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER=""
+TEST=""
 BROWSER="Firefox"
 HUB=""
 
@@ -15,8 +15,8 @@ while [ $# -gt 0 ]; do
       HUB="$2"
       shift 2
       ;;
-    --docker)
-      DOCKER="$2"
+    --test)
+      TEST="$2"
       shift 2
       ;;
     *)
@@ -31,19 +31,20 @@ BROWSER=${BROWSER,,}
 
 rm -rf reporting/*
 mkdir /tmp/test
-cp tests-python/file.xml /tmp/test/
+cp python/file.xml /tmp/test/
+mkdir -p reporting/allure-results/java reporting/allure-results/python reporting/allure-results/nodejs
 
 #
 # Python tests
 #
-if [ $DOCKER = "playwright/python" ] || [ $DOCKER = "selenium/python" ] || [ $DOCKER = "robotframework/playwright" ]; then
+if [ $TEST = "python/playwright" ] || [ $TEST = "selenium/python" ] || [ $TEST = "robotframework/playwright" ]; then
   cd tests-python
   pip install -r requirements.txt
   playwright install-deps
   playwright install
   export PYTHONPATH=$(pwd)
 
-  if [ $DOCKER = "playwright/python" ]; then
+  if [ $TEST = "playwright/python" ]; then
     behave cucumber/features/petstore.feature
     if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
       pytest web_playwright/tests/ --browser-channel $BROWSER
@@ -52,11 +53,11 @@ if [ $DOCKER = "playwright/python" ] || [ $DOCKER = "selenium/python" ] || [ $DO
     fi
   fi
 
-  if [ $DOCKER = "selenium/python" ]; then
+  if [ $TEST = "selenium/python" ]; then
     pytest web_selenium/tests/ --driver $BROWSER --hub $HUB
   fi
 
-  if [ $DOCKER = "robotframework/playwright" ]; then
+  if [ $TEST = "robotframework/playwright" ]; then
     robot --variable BROWSER:${BROWSER} --outputdir ../reporting/report-robot ./
   fi
 
@@ -67,13 +68,13 @@ fi
 #
 # Node.js tests
 #
-if [ $DOCKER = "playwright/node.js" ] || [ $DOCKER = "cypress" ]; then
+if [ $TEST = "playwright/node.js" ] || [ $TEST = "cypress" ]; then
   cd tests-nodejs
   npm install
+  npx playwright install-deps
+  npx playwright install
 
-  if [ $DOCKER = "playwright/node.js" ]; then
-    npx playwright install-deps
-    npx playwright install
+  if [ $TEST = "playwright/node.js" ]; then
     npx cucumber-js cucumber/features/petstore.feature
     npx playwright test --project $BROWSER
 
@@ -88,22 +89,33 @@ if [ $DOCKER = "playwright/node.js" ] || [ $DOCKER = "cypress" ]; then
   cd ..
 fi
 
+# Cypress
+if [ $TEST = "nodejs/cypress" ]; then
+  cd $TEST
+  npm install
+  if [[ $BROWSER == *"edge" ]]; then
+    npx cypress run --browser edge --headless
+  else
+    npx cypress run --browser $BROWSER --headless
+  fi
+  cd ..
+fi
 
 #
 # Java tests
 #
-if [ $DOCKER = "playwright/java" ] || [ $DOCKER = "selenium/java" ] || [ $DOCKER = "karate" ]; then
+if [ $TEST = "playwright/java" ] || [ $TEST = "selenium/java" ] || [ $TEST = "karate" ]; then
   cd tests-java
   mvn dependency:resolve
 
-  if [ $DOCKER = "playwright/java" ]; then
+  if [ $TEST = "playwright/java" ]; then
     mvn -Dtest="web_playwright/**, rest_api_rest_assured/**" -Dbrowser=$BROWSER test
 
-  elif [ $DOCKER = "selenium/java" ]; then
+  elif [ $TEST = "selenium/java" ]; then
     mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER test -Dhub=$HUB test
 
-  elif [ $DOCKER = "karate" ]; then
-    mvn -Dtest="karate/TestRunner#allTests" -Dbrowser=$BROWSER test
+  elif [ $TEST = "karate" ]; then
+    mvn -Dtest="web/TestRunner#runner" -Dbrowser=$BROWSER test
     for filename in ../reporting/allure-results/java/*result.json; do
       RES=$(egrep '"testCaseName":"\[[0-9]+:[0-9]+\]' $filename)
       if [ -n "$RES" ]; then
@@ -114,4 +126,35 @@ if [ $DOCKER = "playwright/java" ] || [ $DOCKER = "selenium/java" ] || [ $DOCKER
   fi
 
   cd ..
+fi
+
+# karate
+if [ $TEST = "java/karate" ]; then
+  cd $TEST
+  mvn dependency:resolve
+  mvn -Dtest="web/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+  for filename in ../../reporting/allure-results/java/*result.json; do
+    RES=$(egrep '"testCaseName":"\[[0-9]+:[0-9]+\]' $filename)
+    if [ -n "$RES" ]; then
+      rm -f $filename
+    fi
+  done
+  cd ../..
+fi
+
+# Serenity
+if [ $TEST = "java/serenity" ]; then
+  cd $TEST
+  mvn dependency:resolve
+  mvn -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER clean verify
+  cd ../..
+fi
+
+
+# RestAssured
+if [ $TEST = "java/rest_assured" ]; then
+  cd $TEST
+  mvn dependency:resolve
+  mvn -Dtest="rest_api/CatalogTest" test
+  cd ../..
 fi

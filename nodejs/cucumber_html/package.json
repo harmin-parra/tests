@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "@types/lodash": "^4.17.18",
+    "axios": "^1.10.0",
+    "lodash": "^4.17.21",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
