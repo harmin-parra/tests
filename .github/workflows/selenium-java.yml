@@ -1,4 +1,4 @@
-name: selenium/java
+name: java/selenium
 
 env:
   ALLURE: 2.34.1
