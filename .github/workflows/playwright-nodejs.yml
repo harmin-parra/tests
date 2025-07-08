@@ -1,4 +1,4 @@
-name: playwright/node.js
+name: node.js/playwright
 
 env:
   ALLURE: 2.34.1
