@@ -51,7 +51,6 @@ if [ $TEST = "python/playwright" ]; then
   cd ../..
 fi
 
-
 #
 # Python - Selenium
 #
@@ -62,7 +61,6 @@ if [ $TEST = "python/selenium" ]; then
   unset PYTHONPATH
   cd ../..
 fi
-
 
 #
 # Python - robotframework
@@ -98,6 +96,16 @@ if [ $TEST = "nodejs/cypress" ]; then
   else
     npx cypress run --browser $BROWSER --headless
   fi
+  cd ../..
+fi
+
+#
+# Java - Playwright
+#
+if [ $TEST = "java/playwright" ]; then
+  cd $TEST
+  mvn dependency:resolve
+  mvn -Dtest="web_playwright/**" -Dbrowser=$BROWSER test
   cd ../..
 fi
 
