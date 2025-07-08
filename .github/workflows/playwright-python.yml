@@ -1,4 +1,4 @@
-name: playwright/python
+name: python/playwright
 
 env:
   ALLURE: 2.34.1
