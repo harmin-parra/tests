@@ -38,10 +38,11 @@ mkdir -p reporting/allure-results/java reporting/allure-results/python reporting
 # Python - Playwright
 #
 if [ $TEST = "python/playwright" ]; then
-  cd $TEST
+  cd python
   pip install -r requirements.txt
   playwright install-deps
   playwright install
+  cd playwright
   export PYTHONPATH=$(pwd)
   behave cucumber/features/petstore.feature
   if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
@@ -58,10 +59,11 @@ fi
 # Python - Selenium
 #
 if [ $TEST = "python/selenium" ]; then
-  cd $TEST
+  cd python
   pip install -r requirements.txt
   playwright install-deps
   playwright install
+  cd selenium
   export PYTHONPATH=$(pwd)
   pytest web_selenium/tests/ --driver $BROWSER --hub $HUB
   unset PYTHONPATH
@@ -74,11 +76,11 @@ fi
 #
 if [ $TEST = "python/robotframework" ]; then
   cd $TEST
-  pip install -r requirements.txt
+  pip install -r ../requirements.txt
   playwright install-deps
   playwright install
   export PYTHONPATH=$(pwd)
-  robot --variable BROWSER:${BROWSER} --outputdir ../reporting/report-robot ./
+  robot --variable BROWSER:${BROWSER} --outputdir ../../reporting/report-robot ./
   unset PYTHONPATH
   cd ../..
 fi
