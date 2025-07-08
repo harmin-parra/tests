@@ -29,8 +29,7 @@ done
 # Change variable values to lowercase
 BROWSER=${BROWSER,,}
 cp python/file.xml /tmp/
-#rm -rf reporting/*
-#mkdir -p reporting/allure-results/java reporting/allure-results/python reporting/allure-results/nodejs
+mkdir -p reporting/allure-results/java reporting/allure-results/python reporting/allure-results/nodejs
 
 #
 # Python - Playwright
