@@ -1,7 +1,7 @@
 name: robotframework/playwright
 
 env:
-  ALLURE: 2.30.0
+  ALLURE: 2.34.1
 
 on:
   workflow_dispatch:
