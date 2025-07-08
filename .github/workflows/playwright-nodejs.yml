@@ -27,7 +27,7 @@ jobs:
           node-version: '20'
       - name: Test
         run: |
-          ./docker.sh --browser "${{ inputs.browser }}" --test playwright/node.js
+          ./docker.sh --browser "${{ inputs.browser }}" --test nodejs/playwright
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
         env:
           HOME: /root
