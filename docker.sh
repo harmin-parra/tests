@@ -109,6 +109,16 @@ if [ $TEST = "java/playwright" ]; then
 fi
 
 #
+# Java - Selenium
+#
+if [ $TEST = "java/selenium" ]; then
+  cd $TEST
+  mvn dependency:resolve
+  mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER test -Dhub=$HUB test
+  cd ../..
+fi
+
+#
 # Java tests
 #
 if [ $TEST = "playwright/java" ] || [ $TEST = "selenium/java" ] || [ $TEST = "karate" ]; then
