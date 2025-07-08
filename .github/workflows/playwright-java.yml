@@ -1,4 +1,4 @@
-name: playwright/java
+name: java/playwright
 
 env:
   ALLURE: 2.34.1
