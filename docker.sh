@@ -36,13 +36,12 @@ cp python/file.xml /tmp/
 # Python - Playwright
 #
 if [ $TEST = "python/playwright" ]; then
-  cd python
-  pip install -r requirements.txt
+  cd $TEST
+  pip install -r ../requirements.txt
   playwright install-deps
   playwright install
-  cd playwright
   export PYTHONPATH=$(pwd)
-  behave cucumber/features/petstore.feature
+  #behave cucumber/features/petstore.feature
   if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
     pytest web_playwright/tests/ --browser-channel $BROWSER
   else
@@ -57,11 +56,7 @@ fi
 # Python - Selenium
 #
 if [ $TEST = "python/selenium" ]; then
-  cd python
-  pip install -r requirements.txt
-  playwright install-deps
-  playwright install
-  cd selenium
+  pip install -r ../requirements.txt
   export PYTHONPATH=$(pwd)
   pytest web_selenium/tests/ --driver $BROWSER --hub $HUB
   unset PYTHONPATH
@@ -75,8 +70,6 @@ fi
 if [ $TEST = "python/robotframework" ]; then
   cd $TEST
   pip install -r ../requirements.txt
-  playwright install-deps
-  playwright install
   export PYTHONPATH=$(pwd)
   robot --variable BROWSER:${BROWSER} --outputdir ../../reporting/report-robot ./
   unset PYTHONPATH
