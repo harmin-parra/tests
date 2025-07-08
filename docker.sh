@@ -62,31 +62,20 @@ if [ $TEST = "python/playwright" ] || [ $TEST = "selenium/python" ] || [ $TEST =
   fi
 
   unset PYTHONPATH
-  cd ..
+  cd ../..
 fi
 
 #
-# Node.js tests
+# Node.js - Playwright
 #
-if [ $TEST = "playwright/node.js" ] || [ $TEST = "cypress" ]; then
-  cd tests-nodejs
+if [ $TEST = "nodejs/playwright" ]; then
+  cd $TEST
   npm install
   npx playwright install-deps
   npx playwright install
-
-  if [ $TEST = "playwright/node.js" ]; then
-    npx cucumber-js cucumber/features/petstore.feature
-    npx playwright test --project $BROWSER
-
-  else
-    if [[ $BROWSER == *"edge" ]]; then
-      npx cypress run --browser edge --headless
-    else
-      npx cypress run --browser $BROWSER --headless
-    fi
-  fi
-
-  cd ..
+  npx cucumber-js cucumber/features/petstore.feature
+  npx playwright test --project $BROWSER
+  cd ../..
 fi
 
 # Cypress
@@ -98,7 +87,7 @@ if [ $TEST = "nodejs/cypress" ]; then
   else
     npx cypress run --browser $BROWSER --headless
   fi
-  cd ..
+  cd ../..
 fi
 
 #
@@ -124,8 +113,7 @@ if [ $TEST = "playwright/java" ] || [ $TEST = "selenium/java" ] || [ $TEST = "ka
     done
     mv tests-java/target/karate-reports reporting/report-karate
   fi
-
-  cd ..
+  cd ../..
 fi
 
 # karate
