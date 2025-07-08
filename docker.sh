@@ -35,32 +35,50 @@ cp python/file.xml /tmp/test/
 mkdir -p reporting/allure-results/java reporting/allure-results/python reporting/allure-results/nodejs
 
 #
-# Python tests
+# Python - Playwright
 #
-if [ $TEST = "python/playwright" ] || [ $TEST = "selenium/python" ] || [ $TEST = "robotframework/playwright" ]; then
-  cd tests-python
+if [ $TEST = "python/playwright" ]; then
+  cd $TEST
   pip install -r requirements.txt
   playwright install-deps
   playwright install
   export PYTHONPATH=$(pwd)
-
-  if [ $TEST = "playwright/python" ]; then
-    behave cucumber/features/petstore.feature
-    if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
-      pytest web_playwright/tests/ --browser-channel $BROWSER
-    else
-      pytest web_playwright/tests/ --browser $BROWSER
-    fi
+  behave cucumber/features/petstore.feature
+  if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
+    pytest web_playwright/tests/ --browser-channel $BROWSER
+  else
+    pytest web_playwright/tests/ --browser $BROWSER
   fi
+  unset PYTHONPATH
+  cd ../..
+fi
 
-  if [ $TEST = "selenium/python" ]; then
-    pytest web_selenium/tests/ --driver $BROWSER --hub $HUB
-  fi
 
-  if [ $TEST = "robotframework/playwright" ]; then
-    robot --variable BROWSER:${BROWSER} --outputdir ../reporting/report-robot ./
-  fi
+#
+# Python - Selenium
+#
+if [ $TEST = "python/selenium" ]; then
+  cd $TEST
+  pip install -r requirements.txt
+  playwright install-deps
+  playwright install
+  export PYTHONPATH=$(pwd)
+  pytest web_selenium/tests/ --driver $BROWSER --hub $HUB
+  unset PYTHONPATH
+  cd ../..
+fi
 
+
+#
+# Python - robotframework
+#
+if [ $TEST = "python/robotframework" ]; then
+  cd $TEST
+  pip install -r requirements.txt
+  playwright install-deps
+  playwright install
+  export PYTHONPATH=$(pwd)
+  robot --variable BROWSER:${BROWSER} --outputdir ../reporting/report-robot ./
   unset PYTHONPATH
   cd ../..
 fi
