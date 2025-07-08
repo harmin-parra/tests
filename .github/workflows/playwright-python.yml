@@ -17,7 +17,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright/python:v1.44.0-jammy
+      image: mcr.microsoft.com/playwright/python
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
           node-version: '20'
       - name: Test
         run: |
-          ./docker.sh --browser "${{ inputs.browser }}" --docker playwright/python
+          ./docker.sh --browser "${{ inputs.browser }}" --test playwright/python
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
         env:
           HOME: /root
@@ -42,7 +42,7 @@ jobs:
     container:
       image: openjdk:8-jre
     env:
-      ALLURE: 2.30.0
+      ALLURE: 2.34.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
