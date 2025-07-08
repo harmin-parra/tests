@@ -78,6 +78,8 @@ public class CatalogTest {
         //    Files.writeString(Paths.get("shared.txt"), id);
         //} catch (IOException e) { }
         SharedData.id = id;
+
+        CatalogItem item = response.as(CatalogItem.class);
     }
 
     @Test
@@ -104,6 +106,8 @@ public class CatalogTest {
             body("id", equalTo(id)).
             body("name", equalTo("Lenovo notebook")).
         extract().response();
+
+        CatalogItem item = response.as(CatalogItem.class);
     }
 
     @Test
