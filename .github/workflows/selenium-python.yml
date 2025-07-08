@@ -33,11 +33,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      #- name: Install
-      #  run: |
-      #    cd tests-python
-      #    pip install -r tests-python/requirements.txt
-      #    cd ..
       - name: Test
         run: |
           python3 --version
