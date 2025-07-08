@@ -1,4 +1,4 @@
-name: selenium/python
+name: python/selenium
 
 env:
   ALLURE: 2.34.1
