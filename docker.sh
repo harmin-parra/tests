@@ -28,11 +28,9 @@ done
 
 # Change variable values to lowercase
 BROWSER=${BROWSER,,}
-
-rm -rf reporting/*
-mkdir /tmp/test
-cp python/file.xml /tmp/test/
-mkdir -p reporting/allure-results/java reporting/allure-results/python reporting/allure-results/nodejs
+cp python/file.xml /tmp/
+#rm -rf reporting/*
+#mkdir -p reporting/allure-results/java reporting/allure-results/python reporting/allure-results/nodejs
 
 #
 # Python - Playwright
