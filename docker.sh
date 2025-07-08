@@ -43,9 +43,9 @@ if [ $TEST = "python/playwright" ]; then
   export PYTHONPATH=$(pwd)
   #behave cucumber/features/petstore.feature
   if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
-    pytest web_playwright/tests/ --browser-channel $BROWSER
+    pytest tests/ --browser-channel $BROWSER
   else
-    pytest web_playwright/tests/ --browser $BROWSER
+    pytest tests/ --browser $BROWSER
   fi
   unset PYTHONPATH
   cd ../..
@@ -58,7 +58,7 @@ fi
 if [ $TEST = "python/selenium" ]; then
   pip install -r ../requirements.txt
   export PYTHONPATH=$(pwd)
-  pytest web_selenium/tests/ --driver $BROWSER --hub $HUB
+  pytest tests/ --driver $BROWSER --hub $HUB
   unset PYTHONPATH
   cd ../..
 fi
