@@ -31,7 +31,7 @@ jobs:
           node-version: '20'
       - name: Test
         run: |
-          ./docker.sh --browser "${{ inputs.browser }}" --test playwright/java
+          ./docker.sh --browser "${{ inputs.browser }}" --test java/playwright
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
         env:
           HOME: /root
@@ -46,8 +46,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: openjdk:8-jre
-    env:
-      ALLURE: 2.34.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
