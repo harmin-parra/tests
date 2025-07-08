@@ -1,4 +1,4 @@
-name: robotframework/playwright
+name: python/robotframework
 
 env:
   ALLURE: 2.34.1
