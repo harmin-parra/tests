@@ -1,5 +1,10 @@
 name: playwright/python
 
+env:
+  ALLURE: 2.34.1
+  EXECUTOR_NAME: "Github Actions"
+  EXECUTOR_TYPE: "github"
+
 on:
   workflow_dispatch:
     inputs:
@@ -26,7 +31,7 @@ jobs:
           node-version: '20'
       - name: Test
         run: |
-          ./docker.sh --browser "${{ inputs.browser }}" --test playwright/python
+          ./docker.sh --browser "${{ inputs.browser }}" --test python/playwright
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
         env:
           HOME: /root
@@ -41,8 +46,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: openjdk:8-jre
-    env:
-      ALLURE: 2.34.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
