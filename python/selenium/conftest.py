@@ -65,7 +65,7 @@ def driver(optdriver, optheadless, opthub):
         if opthub is None:
             _driver = webdriver.Edge(options=options)
     if opthub is not None:
-        server = f"http://{hub}:4444/wd/hub"
+        server = f"http://{opthub}:4444/wd/hub"
         _driver = webdriver.Remote(command_executor=server, options=options)
     yield _driver
     _driver.quit()
