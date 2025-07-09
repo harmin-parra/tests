@@ -29,7 +29,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Test
         run: |
-          - java --version
           - curl https://download.java.net/openjdk/jdk21/ri/openjdk-21+35_linux-x64_bin.tar.gz -o /tmp/openjdk-bin.tar.gz
           - tar -xf openjdk-bin.tar.gz -C /tmp/
           - JAVA_HOME='/tmp/jdk-21'
