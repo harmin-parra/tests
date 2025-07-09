@@ -147,9 +147,9 @@ if [ $HEADLESS = "false" ]; then
   HEAD_OPT="--headed"
 fi
 if [[ $BROWSER == *"edge" ]]; then
-  npx cypress run --browser edge $HEAD_OPT
-else
-  npx cypress run --browser $BROWSER $HEAD_OPT
+  BROWSER=edge
+fi
+npx cypress run --browser $BROWSER $HEAD_OPT
 cd ..
 cd ..
 
