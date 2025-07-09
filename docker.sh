@@ -54,6 +54,7 @@ fi
 # Python - Selenium
 #
 if [ $TEST = "python/selenium" ]; then
+  cd $TEST
   pip install -r ../requirements.txt
   export PYTHONPATH=$(pwd)
   pytest tests/ --driver $BROWSER --hub $HUB
