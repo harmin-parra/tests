@@ -57,7 +57,11 @@ if [ $TEST = "python/selenium" ]; then
   cd $TEST
   pip install -r ../requirements.txt
   export PYTHONPATH=$(pwd)
-  pytest tests/ --driver $BROWSER --hub $HUB
+  if [[ $BROWSER == *"edge" ]]; then
+    pytest tests/ --driver msedge --hub $HUB
+  else
+    pytest tests/ --driver $BROWSER --hub $HUB
+  fi
   unset PYTHONPATH
   cd ../..
 fi
