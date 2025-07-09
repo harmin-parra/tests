@@ -24,6 +24,9 @@ on:
         type: choice
         options:
         - harmin/qa-runner-debian
+        - harmin/qa-runner-ubuntu
+        - harmin/qa-runner-debian:beta
+        - harmin/qa-runner-ubuntu:beta
 
 jobs:
   tests:
