@@ -58,10 +58,9 @@ if [ $TEST = "python/selenium" ]; then
   pip install -r ../requirements.txt
   export PYTHONPATH=$(pwd)
   if [[ $BROWSER == *"edge" ]]; then
-    pytest tests/ --driver msedge --hub $HUB
-  else
-    pytest tests/ --driver $BROWSER --hub $HUB
+    BROWSER=msedge
   fi
+  pytest tests/ --driver $BROWSER --hub $HUB
   unset PYTHONPATH
   cd ../..
 fi
@@ -96,10 +95,9 @@ if [ $TEST = "nodejs/cypress" ]; then
   cd $TEST
   npm install
   if [[ $BROWSER == *"edge" ]]; then
-    npx cypress run --browser edge --headless
-  else
-    npx cypress run --browser $BROWSER --headless
+    BROWSER=edge
   fi
+  npx cypress run --browser $BROWSER --headless
   cd ../..
 fi
 
@@ -117,6 +115,9 @@ fi
 # Java - Selenium
 #
 if [ $TEST = "java/selenium" ]; then
+  if [[ $BROWSER == *"edge" ]]; then
+    BROWSER=msedge
+  fi
   cd $TEST
   mvn dependency:resolve
   mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER test -Dhub=$HUB test
