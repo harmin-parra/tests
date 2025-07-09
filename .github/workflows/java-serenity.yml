@@ -16,7 +16,7 @@ on:
         options:
         - chrome
         - firefox
-        - msedge
+        - edge
 
 jobs:
   test:
