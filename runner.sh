@@ -146,10 +146,11 @@ HEAD_OPT=""
 if [ $HEADLESS = "false" ]; then
   HEAD_OPT="--headed"
 fi
-if [[ $BROWSER == *"edge" ]]; then
-  BROWSER=edge
+BROWSER_OPT=$BROWSER
+if [ $BROWSER = "msedge" ]; then
+  BROWSER_OPT="edge"
 fi
-npx cypress run --browser $BROWSER $HEAD_OPT
+npx cypress run --browser $BROWSER_OPT $HEAD_OPT
 cd ..
 cd ..
 
