@@ -22,7 +22,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: selenium/standalone-${BROWSER}
+      image: selenium/standalone-${{ inputs.browser }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
