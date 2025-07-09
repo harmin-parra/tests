@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: selenium/standalone-${{ inputs.browser }}
+      options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
