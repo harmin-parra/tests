@@ -10,13 +10,13 @@ on:
     inputs:
       browser:
         description: 'The browser to use'
-        default: 'chromium'
+        default: 'firefox'
         required: true
         type: choice
         options:
-        - chromium
+        - chrome
         - firefox
-        - webkit
+        - msedge
 
 jobs:
   test:
