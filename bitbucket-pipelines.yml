@@ -9,10 +9,17 @@ pipelines:
             - chromium
             - firefox
             - msedge
+        - name: DOCKER
+          default: harmin/qa-runner-debian:latest
+          allowed-values:
+            - harmin/qa-runner-debian:latest
+            - harmin/qa-runner-ubuntu:latest
+            - harmin/qa-runner-debian:beta
+            - harmin/qa-runner-ubuntu:beta
 
       - step:
           name: Test
-          image: harmin/qa-runner-debian:latest
+          image: $DOCKER
           script:
             - export PATH=$PATH:$HOME/.local/bin
             - python3 -m venv ~/venv
