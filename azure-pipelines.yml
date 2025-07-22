@@ -68,7 +68,7 @@ stages:
   dependsOn: test
   jobs:
   - job: allure
-    condition: eq(parameters.publish, 'true')
+    condition: eq(${{ parameters.publish }}, 'true')
     pool:
       vmImage: 'ubuntu-latest'
     container: openjdk:8-jre
@@ -92,7 +92,7 @@ stages:
   dependsOn: report
   jobs:
   - job: commit
-    condition: eq(parameters.publish, 'true')
+    condition: eq(${{ parameters.publish }}, 'true')
     pool:
       vmImage: 'ubuntu-latest'
     steps:
