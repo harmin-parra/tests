@@ -40,8 +40,6 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     container: ${{ parameters.docker }}
-    #container: harmin/qa-runner-debian:latest
-
     steps:
     - script: |
         export PATH=$PATH:$HOME/.local/bin
@@ -66,19 +64,17 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     container: openjdk:8-jre
-
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
         artifactName: 'reporting'
         downloadPath: './'
-
     - script: |
+        exit
         curl https://github.com/allure-framework/allure2/releases/download/${{ variables.allure }}/allure-${{ variables.allure }}.zip -L -o /tmp/allure.zip
         unzip /tmp/allure.zip -d /tmp/
         mv /tmp/allure-${{ variables.allure }} /tmp/allure
         ./allure.sh --browser ${{ parameters.browser }}
-
     - task: PublishBuildArtifacts@1
       inputs:
         pathToPublish: 'reporting'
@@ -91,14 +87,13 @@ stages:
   - job: commit
     pool:
       vmImage: 'ubuntu-latest'
-
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
         artifactName: 'reporting'
         downloadPath: './'
-
     - script: |
+        exit
         git config --global user.name "Azure DevOps"
         git config --global user.email "azure@dev.azure.com"
         git clone https://Personal%20Access%20Token:$(token)@dev.azure.com/harmin-parra/reports/_git/reports

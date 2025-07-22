@@ -31,6 +31,7 @@ echo "################"
 echo "# Python tests #"
 echo "################"
 echo "python: "  $(python3 --version)
+echo "pip: "  $(pip --version)
 cd python
 # pip install --break-system-packages -r requirements.txt
 pip install -r requirements.txt > /dev/null
@@ -159,40 +160,43 @@ echo "##############"
 echo "# Java tests #"
 echo "##############"
 echo "java: " $(java --version)
-echo "maven: " $(mvn --version)
 cd java
 
 echo =================
 echo Java - Playwright
 echo =================
 cd playwright
-mvn dependency:resolve > /dev/null
-# mvn -Dtest="web_playwright/WebFormTest" test
-mvn -Dtest="web_playwright/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+#./mvnw -q dependency:resolve
+# ./mvnw -Dtest="web_playwright/WebFormTest" test
+#./mvnw -Dtest="web_playwright/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+./gradlew test --tests="web_playwright.*" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
 echo ===============
 echo Java - Selenium
 echo ===============
 cd selenium
-mvn dependency:resolve > /dev/null
-mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test  # -Dhub=$HUB test
+#./mvnw -q dependency:resolve
+#./mvnw -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test  # -Dhub=$HUB test
+./gradlew test -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
 echo ===================
 echo Java - Rest-Assured
 echo ===================
 cd rest_assured
-mvn dependency:resolve > /dev/null
-mvn -Dtest="rest_api/CatalogTest" test
+#./mvnw -q dependency:resolve
+#./mvnw -Dtest="rest_api/CatalogTest" test
+./gradlew test --tests="rest_api.CatalogTest"
 cd ..
 
 echo ===============
 echo Java - Serenity
 echo ===============
 cd serenity
-mvn dependency:resolve > /dev/null
-mvn -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER clean verify
+#./mvnw -q dependency:resolve
+#./mvnw clean verify -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
+./gradlew test -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
 mv target/site/serenity ../../reporting/report-serenity
 cd ..
 
@@ -200,9 +204,9 @@ echo =============
 echo Java - Karate
 echo =============
 cd karate
-mvn dependency:resolve > /dev/null
-# mvn -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
-mvn -Dtest="web/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+./mvnw -q dependency:resolve
+#./mvnw -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+./mvnw -Dtest="web/TestRunner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test #runner
 
 # Purge weird Allure Karate entries
 mv target/karate-reports ../../reporting/report-karate

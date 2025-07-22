@@ -1,53 +1,64 @@
 plugins {
-    id "net.serenity-bdd.serenity-gradle-plugin" version "4.1.12"
+    id "net.serenity-bdd.serenity-gradle-plugin" version "4.2.34"
     id 'java'
 }
 
 defaultTasks 'clean', 'test', 'aggregate'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 16
-targetCompatibility = 16
-
 ext {
-    slf4jVersion = '1.7.7'
-    serenityCoreVersion = '4.1.12'
-    junitVersion = '5.10.0'
-    assertJVersion = '3.24.2'
-    lombokVersion = '1.18.24'
-    logbackVersion = '1.2.11'
+    serenityVersion = '4.2.34'
+    junitVersion = '5.13.2'
 }
 
 dependencies {
-    testImplementation "net.serenity-bdd:serenity-core:${serenityCoreVersion}",
-            "net.serenity-bdd:serenity-junit5:${serenityCoreVersion}",
-            "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}",
-            "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}",
-            "net.serenity-bdd:serenity-ensure:${serenityCoreVersion}",
-            "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
-            "org.junit.jupiter:junit-jupiter-engine:${junitVersion}",
-            "org.assertj:assertj-core:${assertJVersion}",
-            "org.projectlombok:lombok:${lombokVersion}",
-            "ch.qos.logback:logback-classic:${logbackVersion}"
+    implementation "net.serenity-bdd:serenity-core:${serenityVersion}",
+            "net.serenity-bdd:serenity-junit5:${serenityVersion}",
+            "net.serenity-bdd:serenity-screenplay:${serenityVersion}",
+            "net.serenity-bdd:serenity-screenplay-webdriver:${serenityVersion}",
+            "net.serenity-bdd:serenity-ensure:${serenityVersion}",
+            "net.serenity-bdd:serenity-rest-assured:${serenityVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}",
+        "ch.qos.logback:logback-classic:1.5.18"
 }
 
 test {
     useJUnitPlatform()
     testLogging.showStandardStreams = true
     systemProperties System.getProperties()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = "full"  // shows stack traces
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }    
 }
 
 gradle.startParameter.continueOnFailure = true
 
 serenity {
     reports = ["single-page-html"]
-
-    // // Specify the root package of any JUnit acceptance tests
-    testRoot="starter"
+    testRoot = "demo"
 }
 
 test.finalizedBy(aggregate)
 
+//tasks.register('aggregateReports', net.serenitybdd.gradle.plugins.SerenityReportsTask) {
+//    dependsOn test
+//    doFirst {
+//        println "Generating Serenity reports..."
+//    }
+//}

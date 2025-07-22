@@ -7,7 +7,6 @@
 
     <properties>
         <allure.version>2.29.0</allure.version>
-        <playwright.version>1.49.0</playwright.version>
         <rest-assured.version>5.5.0</rest-assured.version>
         <junit.version>5.13.2</junit.version>
 
