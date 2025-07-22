@@ -31,6 +31,13 @@ parameters:
   - chromium
   - firefox
   - msedge
+- name: publish
+  displayName: Whether to publish the reports
+  type: string
+  default: false
+  values:
+  - true
+  - false
 
 
 stages:
@@ -61,6 +68,7 @@ stages:
   dependsOn: test
   jobs:
   - job: allure
+    condition: eq(parameters.publish, 'true')
     pool:
       vmImage: 'ubuntu-latest'
     container: openjdk:8-jre
@@ -70,7 +78,6 @@ stages:
         artifactName: 'reporting'
         downloadPath: './'
     - script: |
-        exit
         curl https://github.com/allure-framework/allure2/releases/download/${{ variables.allure }}/allure-${{ variables.allure }}.zip -L -o /tmp/allure.zip
         unzip /tmp/allure.zip -d /tmp/
         mv /tmp/allure-${{ variables.allure }} /tmp/allure
@@ -85,6 +92,7 @@ stages:
   dependsOn: report
   jobs:
   - job: commit
+    condition: eq(parameters.publish, 'true')
     pool:
       vmImage: 'ubuntu-latest'
     steps:
@@ -93,7 +101,6 @@ stages:
         artifactName: 'reporting'
         downloadPath: './'
     - script: |
-        exit
         git config --global user.name "Azure DevOps"
         git config --global user.email "azure@dev.azure.com"
         git clone https://Personal%20Access%20Token:$(token)@dev.azure.com/harmin-parra/reports/_git/reports
