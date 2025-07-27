@@ -20,51 +20,51 @@ Web form Page Should Be Open
 
 Set Login
     [Arguments]    ${var}
-    ${element} =    Get Element by    Label    Text input
+    ${element} =    Get Element   input[name='my-text']
     Type Text    ${element}    ${var}
 
 Set Password
     [Arguments]    ${var}
-    ${element} =    Get Element by    Label    Password
+    ${element} =    Get Element   input[name='my-password']
     Type Text    ${element}    ${var}
 
 Set TextArea
     [Arguments]    ${var}
-    ${element} =    Get Element by    Label    Textarea
+    ${element} =    Get Element   textarea[name='my-textarea']
     Type Text    ${element}    ${var}
 
 Set Number
     [Arguments]    ${var}
-    ${element} =    Get Element    //select[@name='my-select']
+    ${element} =    Get Element    select[name='my-select']
     Select Options By    ${element}    Index    ${var}
 
 Set City
     [Arguments]    ${var}
-    ${element} =    Get Element    //input[@name='my-datalist']
+    ${element} =    Get Element    input[name='my-datalist']
     Type Text    ${element}    ${var}
 
 Upload File
     [Arguments]    ${var}
-    Upload File By Selector    //input[@name='my-file']    ${var}
+    Upload File By Selector    input[name='my-file']    ${var}
 
 Set Color
     [Arguments]    ${var}
-    ${element} =    Get Element by    Label    Color picker
+    ${element} =    Get Element   input[name='my-colors']
     Evaluate JavaScript    ${element}    (elem, arg) => { elem.value = arg; }    arg=${var}
 
 Set Date
     [Arguments]    ${var}
-    ${element} =    Get Element by    Label    Date picker
+    ${element} =    Get Element   input[name='my-date']
     Evaluate JavaScript    ${element}    (elem, arg) => { elem.value = arg; }    arg=${var}
 
 Set Range
     [Arguments]    ${var}
-    ${element} =    Get Element by    Label    Example range
+    ${element} =    Get Element   input[name='my-range']
     Fill Text    ${element}    ${var}
     #Evaluate JavaScript    ${element}    (elem, arg) => { elem.value = arg; }    arg=${var}
 
 Submit Form
-    ${element} =    Get Element by Role    BUTTON    name=Submit
+    ${element} =    Get Element   button[type='submit']
     Click    ${element}
 
 Success Page Should Be Displayed
