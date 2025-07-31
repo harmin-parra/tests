@@ -110,15 +110,7 @@ cd nodejs
 echo ==================
 echo Node.js - Cucumber
 echo ==================
-#cd cucumber
-#npm install
-#npx cucumber-js features/petstore.feature
-#cd ..
-
-echo =======================
-echo Node.js - Cucumber-html
-echo =======================
-cd cucumber_html
+cd cucumber
 npm install > /dev/null
 npx cucumber-js features/catalog.feature
 cd ..

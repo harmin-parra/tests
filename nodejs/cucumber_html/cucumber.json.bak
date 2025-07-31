@@ -1,5 +1,6 @@
 {
   "default": {
+    "paths": ["features/**/*.feature"],
     "requireModule": ["ts-node/register"],
     "require": ["steps/**/*.ts"],
     "format": [

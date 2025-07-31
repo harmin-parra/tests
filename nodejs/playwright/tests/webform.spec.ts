@@ -1,6 +1,5 @@
-//const { test, expect, Page } = require('@playwright/test');
 import { test, expect } from '@playwright/test';
-const fs = require('node:fs');
+import fs from 'node:fs';
 import * as allure from "allure-js-commons";
 import WebformPage from '../pages/webform.page';
 
@@ -58,10 +57,10 @@ test.use({video: 'on'});
 
   test.afterEach(async ({ page }) => {
     return;
-    await page.context().close();
-    let video = await page.video()?.path();
-    if (video)
-      await allure.attachmentPath("Recorder video", video, allure.ContentType.WEBM);
+    await page?.context()?.close();
+    const videoPath = await page?.video()?.path();
+    if (videoPath)
+      await allure.attachmentPath("Recorded video", videoPath, allure.ContentType.WEBM);
   });
 
 //});
