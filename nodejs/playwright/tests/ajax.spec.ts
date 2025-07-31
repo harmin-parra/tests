@@ -1,4 +1,4 @@
-const { test, expecte } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 import * as allure from "allure-js-commons";
 import AjaxPage from '../pages/ajax.page';
 import assert from 'assert';
