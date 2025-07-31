@@ -197,8 +197,8 @@ echo Java - Karate
 echo =============
 cd karate
 ./mvnw -q dependency:resolve
-#./mvnw -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
-./mvnw -Dtest="web/TestRunner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test #runner
+./mvnw -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+#./mvnw -Dtest="web/TestRunner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test #runner
 
 # Purge weird Allure Karate entries
 mv target/karate-reports ../../reporting/report-karate

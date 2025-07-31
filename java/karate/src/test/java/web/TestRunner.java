@@ -11,6 +11,7 @@ import io.qameta.allure.karate.AllureKarate;
 
 public class TestRunner {
 
+    /*
     @Test
     public void allTests() {
         Results results = Runner.path("classpath:" + getClass().getPackageName().replace('.', '/'))
@@ -20,7 +21,8 @@ public class TestRunner {
                 .parallel(1);
         assertEquals(0, results.getFailCount(), results.getErrorMessages());
     }
-/*
+    */
+
     @Karate.Test
     public Karate runner() {
         return Karate
@@ -29,5 +31,5 @@ public class TestRunner {
                 .relativeTo(getClass())
                 .outputJunitXml(true);
     }
-*/
+
 }
