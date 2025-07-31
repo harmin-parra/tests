@@ -5,8 +5,8 @@
 **/.pydevproject
 
 **/.classpath
-**/target/
 **/.gradle/
+**/target/
 **/build/
 **/test/videos
 
@@ -15,8 +15,6 @@
 
 **/.pytest_cache
 **/__pycache__
-
-**/cucumber-report.html
-tests-java/logs/*
+python/**/videos/
 
 reporting/*
