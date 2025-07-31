@@ -3,7 +3,7 @@ pipeline {
   agent any
 
   environment {
-    ALLURE = '2.29.0'
+    ALLURE = '2.34.1'
     TOKEN = 'glpat-64VubsDGWUwgPgYkgEjs'
   }
 
@@ -83,8 +83,8 @@ pipeline {
         unstash 'artifact_report'
         sh ''' 
           rm -rf reports
-          git config --global user.name "Gitlab CI"
-          git config --global user.email "gitlab@mg.gitlab.com"
+          git config --global user.name "$GIT_USER_NAME"
+          git config --global user.email "$GIT_USER_EMAIL"
           git clone https://gitlab-ci-token:${TOKEN}@gitlab.com/harmin-qa/reports.git
           mv reporting/allure-reports/* reporting/
           rm -rf reporting/allure-reports reporting/allure-results
