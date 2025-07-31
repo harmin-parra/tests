@@ -17,6 +17,12 @@ pipeline {
 
   stages {
 
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
     stage('Test') {
       agent {
         docker { 
@@ -29,13 +35,21 @@ pipeline {
           export PATH=$PATH:/tmp/venv/bin
           python3 -m venv /tmp/venv
           . /tmp/venv/bin/activate
-          cd tests-python
+          cd python
           export PYTHONPATH=$(pwd)
           pip install -r requirements.txt
           which behave
           find / -name behave
         '''
         stash includes: 'reporting/**', name: 'artifact_test'
+      }
+      post {
+        always {
+          archiveArtifacts artifacts: 'reporting/**'
+        }
+        failure {
+          echo 'Tests failed'
+        }
       }
     }
 
@@ -46,7 +60,6 @@ pipeline {
       steps {
         unstash 'artifact_test'
         sh '''
-          exit
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
           unzip /tmp/allure.zip -d /tmp/
           mv /tmp/allure-${ALLURE} /tmp/allure
@@ -62,10 +75,13 @@ pipeline {
     }
 
     stage('Commit') {
+      environment {
+        GIT_USER_NAME = 'Gitlab CI'
+        GIT_USER_EMAIL = 'gitlab@mg.gitlab.com'
+      }
       steps {
         unstash 'artifact_report'
         sh ''' 
-          exit
           rm -rf reports
           git config --global user.name "Gitlab CI"
           git config --global user.email "gitlab@mg.gitlab.com"
