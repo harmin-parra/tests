@@ -1,10 +1,4 @@
 {
-  "name": "tests-cypress",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {},
-  "keywords": [],
   "dependencies": {
     "allure-cypress": "^3.3.0",
     "allure-js-commons": "^3.3.0",

@@ -1,0 +1,11 @@
+module.exports = {
+  default: {
+    paths: ["features/**/*.feature"],
+    requireModule: ["ts-node/register"],
+    require: ["steps/**/*.ts"],
+    format: [
+      "html:index.html",
+      "allure-cucumberjs/reporter"
+    ]
+  }
+};

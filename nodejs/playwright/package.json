@@ -1,13 +1,6 @@
 {
-  "name": "tests-playwright",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {},
-  "keywords": [],
   "dependencies": {
     "@playwright/test": "^1.53.1",
-    "allure-cucumberjs": "^3.3.0",
     "allure-js-commons": "^3.3.0",
     "allure-playwright": "^3.3.0",
     "axios": "^1.10.0",
