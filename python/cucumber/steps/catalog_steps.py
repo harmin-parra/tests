@@ -9,7 +9,7 @@ result = None
 payload = None
 
 
-@given('I have a catalogue')
+@given('I have a catalog')
 def step_impl(context):
     pass
 
@@ -41,7 +41,7 @@ def step_impl(context):
         assert obj[key] == payload[key]
 
 
-@given('An object exists in the catalogue')
+@given('An object exists in the catalog')
 def step_impl(context):
     global payload, id, result
     catalog.get(id)
