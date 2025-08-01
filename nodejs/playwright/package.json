@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "@playwright/test": "^1.53.1",
-    "allure-js-commons": "^3.3.0",
-    "allure-playwright": "^3.3.0",
+    "allure-js-commons": "^3.3.2",
+    "allure-playwright": "^3.3.2",
     "axios": "^1.10.0",
     "playwright": "^1.53.1"
   }
