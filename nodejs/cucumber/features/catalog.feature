@@ -1,7 +1,7 @@
 @allure.label.parentSuite:REST_api_Cucumber
-@allure.label.suite:Catalogue
+@allure.label.suite:Catalog
 @allure.label.epic:REST_api_Cucumber
-@allure.label.package:rest_api.catalogue
+@allure.label.package:rest_api.catalog
 Feature: Catalog
 
   Scenario: Add object
