@@ -24,6 +24,7 @@ test.use({video: 'on'});
     await allure.parentSuite("Web interface (Playwright)");
     await allure.suite("Ajax");
     await allure.label(allure.LabelName.PACKAGE, "web_playwright.ajax.spec.ts");
+    await allure.tag("UI");
 
     await allure.attachment("Initial page", await page.screenshot(), { contentType: "image/png" });
     var ajax = new AjaxPage(page);
