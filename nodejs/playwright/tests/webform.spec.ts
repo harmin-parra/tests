@@ -36,7 +36,7 @@ test.use({video: 'on'});
     await allure.parentSuite("Web interface (Playwright)");
     await allure.suite("Web Form");
     await allure.label(allure.LabelName.PACKAGE, "web_playwright.webform.spec.ts");
-    await allure.tag("UI");
+    await allure.tag("ui");
 
     await allure.attachment("Empty form", await page.screenshot(), { contentType: "image/png" });
     var webform = new WebformPage(page);
