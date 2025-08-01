@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@cucumber/cucumber": "^12.1.0",
+    "@cucumber/cucumber": "^11.3.0",
     "@types/lodash": "^4.17.18",
     "allure-cucumberjs":"^3.3.2",
     "axios": "^1.11.0",
