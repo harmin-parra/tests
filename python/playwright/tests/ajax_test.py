@@ -8,10 +8,10 @@ import pages
 @allure.issue("JIRA-123")
 @allure.testcase("TEST-456")
 @allure.parent_suite("Web interface (Playwright)")
-@allure.suite("Ajax page")
+@allure.suite("Ajax")
 @allure.epic("Web interface (Playwright)")
 #@allure.story("Ajax")
-@allure.feature("Ajax page")
+@allure.feature("Ajax")
 def test_ajax_verification(browser: Browser):
     """ 
     Testing an AJAX page.
