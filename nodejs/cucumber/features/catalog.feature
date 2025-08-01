@@ -2,7 +2,7 @@
 @allure.label.suite:Catalog
 @allure.label.epic:REST_api_Cucumber
 @allure.label.package:rest_api.catalog
-@(API)
+@api
 Feature: Catalog
 
   Scenario: Add object
