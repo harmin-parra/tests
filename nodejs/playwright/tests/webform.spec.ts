@@ -37,6 +37,7 @@ test.use({video: 'on'});
     await allure.suite("Web Form");
     await allure.label(allure.LabelName.PACKAGE, "web_playwright.webform.spec.ts");
 
+    await page.waitForTimeout(1500);
     await allure.attachment("Empty form", await page.screenshot(), { contentType: "image/png" });
     var webform = new WebformPage(page);
     await webform.set_input("login");
@@ -48,9 +49,11 @@ test.use({video: 'on'});
     await webform.set_color("#00ff00");
     await webform.set_date("01/01/2024");
     await webform.set_range(1);
+    await page.waitForTimeout(1500);
     await allure.attachment("Complete form", await page.screenshot(), { contentType: "image/png" });
     await allure.attachment("File to upload", fs.readFileSync('../file.xml', 'utf8'), { contentType: "application/xml" });
     await webform.submit();
+    await page.waitForTimeout(1500);
     await allure.attachment("Submit form", await page.screenshot(), { contentType: "image/png" });
   });
 
