@@ -1,6 +1,6 @@
-@allure.label.parentSuite:REST_api_Cucumber
+@allure.label.parentSuite:REST_api_(Cucumber)
 @allure.label.suite:Catalog
-@allure.label.epic:REST_api_Cucumber
+@allure.label.epic:REST_api_(Cucumber)
 @allure.label.package:rest_api.catalog
 Feature: Catalog
 
