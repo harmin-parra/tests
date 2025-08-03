@@ -74,7 +74,7 @@ cd ..
 echo ===============
 echo Python - Pytest
 echo ===============
-cd web_pytest
+cd pytest
 unset PYTHONPATH
 export PYTHONPATH=$(pwd)
 if [ $BROWSER = "msedge" ] || [ $BROWSER = "chrome" ]; then
