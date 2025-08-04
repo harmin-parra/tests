@@ -2,6 +2,7 @@ import allure
 import os
 from playwright.sync_api import Browser
 import pages
+import time
 
 
 @allure.link("https://www.selenium.dev/selenium/web/web-form.html", name="Target webform")
@@ -30,7 +31,7 @@ def test_web_form(browser: Browser):
     context = browser.new_context(record_video_dir="videos/")
     page = context.new_page()
     page.goto("https://www.selenium.dev/selenium/web/web-form.html")
-    # extras.screenshot_for_playwright(page, comment="Empty form")
+    time.sleep(1.5)
     allure.attach(
         page.screenshot(full_page=True),
         name="Empty form",
@@ -46,7 +47,7 @@ def test_web_form(browser: Browser):
     webform.set_color("#00ff00")
     webform.set_date("01/01/2024")
     webform.set_range(1)
-    # extras.screenshot_for_playwright(page, comment="Complete form")
+    time.sleep(1.5)
     allure.attach(
         page.screenshot(full_page=True),
         name="Complete form",
@@ -58,7 +59,7 @@ def test_web_form(browser: Browser):
         attachment_type=allure.attachment_type.XML
     )
     webform.submit()
-    # extras.screenshot_for_playwright(page, comment="Submit form")
+    time.sleep(1.5)
     allure.attach(
         page.screenshot(full_page=True),
         name="Submit form",
