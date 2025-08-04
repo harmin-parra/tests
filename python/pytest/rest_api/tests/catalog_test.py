@@ -32,28 +32,28 @@ def step_impl(context, report):
             "Hard disk size": "1 TB"
         }
     }
+    report.attach(f"Query: <code>POST</code>", escape_html=False)
+    report.attach("Payload:", body=payload, mime=report.Mime.JSON)
     result = catalog.post(payload)
+    report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 200
     context['id'] = result.json()["id"]
     context['result'] = result
     context['payload'] = payload
-    report.attach(f"Query: ADD")
-    report.attach("Payload:", body=payload, mime=report.Mime.JSON)
-    report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
 
 
 @then('The object is added')
 def step_impl(context, report):
     id = context['id']
     payload = context['payload']
+    report.attach(f"Query: <code>GET /{id}</code>", escape_html=False)
     result = catalog.get(id)
+    report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 200
     obj = result.json()
     for key in payload:
         assert obj[key] == payload[key]
     context['result'] = result
-    report.attach(f"Query: GET /{id}")
-    report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
 
 
 @given('An object exists in the catalog')
@@ -65,10 +65,10 @@ def step_impl(context, report):
 @when('I query an object')
 def step_impl(context, report):
     id = context['id']
+    report.attach(f"Query: <code>GET /{id}</code>", escape_html=False)
     result = catalog.get(id)
-    context['result'] = result
-    report.attach(f"Query: GET /{id}")
     report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
+    context['result'] = result
 
 
 @then('I get the object information')
@@ -83,20 +83,20 @@ def step_impl(context):
 @when('I delete an object')
 def step_impl(context, report):
     id = context['id']
+    report.attach(f"Query: <code>DELETE /{id}</code>", escape_html=False)
     result = catalog.delete(id)
+    report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 200
     assert result.json()['message'] == f"Object with id = {id} has been deleted."
     context['result'] = result
-    report.attach(f"Query: DELETE /{id}")
-    report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
 
 
 @then('The object is deleted')
 def step_impl(context, report):
     id = context['id']
+    report.attach(f"Query: <code>GET /{id}</code>", escape_html=False)
     result = catalog.get(id)
+    report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 404
     assert result.json()['error'] == f"Oject with id={id} was not found."
     context['result'] = result
-    report.attach(f"Query: GET /{id}")
-    report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
