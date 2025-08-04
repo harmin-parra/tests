@@ -1,4 +1,5 @@
 import os
+import time
 from playwright.sync_api import Browser
 from web_playwright import pages
 
@@ -21,6 +22,7 @@ def test_web_form(browser: Browser, report):
     context = browser.new_context(record_video_dir="videos/")
     page = context.new_page()
     page.goto("https://www.selenium.dev/selenium/web/web-form.html")
+    time.sleep(1.5)
     report.screenshot("Empty form", page)
     webform = pages.WebFormPage(page)
     webform.set_input("login")
@@ -32,9 +34,11 @@ def test_web_form(browser: Browser, report):
     webform.set_color("#00ff00")
     webform.set_date("01/01/2024")
     webform.set_range(1)
+    time.sleep(1.5)
     report.screenshot("Complete form", page)
     report.attach("File to upload", source=os.path.join("..", "file.xml"), mime="xml")
     webform.submit()
+    time.sleep(1.5)
     report.screenshot("Submit form", page)
     context.close()
     page.close()
