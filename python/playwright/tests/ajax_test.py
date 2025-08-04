@@ -21,7 +21,6 @@ def test_ajax_verification(browser: Browser):
     context = browser.new_context(record_video_dir="videos/")
     page = context.new_page()
     page.goto("http://qa-demo.gitlab.io/reports/web/ajax.html")
-    # extras.save_screenshot_for_playwright(page, comment="Initial page")
     allure.attach(
         page.screenshot(full_page=True),
         name="Open page",
@@ -34,7 +33,6 @@ def test_ajax_verification(browser: Browser):
     # )
     with page.expect_response("**/ajax.txt") as response:
         ajax.click()
-        # extras.save_screenshot_for_playwright(page, comment="Trigger event")
         allure.attach(
             page.screenshot(full_page=True),
             name="Trigger event",
@@ -42,7 +40,6 @@ def test_ajax_verification(browser: Browser):
         )
 
     ajax.verify_text()
-    # extras.save_screenshot_for_playwright(page, comment="Verify event result")
     allure.attach(
         page.screenshot(full_page=True),
         name="Verify event result",
