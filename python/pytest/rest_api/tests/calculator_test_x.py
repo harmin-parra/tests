@@ -34,18 +34,3 @@ def add_numbers(context, report):
 @then(parsers.parse("the result should be {result:d}"))
 def check_result(context, result):
     assert context["result"] == result
-
-
-@given("I am on the login page")
-def login_page(report):
-    report.attach(f"Will attempt login")
-
-
-@when("I enter valid credentials")
-def enter_credentials():
-    pass
-
-
-@then("I should be redirected to the dashboard")
-def redirected():
-    pass
