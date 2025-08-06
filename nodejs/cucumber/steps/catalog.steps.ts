@@ -99,7 +99,7 @@ When('I delete an object', async function() {
     })
     .catch(error => {
       this.attach("Status code: " + error.status);
-      this.attach("Response:\n" + JSON.stringify(error.response.data));
+      this.attach("Response:\n" + JSON.stringify(error.response.data, null, 2));
       assert.fail("The object was not deleted");
     });
 });
@@ -114,7 +114,7 @@ Then('The object is deleted', async function() {
     })
     .catch(error => {
       this.attach("Status code: " + error.status);
-      this.attach("Response:\n" + JSON.stringify(error.response.data));
+      this.attach("Response:\n" + JSON.stringify(error.response.data, null, 2));
       assert.equal(error.response.data.error, `Oject with id=${id} was not found.`)
     });
 });
