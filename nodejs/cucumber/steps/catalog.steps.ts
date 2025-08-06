@@ -45,7 +45,7 @@ When('I query an existing object', async function() {
 
 Then('I get the object information', function() {
   this.attach("Status code: " + response.status);
-  this.attach("Response:\n" + JSON.stringify(response.data, null, 2));  //, "application/json");
+  this.attach("Response:\n" + JSON.stringify(response.data, null, 2));
   assert.equal(typeof response.data['id'], 'string');
   assert.equal(typeof response.data['name'], 'string');
   assert.equal(typeof response.data['data'], 'object');
@@ -56,7 +56,7 @@ When('I add an object', async function() {
   await catalog.post(payload, this)
     .then(res => {
       this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(res.data));  //, "application/json");
+      this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
       assert.equal(res.status, 200);
       id = res.data.id;
       item = new CatalogItem(res.data);
@@ -65,7 +65,7 @@ When('I add an object', async function() {
     })
     .catch(err => {
       this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(err.response.data));  //, "application/json");
+      this.attach("Response:\n" + JSON.stringify(err.response.data));
       assert.fail("The object was not added");
     });
 });
@@ -75,7 +75,7 @@ Then('The object is added', async function() {
   await catalog.get(id, this)
     .then(res => {
       this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(res.data));  //, "application/json");
+      this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
       assert.equal(res.status, 200, "status != 200");
       assert.equal(res.data.id, item.id, "id");
       assert.equal(res.data.name, item.name, "name");
@@ -83,7 +83,7 @@ Then('The object is added', async function() {
     })
     .catch(err => {
       this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(err.response.data));  //, "application/json");
+      this.attach("Response:\n" + JSON.stringify(err.response.data));
       assert.fail("The object was not added");
     });
 });
@@ -93,13 +93,13 @@ When('I delete an object', async function() {
   await catalog.delete(id, this)
     .then(res => {
       this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(res.data));  /, "application/json");
+      this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
       assert.equal(res.status, 200);
       assert.equal(res.data.message, `Object with id = ${id} has been deleted.`);
     })
     .catch(err => {
       this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(err.response.data));  //, "application/json");
+      this.attach("Response:\n" + JSON.stringify(err.response.data));
       assert.fail("The object was not deleted");
     });
 });
@@ -109,12 +109,12 @@ Then('The object is deleted', async function() {
   await catalog.get(id, this)
     .then(res => {
       this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(res.data));  //, "application/json");
+      this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
       assert.fail("The object was not deleted");
     })
     .catch(err => {
       this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(err.response.data));  //, "application/json");
+      this.attach("Response:\n" + JSON.stringify(err.response.data));
       assert.equal(err.response.data.error, `Oject with id=${id} was not found.`)
     });
 });
