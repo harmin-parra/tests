@@ -44,7 +44,7 @@ When('I query an existing object', async function() {
 
 
 Then('I get the object information', function() {
-  this.attach("Response:\n" + JSON.stringify(response.data));  //, "application/json");
+  this.attach("Response:\n" + JSON.stringify(response.data, null, 2));  //, "application/json");
   this.attach("Status code: " + response.status);
   assert.equal(typeof response.data['id'], 'string');
   assert.equal(typeof response.data['name'], 'string');
