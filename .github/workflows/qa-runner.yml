@@ -39,6 +39,9 @@ jobs:
       - name: Test
         run: |
           export PATH=$PATH:$HOME/.local/bin
+          mkdir reporting/allure-results/java
+          mkdir reporting/allure-results/nodejs
+          mkdir reporting/allure-results/python
           python3 -m venv ~/venv
           . ~/venv/bin/activate
           ./runner.sh --browser "${{ inputs.browser }}"
