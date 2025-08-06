@@ -1,7 +1,7 @@
 import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber';
 import assert from 'assert';
 import lodash from 'lodash';
-import { Catalog, CatalogItem } from '../model/catalog';
+import { CatalogItem } from '../model/catalog';
 import { context } from '../model/context';
 
 
