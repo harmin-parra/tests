@@ -37,7 +37,7 @@ When('I query an existing object', async function() {
       assert.equal(res.status, 200);
       response = res;
     })
-    .catch(err => {
+    .catch(error => {
       assert.fail("The object doesn't exist");
     });
 });
@@ -63,9 +63,9 @@ When('I add an object', async function() {
       assert.equal(payload.name, item.name, "name");
       assert(lodash.isEqual(payload.data, item.data));
     })
-    .catch(err => {
-      this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(err.response.data));
+    .catch(error => {
+      this.attach("Status code: " + error.status);
+      this.attach("Response:\n" + JSON.stringify(error.response.data));
       assert.fail("The object was not added");
     });
 });
@@ -81,9 +81,9 @@ Then('The object is added', async function() {
       assert.equal(res.data.name, item.name, "name");
       assert(lodash.isEqual(res.data.data, item.data));
     })
-    .catch(err => {
-      this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(err.response.data));
+    .catch(error => {
+      this.attach("Status code: " + error.status);
+      this.attach("Response:\n" + JSON.stringify(error.response.data));
       assert.fail("The object was not added");
     });
 });
@@ -97,9 +97,9 @@ When('I delete an object', async function() {
       assert.equal(res.status, 200);
       assert.equal(res.data.message, `Object with id = ${id} has been deleted.`);
     })
-    .catch(err => {
-      this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(err.response.data));
+    .catch(error => {
+      this.attach("Status code: " + error.status);
+      this.attach("Response:\n" + JSON.stringify(error.response.data));
       assert.fail("The object was not deleted");
     });
 });
@@ -112,9 +112,9 @@ Then('The object is deleted', async function() {
       this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
       assert.fail("The object was not deleted");
     })
-    .catch(err => {
-      this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(err.response.data));
-      assert.equal(err.response.data.error, `Oject with id=${id} was not found.`)
+    .catch(error => {
+      this.attach("Status code: " + error.status);
+      this.attach("Response:\n" + JSON.stringify(error.response.data));
+      assert.equal(error.response.data.error, `Oject with id=${id} was not found.`)
     });
 });
