@@ -27,23 +27,6 @@ BROWSER=${BROWSER,,}
 cp python/file.xml /tmp/
 
 
-echo "#################"
-echo "# Node.js tests #"
-echo "#################"
-echo "node.js: " $(nodejs --version)
-echo "npm: " $(npm --version)
-cd nodejs
-
-echo ==================
-echo Node.js - Cucumber
-echo ==================
-cd cucumber
-npm install > /dev/null
-npx cucumber-js features/catalog.feature
-cd ..
-exit
-
-
 echo "################"
 echo "# Python tests #"
 echo "################"
