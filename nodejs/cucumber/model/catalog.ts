@@ -45,7 +45,7 @@ class Catalog {
 
   async post(payload: object, world: any) {
     world.attach(`POST ${url}`, "text/plain");
-    world.attach(JSON.stringify(payload), "application/json");
+    world.attach("Payload:\n" + JSON.stringify(payload));  //, "application/json");
     return await axios.post(url, payload);
   }
 
