@@ -5,7 +5,7 @@
     "target": "es2024",
     "strict": true,
     "esModuleInterop": true,
-    "strictNullChecks": false,
+    "strictNullChecks": false
   },
   "include": ["steps/**/*.ts"]
 }

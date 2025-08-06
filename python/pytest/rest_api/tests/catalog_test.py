@@ -35,6 +35,7 @@ def step_impl(context, report):
     report.attach(f"Query: <code>POST</code>", escape_html=False)
     report.attach("Payload:", body=payload, mime=report.Mime.JSON)
     result = catalog.post(payload)
+    report.attach(f"Status code: <code>{result.status_code}</code>", escape_html=False)
     report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 200
     context['id'] = result.json()["id"]
@@ -48,6 +49,7 @@ def step_impl(context, report):
     payload = context['payload']
     report.attach(f"Query: <code>GET /{id}</code>", escape_html=False)
     result = catalog.get(id)
+    report.attach(f"Status code: <code>{result.status_code}</code>", escape_html=False)
     report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 200
     obj = result.json()
@@ -67,6 +69,7 @@ def step_impl(context, report):
     id = context['id']
     report.attach(f"Query: <code>GET /{id}</code>", escape_html=False)
     result = catalog.get(id)
+    report.attach(f"Status code: <code>{result.status_code}</code>", escape_html=False)
     report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     context['result'] = result
 
@@ -85,6 +88,7 @@ def step_impl(context, report):
     id = context['id']
     report.attach(f"Query: <code>DELETE /{id}</code>", escape_html=False)
     result = catalog.delete(id)
+    report.attach(f"Status code: <code>{result.status_code}</code>", escape_html=False)
     report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 200
     assert result.json()['message'] == f"Object with id = {id} has been deleted."
@@ -96,6 +100,7 @@ def step_impl(context, report):
     id = context['id']
     report.attach(f"Query: <code>GET /{id}</code>", escape_html=False)
     result = catalog.get(id)
+    report.attach(f"Status code: <code>{result.status_code}</code>", escape_html=False)
     report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 404
     assert result.json()['error'] == f"Oject with id={id} was not found."
