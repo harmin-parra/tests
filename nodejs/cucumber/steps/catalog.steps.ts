@@ -2,40 +2,27 @@ import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber';
 import assert from 'assert';
 import lodash from 'lodash';
 import { Catalog, CatalogItem } from '../model/catalog';
+import { context } from '../model/context';
 
 
 setDefaultTimeout(50 * 1000);
 
-// Global variables shared between scenarios
-let id: string;
-let catalog: Catalog = new Catalog();
-let item: CatalogItem;
-let payload = {
-  "name": "Lenovo notebook",
-  "data": {
-    "year": 2019,
-    "price": 1849.99,
-    "CPU model": "Intel Core i9",
-    "Hard disk size": "1 TB"
-  }
-};
-let response: any = null;
 
 Given("I have a catalog", function() {
-  assert(catalog != null);
+  assert(context.catalog != null);
 });
 
 
 Given('An object exists in the catalog', function() {
-  assert(id != null);
+  assert(context.id != null);
 });
 
 
 When('I query an existing object', async function() {
-  await catalog.get(id, this)
-    .then(res => {
-      assert.equal(res.status, 200);
-      response = res;
+  await context.catalog.get(context.id, this)
+    .then(response => {
+      assert.equal(response.status, 200);
+      context.response = response;
     })
     .catch(error => {
       assert.fail("The object doesn't exist");
@@ -44,24 +31,24 @@ When('I query an existing object', async function() {
 
 
 Then('I get the object information', function() {
-  this.attach("Status code: " + response.status);
-  this.attach("Response:\n" + JSON.stringify(response.data, null, 2));
-  assert.equal(typeof response.data['id'], 'string');
-  assert.equal(typeof response.data['name'], 'string');
-  assert.equal(typeof response.data['data'], 'object');
+  this.attach("Status code: " + context.response.status);
+  this.attach("Response:\n" + JSON.stringify(context.response.data, null, 2));
+  assert.equal(typeof context.response.data['id'], 'string');
+  assert.equal(typeof context.response.data['name'], 'string');
+  assert.equal(typeof context.response.data['data'], 'object');
 });
 
 
 When('I add an object', async function() {
-  await catalog.post(payload, this)
-    .then(res => {
-      this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
-      assert.equal(res.status, 200);
-      id = res.data.id;
-      item = new CatalogItem(res.data);
-      assert.equal(payload.name, item.name, "name");
-      assert(lodash.isEqual(payload.data, item.data));
+  await context.catalog.post(context.payload, this)
+    .then(response => {
+      this.attach("Status code: " + response.status);
+      this.attach("Response:\n" + JSON.stringify(response.data, null, 2));
+      assert.equal(response.status, 200);
+      context.id = response.data.id;
+      context.item = new CatalogItem(response.data);
+      assert.equal(context.payload.name, context.item.name);
+      assert(lodash.isEqual(context.payload.data, context.item.data));
     })
     .catch(error => {
       this.attach("Status code: " + error.status);
@@ -72,14 +59,14 @@ When('I add an object', async function() {
 
 
 Then('The object is added', async function() {
-  await catalog.get(id, this)
-    .then(res => {
-      this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
-      assert.equal(res.status, 200, "status != 200");
-      assert.equal(res.data.id, item.id, "id");
-      assert.equal(res.data.name, item.name, "name");
-      assert(lodash.isEqual(res.data.data, item.data));
+  await context.catalog.get(context.id, this)
+    .then(response => {
+      this.attach("Status code: " + response.status);
+      this.attach("Response:\n" + JSON.stringify(response.data, null, 2));
+      assert.equal(response.status, 200, "status != 200");
+      assert.equal(response.data.id, context.item.id);
+      assert.equal(response.data.name, context.item.name);
+      assert(lodash.isEqual(response.data.data, context.item.data));
     })
     .catch(error => {
       this.attach("Status code: " + error.status);
@@ -90,12 +77,12 @@ Then('The object is added', async function() {
 
 
 When('I delete an object', async function() {
-  await catalog.delete(id, this)
-    .then(res => {
-      this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
-      assert.equal(res.status, 200);
-      assert.equal(res.data.message, `Object with id = ${id} has been deleted.`);
+  await context.catalog.delete(context.id, this)
+    .then(response => {
+      this.attach("Status code: " + response.status);
+      this.attach("Response:\n" + JSON.stringify(response.data, null, 2));
+      assert.equal(response.status, 200);
+      assert.equal(response.data.message, `Object with id = ${context.id} has been deleted.`);
     })
     .catch(error => {
       this.attach("Status code: " + error.status);
@@ -106,15 +93,15 @@ When('I delete an object', async function() {
 
 
 Then('The object is deleted', async function() {
-  await catalog.get(id, this)
-    .then(res => {
-      this.attach("Status code: " + res.status);
-      this.attach("Response:\n" + JSON.stringify(res.data, null, 2));
+  await context.catalog.get(context.id, this)
+    .then(response => {
+      this.attach("Status code: " + response.status);
+      this.attach("Response:\n" + JSON.stringify(response.data, null, 2));
       assert.fail("The object was not deleted");
     })
     .catch(error => {
       this.attach("Status code: " + error.status);
       this.attach("Response:\n" + JSON.stringify(error.response.data, null, 2));
-      assert.equal(error.response.data.error, `Oject with id=${id} was not found.`)
+      assert.equal(error.response.data.error, `Oject with id=${context.id} was not found.`)
     });
 });
