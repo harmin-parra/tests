@@ -11,5 +11,12 @@ export function getBrowserName(): string {
 
 
 export function getHeadlessOption(): boolean {
-  return process.argv.includes("--headless");
+  const arg = process.argv.find(a => a.startsWith("--headless="));
+  if (!arg)
+    return true;
+  let value = arg.split("=")[1].toLowerCase();
+  if (value === "false")
+    return false;
+  else
+    return true;
 }
