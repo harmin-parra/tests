@@ -3,9 +3,9 @@ import os
 import pages
 
 
-@allure.link("https://www.selenium.dev/selenium/web/web-form.html", name="Target webform")
-@allure.issue("JIRA-123")
-@allure.testcase("TEST-456")
+@allure.link("https://www.selenium.dev/selenium/web/web-form.html", name="Target page")
+@allure.issue("JIRA-123", name="JIRA-123")
+@allure.testcase("TEST-456", name="TEST-456")
 @allure.parent_suite("Web interface (Selenium)")
 @allure.suite("Web Form")
 @allure.epic("Web interface (Selenium)")

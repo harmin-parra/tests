@@ -12,9 +12,9 @@ Documentation     Testing the following field types of a webform :
 ...    - Input range
 ...    - Button
 ...
-...    Issue: https://example.com/JIRA-123
+...    Issue: https://issues.example.com/JIRA-123
 ...
-...    Test: https://example.com/TEST-456
+...    Test: https://tms.example.com/TEST-456
 ...
 ...    Link: https://www.selenium.dev/selenium/web/web-form.html
 
@@ -38,9 +38,9 @@ test_web_form_en
     ...    - Input range
     ...    - Button
     ...
-    ...    Issue: https://example.com/JIRA-123
+    ...    Issue: https://issues.example.com/JIRA-123
     ...
-    ...    Test: https://example.com/TEST-456
+    ...    Test: https://tms.example.com/TEST-456
     ...
     ...    Link: https://www.selenium.dev/selenium/web/web-form.html
     #[TAGS]

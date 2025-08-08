@@ -28,6 +28,16 @@ export default defineConfig({
         detail: false,
         resultsDir: "../../reporting/allure-results/nodejs",
         suiteTitle: true,
+        links: {
+          issue: {
+            nameTemplate: "JIRA-%s",
+            urlTemplate: "https://issues.example.com/%s",
+          },
+          tms: {
+            nameTemplate: "TEST-%s",
+            urlTemplate: "https://tms.example.com/%s",
+          }
+        }
       },
     ]
   ],

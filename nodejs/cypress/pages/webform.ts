@@ -1,16 +1,16 @@
-class WebFormPage {
+export class WebFormPage {
 
   private elements = {
-    input : () => cy.get('#my-text-id'),
-    password : () => cy.get(':nth-child(1) > :nth-child(2) > .form-control'),
-    textarea : () => cy.get(':nth-child(1) > :nth-child(3) > .form-control'),
-    number : () => cy.get('.form-select'),
-    city : () => cy.get(':nth-child(2) > :nth-child(2) > .form-control'),
-    file : () => cy.get(':nth-child(2) > :nth-child(3) > .form-control'),
-    color : () => cy.get(':nth-child(3) > :nth-child(1) > .form-control'),
-    date : () => cy.get(':nth-child(3) > :nth-child(2) > .form-control'),
-    range : () => cy.get('.form-range'),
-    button : () => cy.get('.btn')
+    input : () => cy.get("#my-text-id"),
+    password : () => cy.get("[name='my-password']"),
+    textarea : () => cy.get("[name='my-textarea']"),
+    number : () => cy.get(".form-select"),
+    city : () => cy.get("input[name='my-datalist']"),
+    file : () => cy.get("[name='my-file']"),
+    color : () => cy.get("[name='my-colors']"),
+    date : () => cy.get("[name='my-date']"),
+    range : () => cy.get("[name='my-range']"),
+    button : () => cy.get(".btn")
   }
 
   public set_input(value) {
@@ -57,5 +57,3 @@ class WebFormPage {
   }
 
 }
-
-export default WebFormPage;

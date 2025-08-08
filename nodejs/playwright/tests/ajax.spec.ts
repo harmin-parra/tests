@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import * as allure from "allure-js-commons";
-import AjaxPage from '../pages/ajax.page';
+import { AjaxPage } from '../pages/ajax.page';
 import assert from 'assert';
 
 
@@ -15,9 +15,9 @@ test.use({video: 'on'});
 
   test('Ajax verification with intercept', async ({ page }) => {
     await allure.description("Testing an AJAX page\n\nTest using ``page.waitForResponse()``");
-    await allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target AJAX page");
-    await allure.issue("JIRA-123", "https://example.com/JIRA-123");
-    await allure.tms("TEST-456", "https://example.com/TEST-456");
+    await allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target page");
+    await allure.issue("123");
+    await allure.tms("456");
     await allure.epic("Web interface (Playwright)");
     //await allure.feature("Ajax");
     await allure.story("Ajax");
@@ -44,9 +44,9 @@ test.use({video: 'on'});
 
   test('Ajax verification with expect', async ({ page }) => {
     await allure.description("Testing an AJAX page\n\nTest using ``expect()``");
-    await allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target AJAX page");
-    await allure.issue("JIRA-123", "https://example.com/JIRA-123");
-    await allure.tms("TEST-456", "https://example.com/TEST-456");
+    await allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target page");
+    await allure.issue("123");
+    await allure.tms("456");
     await allure.epic("Web interface (Playwright)");
     //await allure.feature("Ajax");
     await allure.story("Ajax");

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import * as allure from "allure-js-commons";
-import WebformPage from '../pages/webform.page';
+import { WebformPage } from '../pages/webform.page';
 
 
 test.use({video: 'on'});
@@ -13,7 +13,7 @@ test.use({video: 'on'});
   });
 
 
-  test('Fill in form', async ({ page }) => {
+  test('Web form', async ({ page }) => {
     await allure.description(
       "Testing the following field types of a webform :\n\n" +
       "- Input text\n" +
@@ -27,9 +27,9 @@ test.use({video: 'on'});
       "- Input range\n" +
       "- Button\n"
     );
-    await allure.link("https://www.selenium.dev/selenium/web/web-form.html", "Target webform");
-    await allure.issue("JIRA-123", "https://example.com/JIRA-123");
-    await allure.tms("TEST-456", "https://example.com/TEST-456");
+    await allure.link("https://www.selenium.dev/selenium/web/web-form.html", "Target page");
+    await allure.issue("123");
+    await allure.tms("https://example.com/TEST-456", "TEST-456");
     await allure.epic("Web interface (Playwright)");
     //await allure.feature("Web Form");
     await allure.story("Web Form");

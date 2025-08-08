@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress'
-// import { allureCypress } from 'allure-cypress/reporter';
+import { allureCypress } from 'allure-cypress/reporter';
 
 export default defineConfig({
   reporter: 'cypress-mochawesome-reporter',
@@ -17,15 +17,19 @@ export default defineConfig({
     specPattern: 'tests/**/*.cy.{js,jsx,ts,tsx}',
     fixturesFolder: 'fixtures',
     setupNodeEvents(on, config) {
-      /*
       allureCypress(on, {
         resultsDir: "../../reporting/allure-results/nodejs",
-        links: [
-          { type: "issue", urlTemplate: "https://example.com/JIRA-%s" },
-          { type: "tms", urlTemplate: "https://example.com/TEST-%s" },
-        ],
+        links: {
+          issue: {
+            nameTemplate: "JIRA-%s",
+            urlTemplate: "https://issues.example.com/%s",
+          },
+          tms: {
+            nameTemplate: "TEST-%s",
+            urlTemplate: "https://tms.example.com/%s",
+          }
+        }
       });
-      */
       require('cypress-mochawesome-reporter/plugin')(on);
     },
   },

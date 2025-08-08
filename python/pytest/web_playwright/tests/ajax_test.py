@@ -3,9 +3,9 @@ from web_playwright import pages
 
 
 def test_ajax_verification(browser: Browser, report):
-    """ 
+    """
     Testing an AJAX page.
-    
+
     Test using page.expect_response()
     """
     context = browser.new_context(record_video_dir="videos/")
@@ -21,7 +21,7 @@ def test_ajax_verification(browser: Browser, report):
         ajax.click()
         report.screenshot("Trigger event", page)
 
-    ajax.verify_text()
+    ajax.verify_title()
     report.screenshot("Verify event result", page)
     context.close()
     page.close()
@@ -29,11 +29,16 @@ def test_ajax_verification(browser: Browser, report):
 
 
 # def test_ajax_verification_with_expect(page: Page, report):
-#     """ Ajax test using sleep() and default timeout """
+#     """
+#     Testing an AJAX page.
+#
+#     Test using expect().to_be_visible(timeout)
+#     """
 #     page.goto("http://qa-demo.gitlab.io/reports/web/ajax.html")
 #     report.screenshot("Initial page", page)
 #     ajax = pages.AjaxPage(page)
 #     ajax.click()
 #     report.screenshot("Trigger event", page)
-#     ajax.verify_text()
+#     expect(ajax.title).to_be_visible(timeout=15_000)
+#     ajax.verify_title()
 #     report.screenshot("Verify event result", page)

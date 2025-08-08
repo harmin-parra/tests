@@ -1,4 +1,4 @@
-class AjaxPage {
+export class AjaxPage {
 
   private elements = {
     button : () => cy.get("#button"),
@@ -15,5 +15,3 @@ class AjaxPage {
   }
 
 }
-
-export default AjaxPage;

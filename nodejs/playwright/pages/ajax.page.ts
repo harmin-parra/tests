@@ -1,7 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
-
-class AjaxPage {
+export class AjaxPage {
 
   page: Page;
   button: Locator;
@@ -13,16 +12,12 @@ class AjaxPage {
     this.title = page.locator("#title");
   }
 
-
   async click() {
     await this.button.click();
   }
-
   async verify() {
     await expect(this.title).toBeVisible();
     await expect(this.title).toHaveText("AJAX");
   }
 
 }
-
-export default AjaxPage;

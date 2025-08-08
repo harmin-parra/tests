@@ -7,7 +7,19 @@ module.exports = {
       "allure-cucumberjs/reporter"
     ],
     formatOptions: {
-      resultsDir: "../../reporting/allure-results/nodejs"
+      resultsDir: "../../reporting/allure-results/nodejs",
+      links: {
+        issue: {
+          pattern: [/@issue:(.*)/],
+          urlTemplate: "https://issues.example.com/JIRA-%s",
+          nameTemplate: "JIRA-%s",
+        },
+        tms: {
+          pattern: [/@tms:(.*)/],
+          urlTemplate: "https://tms.example.com/TEST-%s",
+          nameTemplate: "TEST-%s",
+        }
+      }
     }
   }
 };

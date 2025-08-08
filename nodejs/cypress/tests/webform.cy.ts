@@ -1,11 +1,10 @@
-import WebFormPage from "../pages/webform";
-//import * as allure from "allure-cypress";
+import { WebFormPage } from "../pages/webform";
+import * as allure from "allure-cypress";
 
 
-describe('Web Form', () => {
+describe('Web interface (Cypress)', () => {
 
-  it('Fill in form', () => {
-    /*
+  it('Web form', () => {
     allure.description(
       "Testing the following field types of a webform :\n\n" +
       "- Input text\n" +
@@ -21,12 +20,12 @@ describe('Web Form', () => {
     );
     allure.epic("Web interface (Cypress)");
     allure.story("Web Form");
-    allure.parentSuite("Web interface (Cypress)");
+    //allure.parentSuite("Web interface (Cypress)");
     allure.suite("Web Form");
-    allure.link("https://www.selenium.dev/selenium/web/web-form.html", "Target webform");
-    allure.issue("https://example.com/JIRA-123", "JIRA-123");
-    allure.tms("https://example.com/TEST-456", "TEST-456");
-    */
+    allure.link("https://www.selenium.dev/selenium/web/web-form.html", "Target page");
+    allure.issue("123");
+    allure.tms("456");
+
     cy.visit('https://www.selenium.dev/selenium/web/web-form.html')
     const page = new WebFormPage();
     cy.screenshot();
@@ -40,6 +39,7 @@ describe('Web Form', () => {
     page.set_date("01/01/2024");
     page.set_range(1);
     cy.screenshot();
+    allure.attachmentPath("File to upload", "../file.xml", { contentType: allure.ContentType.XML });
     page.submit();
     cy.screenshot();
   });

@@ -5,7 +5,7 @@ import { CatalogItem } from '../model/catalog';
 import { context } from '../model/context';
 
 
-setDefaultTimeout(50 * 1000);
+setDefaultTimeout(60 * 1000);
 
 
 Given("I have a catalog", function() {

@@ -19,7 +19,7 @@ interface ICatalogItem {
 }
 
 
-class CatalogItem {
+export class CatalogItem {
 
   id: string;
   name: string;
@@ -36,7 +36,7 @@ class CatalogItem {
 }
 
 
-class Catalog {
+export class Catalog {
 
   async get(id: string, world: any) {
     await world.attach(`GET ${url}/${id}`, "text/plain");
@@ -55,5 +55,3 @@ class Catalog {
   }
 
 }
-
-export { Catalog, CatalogItem };

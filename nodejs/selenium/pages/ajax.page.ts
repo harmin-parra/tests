@@ -1,7 +1,6 @@
 import { By, WebDriver, WebElement, until } from "selenium-webdriver";
 import assert from "assert";
 
-
 export class AjaxPage {
   driver: WebDriver;
   button!: WebElement;
@@ -19,7 +18,7 @@ export class AjaxPage {
     await this.button.click();
   }
 
-  async verify(): Promise<void> {
+  async verify_title(): Promise<void> {
     // Wait up to 15 seconds until element with ID "title" is present
     await this.driver.wait(until.elementLocated(By.id("title")), 15000);
 

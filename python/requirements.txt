@@ -2,7 +2,7 @@ allure-behave==2.14.3
 allure-pytest==2.14.3
 allure-robotframework==2.14.3
 behave==1.2.6
-playwright==1.53.0
+playwright==1.54.0
 pytest
 pytest-bdd
 pytest-html

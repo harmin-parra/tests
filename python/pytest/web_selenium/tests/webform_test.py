@@ -27,7 +27,7 @@ def test_web_form(driver, report):
     webform.set_number(2)
     webform.set_city("Los Angeles")
     xml_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "file.xml"))
-    report.attach("The XML file to upload:", source=xml_file, mime=report.Mime.XML)
+    report.attach("File to upload:", source=xml_file, mime=report.Mime.XML)
     webform.set_file(xml_file)
     webform.set_color("#00ff00")
     webform.set_date("01/01/2024")

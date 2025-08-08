@@ -1,9 +1,9 @@
 *** Settings ***
 Documentation     Testing an Ajax page.
 ...
-...    Issue: https://example.com/JIRA-123
+...    Issue: https://issues.example.com/JIRA-123
 ...
-...    Test: https://example.com/TEST-456
+...    Test: https://tms.example.com/TEST-456
 ...
 ...    Link: http://qa-demo.gitlab.io/reports/web/ajax.html
 
@@ -15,9 +15,9 @@ Library     AllureLibrary
 test_ajax_verification
     [Documentation]     Testing an Ajax page.
     ...
-    ...    Issue: https://example.com/JIRA-123
+    ...    Issue: https://issues.example.com/JIRA-123
     ...
-    ...    Test: https://example.com/TEST-456
+    ...    Test: https://tms.example.com/TEST-456
     ...
     ...    Link: http://qa-demo.gitlab.io/reports/web/ajax.html
     #[TAGS]

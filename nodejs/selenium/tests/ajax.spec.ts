@@ -24,7 +24,7 @@ describe("Ajax Test", function () {
     await allure.attachment("Initial page", await getScreenshot(driver), ContentType.PNG);
     await page.click();
     await allure.attachment("Trigger event", await getScreenshot(driver), ContentType.PNG);
-    await page.verify();
+    await page.verify_title();
     await allure.attachment("Verify event result", await getScreenshot(driver), ContentType.PNG);
   });
 

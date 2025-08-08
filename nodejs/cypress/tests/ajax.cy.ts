@@ -1,20 +1,19 @@
-import AjaxPage from "../pages/ajax";
-//import * as allure from "allure-cypress";
+import { AjaxPage } from "../pages/ajax";
+import * as allure from "allure-cypress";
 
 
-describe("Ajax page", () => {
+describe("Web interface (Cypress)", () => {
 
   it("Ajax verification with intercept", () =>{
-    /*
     allure.description("Testing an AJAX page\n\nTest using ``intercept()``");
     allure.epic("Web interface (Cypress)");
     allure.story("Ajax");
-    allure.parentSuite("Web interface (Cypress)");
+    //allure.parentSuite("Web interface (Cypress)");
     allure.suite("Ajax");
-    allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target AJAX page");
-    allure.issue("https://example.com/JIRA-123", "JIRA-123");
-    allure.tms("https://example.com/TEST-456", "TEST-456");
-    */
+    allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target page");
+    allure.issue("123");
+    allure.tms("456");
+
     cy.visit("http://qa-demo.gitlab.io/reports/web/ajax.html")
     const page = new AjaxPage();
     cy.screenshot();
@@ -29,16 +28,15 @@ describe("Ajax page", () => {
 
 
   it("Ajax verification with get+should", () =>{
-    /*
     allure.description("Testing an AJAX page\n\nTest using ``get().should('exist')``");
     allure.epic("Web interface (Cypress)");
     allure.story("Ajax");
-    allure.parentSuite("Web interface (Cypress)");
+    //allure.parentSuite("Web interface (Cypress)");
     allure.suite("Ajax");
-    allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target AJAX page");
-    allure.issue("https://example.com/JIRA-123", "JIRA-123");
-    allure.tms("https://example.com/TEST-456", "TEST-456");
-    */
+    allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target page");
+    allure.issue("123");
+    allure.tms("456");
+
     cy.visit("http://qa-demo.gitlab.io/reports/web/ajax.html")
     const page = new AjaxPage();
     cy.screenshot();
