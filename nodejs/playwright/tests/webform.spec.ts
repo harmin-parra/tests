@@ -39,7 +39,7 @@ test.use({video: 'on'});
 
     await page.waitForTimeout(1500);
     await allure.attachment("Empty form", await page.screenshot(), { contentType: "image/png" });
-    var webform = new WebformPage(page);
+    let webform = new WebformPage(page);
     await webform.set_input("login");
     await webform.set_password("password");
     await webform.set_textarea("textarea");

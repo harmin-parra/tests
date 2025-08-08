@@ -7,7 +7,7 @@ pytest
 pytest-bdd
 pytest-html
 pytest-playwright==0.7.0
-pytest-report-extras==1.3.7rc9
+pytest-report-extras
 requests
 robotframework==7.3.1
 robotframework-browser==19.6.1

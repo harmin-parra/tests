@@ -55,7 +55,7 @@ test.use({video: 'on'});
     await allure.label(allure.LabelName.PACKAGE, "web_playwright.ajax.spec.ts");
 
     await allure.attachment("Initial page", await page.screenshot(), { contentType: "image/png" });
-    var ajax = new AjaxPage(page);
+    let ajax = new AjaxPage(page);
     await ajax.click();
     await allure.attachment("Trigger event", await page.screenshot(), { contentType: "image/png" });
     await expect(ajax.title).toBeVisible({ timeout: 15000 });
