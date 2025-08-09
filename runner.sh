@@ -134,7 +134,7 @@ echo Node.js - Selenium
 echo ==================
 cd selenium
 npm install > /dev/null
-npx mocha --specs tests -- --browser=$BROWSER --headless=$HEADLESS
+npx mocha tests -- --browser=$BROWSER --headless=$HEADLESS
 cd ..
 
 echo =================
