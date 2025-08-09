@@ -20,3 +20,13 @@ export function getHeadlessOption(): boolean {
   else
     return true;
 }
+
+
+
+export function getHubOption(): string {
+  const arg = process.argv.find(a => a.startsWith("--hub="));
+  if (!arg)
+    return null;
+  let hub = arg.split("=")[1].toLowerCase();
+  return `http://${hub}:4444/wd/hub`;
+}

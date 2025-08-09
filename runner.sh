@@ -129,6 +129,14 @@ fi
 npx playwright test --project $BROWSER $HEAD_OPT
 cd ..
 
+echo ==================
+echo Node.js - Selenium
+echo ==================
+cd selenium
+npm install > /dev/null
+npx mocha --specs tests -- --browser=$BROWSER --headless=$HEADLESS
+cd ..
+
 echo =================
 echo Node.js - Cypress
 echo =================

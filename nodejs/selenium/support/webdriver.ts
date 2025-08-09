@@ -3,12 +3,13 @@ import { Buffer } from "node:buffer";
 import chrome from "selenium-webdriver/chrome";
 import firefox from "selenium-webdriver/firefox";
 import edge from "selenium-webdriver/edge";
-import { getBrowserName, getHeadlessOption} from "./argv"
+import { getBrowserName, getHeadlessOption, getHubOption } from "./argv"
 
 
 export async function getWebDriver(): Promise<WebDriver> {
   const browser = getBrowserName();
   const headless = getHeadlessOption();
+  const hub = getHubOption();
 
   let builder = new Builder();
   
@@ -40,6 +41,9 @@ export async function getWebDriver(): Promise<WebDriver> {
       options.addArguments("-headless");
     builder = builder.forBrowser("firefox").setFirefoxOptions(options);
   }
+
+  if (!hub)
+    builder = builder.usingServer(hub);
 
   return builder.build();
 }

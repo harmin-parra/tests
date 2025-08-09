@@ -19,7 +19,28 @@ describe("Webform Test", function () {
   });
 
 
-  it("Fill in form", async () => {
+  it("Web form test", async () => {
+    //await allure.description("Testing the following field types of a webform :\n\n- Input text\n- Text area\n- Select\n- Checkbox\n- Radio button\n- File upload\n- Color picker\n- Date picker\n- Input range\n- Button");
+    await allure.description(`
+      Testing the following field types of a webform :
+
+      - Input text
+      - Text area
+      - Select
+      - Checkbox
+      - Radio button
+      - File upload
+      - Color picker
+      - Date picker
+      - Input range
+      - Button
+    `);
+    await allure.parentSuite("Web interface (Selenium)");
+    await allure.suite("Web Form");
+    await allure.tms("https://tms.example.com/TEST-456", "TEST-456");
+    await allure.issue("https://issues.example.com/JIRA-777", "JIRA-123");
+    await allure.link("https://www.selenium.dev/selenium/web/web-form.html", "Target page");
+
     let page: WebFormPage = await new WebFormPage(driver).init();
     await allure.attachment("Empty form", await getScreenshot(driver), ContentType.PNG);
     await page.setInput("Hello");

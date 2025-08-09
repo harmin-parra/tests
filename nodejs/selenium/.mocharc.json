@@ -5,7 +5,7 @@
   "recursive": true,
   "reporter": "allure-mocha",
   "reporterOptions": [
-    "resultsDir=allure-results",
+    "resultsDir=../../reporting/allure-results/nodejs",
     "extraReporters=spec"
   ]
 }
