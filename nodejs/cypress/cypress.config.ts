@@ -3,7 +3,7 @@ import { allureCypress } from 'allure-cypress/reporter';
 
 export default defineConfig({
   reporter: 'cypress-mochawesome-reporter',
-  video: true,
+  video: false,
   videoCompression: false,
   reporterOptions: {
     charts: true,
