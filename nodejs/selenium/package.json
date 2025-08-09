@@ -3,7 +3,7 @@
     "@types/mocha": "^10.0.10",
     "@types/selenium-webdriver": "^4.1.28",
     "allure-mocha": "^3.3.3",
-    "chromedriver": "^129.0.4",
+    "chromedriver": "^139.0.0",
     "mocha": "^11.7.1",
     "selenium-webdriver": "^4.34.0",
     "ts-node": "^10.9.2",
