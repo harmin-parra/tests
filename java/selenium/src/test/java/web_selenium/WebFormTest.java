@@ -12,8 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.qameta.allure.Allure;
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -50,11 +49,15 @@ public class WebFormTest extends BaseTest {
      */
     @Test
     @Description
+    @Link(name = "Target page", url = "https://www.selenium.dev/selenium/web/web-form.html")
+    @Issue("JIRA-123")
+    @TmsLink("TEST-456")
+    @Epic("Web interface (Selenium)")
+    @Story("Web Form")
     public void web_form() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
-        Allure.epic("Web interface (Selenium)");
-        Allure.story("Web Form");
-        Allure.suite("Web interface (Selenium)");
+        Allure.label("parentSuite", "Web interface (Selenium)");
+        Allure.suite("Web Form");
         //Allure.feature("Web Form");
         this.driver.get("https://www.selenium.dev/selenium/web/web-form.html");
         byte[] buffer = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);

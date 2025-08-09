@@ -9,8 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.qameta.allure.Allure;
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -34,11 +33,15 @@ public class AjaxTest extends BaseTest {
      */
     @Test
     @Description
+    @Link(name = "Target page", url = "https://qa-demo.gitlab.io/reports/web/ajax.html")
+    @Issue("JIRA-123")
+    @TmsLink("TEST-456")
+    @Epic("Web interface (Selenium)")
+    @Story("Ajax")
     public void ajax_verification() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
-        Allure.epic("Web interface (Selenium)");
-        Allure.story("Ajax");
-        Allure.suite("Web interface (Selenium)");
+        Allure.label("parentSuite", "Web interface (Selenium)");
+        Allure.suite("Ajax");
         //Allure.feature("Ajax");
         this.driver.get("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);

@@ -1,15 +1,14 @@
 package web_playwright;
 
-import io.qameta.allure.Allure;
-import io.qameta.allure.*;
 import web_playwright.WebFormPage;
-
 import com.microsoft.playwright.Page;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
+import io.qameta.allure.*;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
@@ -34,15 +33,15 @@ public class WebFormTest extends BaseTest {
      */
     @Test
     @Description(useJavaDoc = true)
-    @Link(name = "Target webform", url = "https://www.selenium.dev/selenium/web/web-form.html")
+    @Link(name = "Target page", url = "https://www.selenium.dev/selenium/web/web-form.html")
     @Issue("JIRA-123")
     @TmsLink("TEST-456")
     @Epic("Web interface (Playwright)")
+    @Story("Web Form")
     public void web_form() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
-        //Allure.epic("Web interface (Playwright)");
-        Allure.story("Web Form");
-        Allure.suite("Web interface (Playwright)");
+        Allure.label("parentSuite", "Web interface (Playwright)");
+        Allure.suite("Web Form");
         //Allure.feature("Web Form");
         this.createContextAndPageForVideo();
         this.page.navigate("https://www.selenium.dev/selenium/web/web-form.html");

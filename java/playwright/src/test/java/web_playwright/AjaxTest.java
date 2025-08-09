@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import io.qameta.allure.Allure;
 import io.qameta.allure.*;
 
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,8 @@ public class AjaxTest extends BaseTest {
     @Story("Ajax")
     public void ajax_verification_with_intercept() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
-        Allure.suite("Web interface (Playwright)");
+        Allure.label("parentSuite", "Web interface (Playwright)");
+        Allure.suite("Ajax");
         this.createContextAndPageForVideo();
         this.page.navigate("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
@@ -40,7 +40,7 @@ public class AjaxTest extends BaseTest {
             final byte[]buffer2 = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
             Allure.addAttachment("Trigger event", new ByteArrayInputStream(buffer2));
         });
-        ajax.verify();
+        ajax.verify_title();
         buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Verify event result", new ByteArrayInputStream(buffer));
         this.closeContext();
@@ -63,7 +63,8 @@ public class AjaxTest extends BaseTest {
     @Story("Ajax")
     public void ajax_verification_with_assert() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
-        Allure.suite("Web interface (Playwright)");
+        Allure.label("parentSuite", "Web interface (Playwright)");
+        Allure.suite("Ajax");
         this.createContextAndPageForVideo();
         this.page.navigate("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
