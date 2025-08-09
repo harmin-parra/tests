@@ -1,12 +1,4 @@
 *** Settings ***
-Documentation     Testing a REST API.
-...
-...    Issue: https://issues.example.com/JIRA-123
-...
-...    Test: https://tms.example.com/TEST-456
-...
-...    Link: https://restful-api.dev/
-
 Library         REST    https://api.restful-api.dev/objects
 
 *** Variables ***
@@ -14,6 +6,14 @@ ${payload}     {"name": "Lenovo notebook", "data": {"year": 2019, "price": 1849.
 
 
 *** Test Cases ***
+    [Documentation]     Testing a REST API.
+    ...
+    ...    Issue: https://issues.example.com/JIRA-123
+    ...
+    ...    Test: https://tms.example.com/TEST-456
+    ...
+    ...    Link: https://restful-api.dev/
+
 Add an object
     #[TAGS]
     #...  allure.label.epic:REST_api (Robot Framework)

@@ -7,8 +7,8 @@ Documentation     Testing an Ajax page.
 ...
 ...    Link: http://qa-demo.gitlab.io/reports/web/ajax.html
 
-Resource         ../keywords/ajax.robot
-Library          AllureLibrary
+Resource          ../keywords/ajax.robot
+Library     AllureLibrary
 
 
 *** Test Cases ***
