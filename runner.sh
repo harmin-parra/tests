@@ -154,8 +154,8 @@ fi
 npx cypress run --browser $BROWSER_OPT $HEAD_OPT
 
 # cypress-mochawesome-reporter bug regarding videos folder
-mkdir ../../reporting/report-cypress/videos/tests
-mv ../../reporting/report-cypress/videos/*.mp4 ../../reporting/report-cypress/videos/tests/
+# mkdir ../../reporting/report-cypress/videos/tests
+# mv ../../reporting/report-cypress/videos/*.mp4 ../../reporting/report-cypress/videos/tests/
 cd ..
 cd ..
 
@@ -170,9 +170,9 @@ echo =================
 echo Java - Playwright
 echo =================
 cd playwright
-#./mvnw -q dependency:resolve
+# ./mvnw -q dependency:resolve
 # ./mvnw -Dtest="web_playwright/WebFormTest" test
-#./mvnw -Dtest="web_playwright/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+# ./mvnw -Dtest="web_playwright/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
 ./gradlew test --tests="web_playwright.*" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
@@ -180,8 +180,8 @@ echo ===============
 echo Java - Selenium
 echo ===============
 cd selenium
-#./mvnw -q dependency:resolve
-#./mvnw -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test  # -Dhub=$HUB test
+# ./mvnw -q dependency:resolve
+# ./mvnw -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test  # -Dhub=$HUB test
 ./gradlew test -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
@@ -189,8 +189,8 @@ echo ===================
 echo Java - Rest-Assured
 echo ===================
 cd rest_assured
-#./mvnw -q dependency:resolve
-#./mvnw -Dtest="rest_api/CatalogTest" test
+# ./mvnw -q dependency:resolve
+# ./mvnw -Dtest="rest_api/CatalogTest" test
 ./gradlew test --tests="rest_api.CatalogTest"
 cd ..
 
@@ -198,8 +198,8 @@ echo ===============
 echo Java - Serenity
 echo ===============
 cd serenity
-#./mvnw -q dependency:resolve
-#./mvnw clean verify -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
+# ./mvnw -q dependency:resolve
+# ./mvnw clean verify -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
 ./gradlew test -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
 mv target/site/serenity ../../reporting/report-serenity
 cd ..
@@ -210,7 +210,7 @@ echo =============
 cd karate
 ./mvnw -q dependency:resolve
 ./mvnw -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
-#./mvnw -Dtest="web/TestRunner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test #runner
+# ./mvnw -Dtest="web/TestRunner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test #runner
 
 # Purge weird Allure Karate entries
 mv target/karate-reports ../../reporting/report-karate
