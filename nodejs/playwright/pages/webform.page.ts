@@ -16,15 +16,15 @@ export class WebformPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.input = page.getByLabel("Text input");
-    this.password = page.getByLabel("Password");
-    this.textarea = page.getByLabel("Textarea");
+    this.input = page.locator("[id='my-text-id']");
+    this.password = page.locator("[name='my-password']");
+    this.textarea = page.locator("[name='my-textarea']");
     this.number = page.locator("//select[@name='my-select']");
     this.city = page.locator("//input[@name='my-datalist']");
-    this.color = page.getByLabel("Color picker");
-    this.date = page.getByLabel("Date picker");
-    this.range = page.getByLabel("Example range");
-    this.file = page.getByLabel("File input");
+    this.color = page.locator("[name='my-colors']");
+    this.date = page.locator("[name='my-date']");
+    this.range = page.locator("[name='my-range']");
+    this.file = page.locator("[name='my-file']");
     this.button = page.getByRole("button", { name: "Submit" });
   }
 
