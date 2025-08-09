@@ -20,7 +20,6 @@ describe("Webform Test", function () {
 
 
   it("Web form test", async () => {
-    //await allure.description("Testing the following field types of a webform :\n\n- Input text\n- Text area\n- Select\n- Checkbox\n- Radio button\n- File upload\n- Color picker\n- Date picker\n- Input range\n- Button");
     await allure.description(`
       Testing the following field types of a webform :
 
