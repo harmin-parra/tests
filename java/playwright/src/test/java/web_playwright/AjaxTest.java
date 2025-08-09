@@ -30,7 +30,6 @@ public class AjaxTest extends BaseTest {
     public void ajax_verification_with_intercept() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
         Allure.suite("Web interface (Playwright)");
-        Allure.label("subSuite" "Ajax");
         this.createContextAndPageForVideo();
         this.page.navigate("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
@@ -65,7 +64,6 @@ public class AjaxTest extends BaseTest {
     public void ajax_verification_with_assert() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
         Allure.suite("Web interface (Playwright)");
-        Allure.label("subSuite" "Ajax");
         this.createContextAndPageForVideo();
         this.page.navigate("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
