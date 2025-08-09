@@ -18,4 +18,6 @@
 python/**/videos/
 
 reporting/*
+
 **/allure-results
+**/cypress/cypress/
