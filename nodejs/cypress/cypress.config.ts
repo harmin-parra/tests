@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress'
-//import { allureCypress } from 'allure-cypress/reporter';
+import { allureCypress } from 'allure-cypress/reporter';
 
 export default defineConfig({
   reporter: 'cypress-mochawesome-reporter',
