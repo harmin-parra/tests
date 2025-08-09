@@ -19,7 +19,7 @@ describe("Webform Test", function () {
   });
 
 
-  it("Web form test", async () => {
+  it("Web form", async () => {
     await allure.description(`
       Testing the following field types of a webform :
 
