@@ -1,5 +1,5 @@
 *** Settings ***
-[Documentation]     Testing a REST API.
+Documentation     Testing a REST API.
 ...
 ...    Issue: https://issues.example.com/JIRA-123
 ...
