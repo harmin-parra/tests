@@ -1,4 +1,4 @@
-@allure.link.REST_API_specification:https://restful-api.dev/
+@allure.link.REST_API_specification:https://restful-api.dev/https://restful-api.dev/
 @allure.issue.JIRA-123:https://issues.example.com/JIRA-123
 @allure.tms.TEST-456:https://tms.example.com/TEST-456
 @allure.label.parentSuite:REST_api_Cucumber
