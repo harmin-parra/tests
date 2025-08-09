@@ -1,9 +1,9 @@
 import { defineConfig } from 'cypress'
-import { allureCypress } from 'allure-cypress/reporter';
+//import { allureCypress } from 'allure-cypress/reporter';
 
 export default defineConfig({
   reporter: 'cypress-mochawesome-reporter',
-  video: false,
+  video: true,
   reporterOptions: {
     charts: true,
     reportPageTitle: 'Cypress Report',
@@ -17,6 +17,7 @@ export default defineConfig({
     specPattern: 'tests/**/*.cy.{js,jsx,ts,tsx}',
     fixturesFolder: 'fixtures',
     setupNodeEvents(on, config) {
+      /*
       allureCypress(on, {
         resultsDir: "../../reporting/allure-results/nodejs",
         links: {
@@ -30,6 +31,7 @@ export default defineConfig({
           }
         }
       });
+      */
       require('cypress-mochawesome-reporter/plugin')(on);
     },
   },

@@ -152,6 +152,10 @@ if [ $BROWSER = "msedge" ]; then
   BROWSER_OPT="edge"
 fi
 npx cypress run --browser $BROWSER_OPT $HEAD_OPT
+
+# cypress-mochawesome-reporter bug regarding videos folder
+mkdir ../../reporting/report-cypress/videos/tests
+mv ../../reporting/report-cypress/videos/*.mp4 ../../reporting/report-cypress/videos/tests/
 cd ..
 cd ..
 
