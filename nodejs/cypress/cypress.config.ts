@@ -17,7 +17,6 @@ export default defineConfig({
     specPattern: 'tests/**/*.cy.{js,jsx,ts,tsx}',
     fixturesFolder: 'fixtures',
     setupNodeEvents(on, config) {
-      /*
       allureCypress(on, {
         resultsDir: "../../reporting/allure-results/nodejs",
         links: {
@@ -31,7 +30,6 @@ export default defineConfig({
           }
         }
       });
-      */
       require('cypress-mochawesome-reporter/plugin')(on);
     },
   },
