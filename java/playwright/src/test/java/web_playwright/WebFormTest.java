@@ -43,6 +43,7 @@ public class WebFormTest extends BaseTest {
         //Allure.epic("Web interface (Playwright)");
         Allure.story("Web Form");
         Allure.suite("Web interface (Playwright)");
+        Allure.label("subSuite" "Web Form");
         //Allure.feature("Web Form");
         this.createContextAndPageForVideo();
         this.page.navigate("https://www.selenium.dev/selenium/web/web-form.html");

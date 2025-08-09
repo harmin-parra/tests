@@ -37,9 +37,9 @@ public class AjaxTest extends BaseTest {
     public void ajax_verification() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
         Allure.epic("Web interface (Selenium)");
-        Allure.story("Ajax page");
+        Allure.story("Ajax");
         Allure.suite("Web interface (Selenium)");
-        //Allure.feature("Ajax page");
+        //Allure.feature("Ajax");
         this.driver.get("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
         Allure.addAttachment("Open page", new ByteArrayInputStream(buffer));
@@ -47,10 +47,10 @@ public class AjaxTest extends BaseTest {
         page.click();
         buffer = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
         Allure.addAttachment("Trigger event", new ByteArrayInputStream(buffer));
-        page.wait_ajax();
+        page.wait_event();
         buffer = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
         Allure.addAttachment("Verify event result", new ByteArrayInputStream(buffer));
-        page.verify();
+        page.verify_title();
     }
 
 }

@@ -22,14 +22,15 @@ public class AjaxTest extends BaseTest {
      */
     @Test
     @Description(useJavaDoc = true)
-    @Link(name = "Target AJAX page", url = "https://qa-demo.gitlab.io/reports/web/ajax.html")
+    @Link(name = "Target page", url = "https://qa-demo.gitlab.io/reports/web/ajax.html")
     @Issue("JIRA-123")
     @TmsLink("TEST-456")
     @Epic("Web interface (Playwright)")
-    @Story("Ajax page")
+    @Story("Ajax")
     public void ajax_verification_with_intercept() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
         Allure.suite("Web interface (Playwright)");
+        Allure.label("subSuite" "Ajax");
         this.createContextAndPageForVideo();
         this.page.navigate("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
@@ -56,14 +57,15 @@ public class AjaxTest extends BaseTest {
      */
     @Test
     @Description(useJavaDoc = true)
-    @Link(name = "Target AJAX page", url = "https://qa-demo.gitlab.io/reports/web/ajax.html")
+    @Link(name = "Target page", url = "https://qa-demo.gitlab.io/reports/web/ajax.html")
     @Issue("JIRA-123")
     @TmsLink("TEST-456")
     @Epic("Web interface (Playwright)")
-    @Story("Ajax page")
+    @Story("Ajax")
     public void ajax_verification_with_assert() {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
         Allure.suite("Web interface (Playwright)");
+        Allure.label("subSuite" "Ajax");
         this.createContextAndPageForVideo();
         this.page.navigate("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
@@ -72,8 +74,8 @@ public class AjaxTest extends BaseTest {
         ajax.click();
         buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Trigger event", new ByteArrayInputStream(buffer));
-        ajax.wait_ajax();
-        ajax.verify();
+        ajax.wait_event();
+        ajax.verify_title();
         buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Verify event result", new ByteArrayInputStream(buffer));
         this.closeContext();

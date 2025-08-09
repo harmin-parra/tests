@@ -22,12 +22,12 @@ public class AjaxPage {
         this.button.click();
     }
 
-    public void wait_ajax() {
+    public void wait_event() {
     	assertThat(this.title).isAttached(new IsAttachedOptions().setTimeout(10000));
     	//assertThat(this.title).isVisible(new IsVisibleOptions().setTimeout(10000));
     }
 
-    public void verify() {
+    public void verify_title() {
         assertThat(this.title).isVisible();
         assertThat(this.title).hasText("AJAX");
     }

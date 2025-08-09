@@ -14,8 +14,8 @@ repositories {
 
 ext {
     allureVersion = '2.29.1'
-    playwrightVersion = '1.53.0'
-    junitVersion = '5.13.2'
+    playwrightVersion = '1.54.0'
+    junitVersion = '5.13.4'
 }
 
 dependencies {

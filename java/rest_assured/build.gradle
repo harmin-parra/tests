@@ -13,9 +13,9 @@ repositories {
 }
 
 ext {
-    allureVersion = '2.29.0'
-    restAssuredVersion = '5.5.0'
-    junitVersion = '5.13.2'
+    allureVersion = '2.29.1'
+    restAssuredVersion = '5.5.5'
+    junitVersion = '5.13.4'
 }
 
 dependencies {

@@ -27,13 +27,13 @@ public class AjaxPage {
         this.button.click();
     }
 
-    public void wait_ajax() {
+    public void wait_event() {
         Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(d -> driver.findElement(By.id("title")).isDisplayed());
     	this.title = this.driver.findElement(By.id("title"));
     }
 
-    public void verify() {
+    public void verify_title() {
     	this.title = this.driver.findElement(By.id("title"));
     	assertTrue(this.title.isDisplayed());
         assertEquals(this.title.getText(), "AJAX");
