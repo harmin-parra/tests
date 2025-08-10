@@ -29,7 +29,7 @@ dependencies {
             "org.apache.commons:commons-lang3:3.18.0",
             "commons-io:commons-io:2.19.0"
 
-    //testImplementation platform("org.junit:junit-bom:$junitVersion")
+    //testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}",
