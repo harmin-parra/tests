@@ -12,7 +12,7 @@ import pages
 @allure.epic("Web interface (Playwright)")
 #@allure.story("Ajax")
 @allure.feature("Ajax")
-def test_ajax_verification(browser: Browser):
+def test_ajax_verification_with_intercept(browser: Browser):
     """ 
     Testing an AJAX page.
     
@@ -85,10 +85,17 @@ def test_ajax_verification_with_expect(browser: Browser):
         attachment_type=allure.attachment_type.PNG
     )
 
-    expect(ajax.title).to_be_visible(timeout=15_000)
+    ajax.wait_event()
     ajax.verify_title()
     allure.attach(
         page.screenshot(full_page=True),
         name="Verify event result",
         attachment_type=allure.attachment_type.PNG
+    )
+    context.close()
+    page.close()
+    allure.attach.file(
+        source=page.video.path(),
+        name="Recorded video",
+        attachment_type=allure.attachment_type.WEBM
     )

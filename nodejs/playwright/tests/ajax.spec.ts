@@ -37,13 +37,13 @@ test.use({video: 'on'});
     const response = await responsePromise;
     assert.equal(response.status(), 200);
     await allure.attachment("Trigger event", await page.screenshot(), { contentType: "image/png" });
-    await ajax.verify();
+    await ajax.verify_title();
     await allure.attachment("Verify event result", await page.screenshot(), { contentType: "image/png" });
   });
 
 
   test('Ajax verification with expect', async ({ page }) => {
-    await allure.description("Testing an AJAX page\n\nTest using ``expect()``");
+    await allure.description("Testing an AJAX page\n\nTest using ``expect().toBeVisible()``");
     await allure.link("http://qa-demo.gitlab.io/reports/web/ajax.html", "Target page");
     await allure.issue("123");
     await allure.tms("456");
@@ -58,8 +58,8 @@ test.use({video: 'on'});
     let ajax = new AjaxPage(page);
     await ajax.click();
     await allure.attachment("Trigger event", await page.screenshot(), { contentType: "image/png" });
-    await expect(ajax.title).toBeVisible({ timeout: 15000 });
-    await ajax.verify();
+    await ajax.wait_event();
+    await ajax.verify_title();
     await allure.attachment("Verify event result", await page.screenshot(), { contentType: "image/png" });
   });
 

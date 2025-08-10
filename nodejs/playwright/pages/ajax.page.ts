@@ -15,8 +15,12 @@ export class AjaxPage {
   async click() {
     await this.button.click();
   }
-  async verify() {
-    await expect(this.title).toBeVisible();
+
+  async wait_event() {
+    await expect(this.title).toBeVisible({ timeout: 15000 });
+  }
+
+  async verify_title() {
     await expect(this.title).toHaveText("AJAX");
   }
 
