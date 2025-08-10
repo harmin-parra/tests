@@ -2,9 +2,6 @@ plugins {
     id 'java'
 }
 
-group = 'com.gitlab.harmin.demo'
-version = '0.0.1'
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -39,4 +36,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    systemProperties System.getProperties()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = "full"  // shows stack traces
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }
 }

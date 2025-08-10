@@ -210,7 +210,7 @@ echo =============
 cd karate
 # ./mvnw -q dependency:resolve
 # ./mvnw -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
-./mvnw -Dtest="karate/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test > /dev/null
+./mvnw -Dtest="karate/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test > dev/null
 # ./gradlew test --tests="karate.TestRunner.runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 
 # Purge weird Allure Karate entries

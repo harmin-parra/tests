@@ -13,5 +13,6 @@ def test_ajax_verification(driver, report):
     ajax = pages.AjaxPage(driver)
     ajax.click()
     report.screenshot("Trigger event", driver)
+    ajax.wait_event()
     ajax.verify_title()
     report.screenshot("Verify event result", driver)

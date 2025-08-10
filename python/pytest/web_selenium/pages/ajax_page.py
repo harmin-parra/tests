@@ -13,8 +13,10 @@ class AjaxPage:
     def click(self):
         self.button.click()
 
-    def verify_title(self):
+    def wait_event(self):
         wait = WebDriverWait(self.driver, 15)
         wait.until(EC.presence_of_element_located((By.ID, "title")))
+
+    def verify_title(self):
         title = self.driver.find_element(By.ID, "title")
         assert title.text == "AJAX"
