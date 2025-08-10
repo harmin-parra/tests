@@ -22,7 +22,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright/python
+      image: qa-runner-debian:beta
+      #image: mcr.microsoft.com/playwright/python
     steps:
       - name: Checkout
         uses: actions/checkout@v4
