@@ -22,7 +22,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: qa-runner-debian:beta
+      image: harmin/qa-runner-debian:beta
       #image: mcr.microsoft.com/playwright:v1.53.0-noble
     steps:
       - name: Checkout
