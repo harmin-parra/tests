@@ -38,6 +38,10 @@ jobs:
           . ~/venv/bin/activate
       - name: Test execution
         run: |
+          export PATH=$PATH:$HOME/.local/bin
+          mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          python3 -m venv ~/venv
+          . ~/venv/bin/activate
           ./docker.sh --browser "${{ inputs.browser }}" --test python/playwright
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
         env:
