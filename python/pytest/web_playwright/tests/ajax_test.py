@@ -39,6 +39,6 @@ def test_ajax_verification(browser: Browser, report):
 #     ajax = pages.AjaxPage(page)
 #     ajax.click()
 #     report.screenshot("Trigger event", page)
-#     expect(ajax.title).to_be_visible(timeout=15_000)
+#     ajax.wait_event()
 #     ajax.verify_title()
 #     report.screenshot("Verify event result", page)
