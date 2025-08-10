@@ -30,12 +30,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Environment setup
-        run: |
-          export PATH=$PATH:$HOME/.local/bin
-          mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
-          python3 -m venv ~/venv
-          . ~/venv/bin/activate
       - name: Test execution
         run: |
           export PATH=$PATH:$HOME/.local/bin
