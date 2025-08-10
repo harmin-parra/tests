@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 public class TestRunner {
 
     @Karate.Test
-    public Karate allTests() {
+    public Karate runner() {
         return Karate
                 .run("classpath:rest_api", "classpath:web")
                 .hook(new AllureKarate())
@@ -21,7 +21,7 @@ public class TestRunner {
     }
 
     @Test
-    public void folderTest() {
+    public void webTest() {
         // Results results = Runner.path("classpath:" + getClass().getPackageName().replace('.', '/'))
         Results results = Runner.path("classpath:web/form_page")
                 .outputCucumberJson(true)
