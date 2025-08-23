@@ -1,101 +1,133 @@
 pipeline {
-
-  agent any
-
-  environment {
-    ALLURE = '2.34.1'
-    TOKEN = 'glpat-64VubsDGWUwgPgYkgEjs'
+  agent none
+  options {
+    timestamps()
   }
 
   parameters {
-    choice(
-      name: 'Browser',
-      choices: ['Firefox', 'Chrome', 'Chromium', 'Edge'],
-      description: 'The browser to test'
-    )
+    choice(name: 'BROWSER', choices: ['firefox', 'chrome', 'chromium', 'msedge'], description: 'The browser to run the tests.')
+    choice(name: 'DOCKER', choices: ['harmin/qa-runner-debian', 'harmin/qa-runner-ubuntu'], description: 'The docker image to run the tests.')
+  }
+
+  environment {
+    ALLURE = '2.34.1'
+    EXECUTOR_NAME = 'Jenkins'
+    EXECUTOR_TYPE = 'jenkins'
   }
 
   stages {
-
     stage('Checkout') {
+      agent any
       steps {
-        checkout scm
+        checkout scmGit(
+          userRemoteConfigs: [[
+            url: 'https://github.com/harmin-parra/tests.git'
+            // If needed, add credentialsId here
+          ]],
+          branches: [[name: '*/main']]
+        )
       }
     }
 
     stage('Test') {
       agent {
-        docker { 
-          image 'harmin/qa-runner-debian'
-          
+        docker {
+          image "${params.DOCKER}"
+          reuseNode true
         }
       }
       steps {
         sh '''
-          export PATH=$PATH:/tmp/venv/bin
-          python3 -m venv /tmp/venv
-          . /tmp/venv/bin/activate
-          cd python
-          export PYTHONPATH=$(pwd)
-          pip install -r requirements.txt
-          which behave
-          find / -name behave
+          set -eux
+          export PATH="$PATH:$HOME/.local/bin"
+          python3 -m venv "$HOME/venv"
+          . "$HOME/venv/bin/activate"
+
+          ./runner.sh --browser "${BROWSER}"
+
+          mkdir -p reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          echo "$BUILD_URL" > reporting/allure-results/java/job.url
+          echo "$BUILD_URL" > reporting/allure-results/nodejs/job.url
+          echo "$BUILD_URL" > reporting/allure-results/python/job.url
         '''
-        stash includes: 'reporting/**', name: 'artifact_test'
       }
       post {
         always {
-          archiveArtifacts artifacts: 'reporting/**'
-        }
-        failure {
-          echo 'Tests failed'
+          archiveArtifacts artifacts: 'reporting/**', fingerprint: true, allowEmptyArchive: true
+          stash name: 'reporting', includes: 'reporting/**'
         }
       }
     }
 
-    stage('Report') {
+    stage('Allure Report') {
       agent {
-        docker { image 'openjdk:8-jre' }
+        docker {
+          image 'openjdk:8-jre'
+          reuseNode true
+        }
       }
       steps {
-        unstash 'artifact_test'
+        unstash 'reporting'
         sh '''
-          curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
-          unzip /tmp/allure.zip -d /tmp/
-          mv /tmp/allure-${ALLURE} /tmp/allure
-          #./allure.sh --browser $Browser
+          set -eux
+          apt-get update && apt-get install -y unzip curl || true
+
+          curl -L "https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip" -o /tmp/allure.zip
+          unzip -q /tmp/allure.zip -d /usr/local/
+          ln -sf "/usr/local/allure-${ALLURE}/bin/allure" /usr/local/bin/allure
+
+          ./allure.sh --browser "${BROWSER}"
         '''
-        stash includes: 'reporting/**', name: 'artifact_report'
       }
       post {
         always {
-          archiveArtifacts artifacts: 'reporting/**'
+          archiveArtifacts artifacts: 'reporting/**', fingerprint: true, allowEmptyArchive: true
         }
       }
     }
 
-    stage('Commit') {
+    stage('Commit Reports to GitLab') {
+      agent {
+        docker {
+          image 'bitnami/git:latest'
+          reuseNode true
+        }
+      }
       environment {
-        GIT_USER_NAME = 'Gitlab CI'
-        GIT_USER_EMAIL = 'gitlab@mg.gitlab.com'
+        GIT_AUTHOR_NAME  = 'Jenkins'
+        GIT_AUTHOR_EMAIL = 'jenkins@jenkins.io'
       }
       steps {
-        unstash 'artifact_report'
-        sh ''' 
-          rm -rf reports
-          git config --global user.name "$GIT_USER_NAME"
-          git config --global user.email "$GIT_USER_EMAIL"
-          git clone https://gitlab-ci-token:${TOKEN}@gitlab.com/harmin-qa/reports.git
-          mv reporting/allure-reports/* reporting/
-          rm -rf reporting/allure-reports reporting/allure-results
-          cp -r reporting/* reports/
-          cd reports
-          git add *
-          git commit -m "Gitlab-CI commit"
-          git push
-        '''
+        unstash 'reporting'
+        withCredentials([string(credentialsId: 'gitlab-reports-token', variable: 'TOKEN')]) {
+          sh '''
+            exit
+            set -eux
+            git config --global user.name "$GIT_AUTHOR_NAME"
+            git config --global user.email "$GIT_AUTHOR_EMAIL"
+
+            rm -rf reports
+            git clone "https://gitlab-ci-token:${TOKEN}@gitlab.com/harmin-demo/reports.git"
+            cd reports
+
+            git rm -r report-* || true
+
+            mv ../reporting/report-* ./ || true
+            mkdir -p ./allure-reports
+            mv ../reporting/allure-reports/report-* ./ || true
+
+            git add -A
+            git commit -m "Jenkins commit" || echo "Nothing to commit"
+            git push origin HEAD
+          '''
+        }
       }
     }
   }
 
+  post {
+    always {
+      cleanWs(deleteDirs: true, notFailBuild: true)
+    }
+  }
 }

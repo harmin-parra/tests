@@ -22,7 +22,7 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   outputDir: '../../reporting/playwright-results',
   reporter: [
-    ['html', { open: 'never', outputFolder: '../../reporting/report-playwright' } ],
+    ['html', { open: 'never', outputFolder: '../../reporting/report-playwright' }],
     ['line'],
     ['allure-playwright', {
         detail: false,
