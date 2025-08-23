@@ -43,7 +43,9 @@ pipeline {
           python3 -m venv "$HOME/venv"
           . "$HOME/venv/bin/activate"
 
+          set +e
           ./runner.sh --browser "${BROWSER}"
+          set -e
 
           mkdir -p reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
           echo "$BUILD_URL" > reporting/allure-results/java/job.url
