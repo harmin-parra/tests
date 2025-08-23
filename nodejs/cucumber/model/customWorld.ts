@@ -11,7 +11,7 @@ class CustomWorld extends World {
 
   constructor(options: any) {
     super(options)
-    this.id = null;
+    this.id = "";
     this.catalog = new Catalog();
     this.payload = null;
     this.response = null;

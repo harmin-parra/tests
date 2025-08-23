@@ -2,9 +2,9 @@
 @allure.label.suite:Catalog
 @allure.label.epic:REST_api_(Cucumber)
 @allure.label.package:rest_api.catalog
-@allure.links.issue:123
-@allure.links.tms:456
-@allure.links.link:https://restful-api.dev/
+# @allure.links.issue:123
+# @allure.links.tms:456
+# @allure.links.link:https://restful-api.dev/
 Feature: Catalog
 
   Scenario: Add object
