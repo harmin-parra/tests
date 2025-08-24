@@ -112,7 +112,8 @@ echo Node.js - Cucumber
 echo ==================
 cd cucumber
 npm install > /dev/null
-npx cucumber-js features/catalog.feature
+npx playwright install > /dev/null
+npx cucumber-js
 cd ..
 
 echo ====================
