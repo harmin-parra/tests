@@ -39,18 +39,34 @@ pipeline {
       steps {
         sh '''
           set -eux
+
+          # Make sure we use a workspace-local Gradle cache
+          export GRADLE_USER_HOME=$PWD/.gradle
+          # Remove any stale lock files to avoid Gradle lck issues
+          find $GRADLE_USER_HOME -name "*.lck" -delete
+
+          # Add local python bin to PATH and activate venv
           export PATH="$PATH:$HOME/.local/bin"
           python3 -m venv "$HOME/venv"
           . "$HOME/venv/bin/activate"
 
+          # Run tests
           set +e
           ./runner.sh --browser "${BROWSER}"
+          RUNNER_EXIT=$?
           set -e
 
+          # Prepare reporting folders
           mkdir -p reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
           echo "$BUILD_URL" > reporting/allure-results/java/job.url
           echo "$BUILD_URL" > reporting/allure-results/nodejs/job.url
           echo "$BUILD_URL" > reporting/allure-results/python/job.url
+
+          # Fail the stage if runner.sh failed
+          if [ $RUNNER_EXIT -ne 0 ]; then
+            echo "Runner script failed with exit code $RUNNER_EXIT"
+            exit $RUNNER_EXIT
+          fi
         '''
       }
       post {
@@ -61,7 +77,7 @@ pipeline {
       }
     }
 
-    stage('Allure Report') {
+    stage('Report') {
       agent {
         docker {
           image 'openjdk:8-jre'
@@ -88,7 +104,7 @@ pipeline {
       }
     }
 
-    stage('Commit Reports to GitLab') {
+    stage('Commit') {
       agent {
         docker {
           image 'bitnami/git:latest'
