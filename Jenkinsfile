@@ -1,8 +1,5 @@
 pipeline {
     agent none
-    options {
-        timestamps()
-    }
 
     parameters {
         choice(name: 'BROWSER', choices: ['firefox', 'chrome', 'chromium', 'msedge'], description: 'The browser to run the tests.')
