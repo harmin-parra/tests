@@ -8,7 +8,7 @@
 **/.gradle/
 **/target/
 **/build/
-**/test/videos
+**/videos
 
 **/node_modules
 **/package-lock.json
