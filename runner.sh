@@ -187,6 +187,13 @@ cd selenium
 cd ..
 
 echo ===================
+echo Java - Cucumber-JVM
+echo ===================
+cd cucumber
+./gradlew test --tests="RunnerTest" -Dcucumber.features=classpath:features/webform.feature" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
+cd ..
+
+echo ===================
 echo Java - Rest-Assured
 echo ===================
 cd rest_assured
