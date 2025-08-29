@@ -46,6 +46,7 @@ public class WebFormTest extends BaseTest {
         //this.createContextAndPageForVideo();
         this.page.navigate("https://www.selenium.dev/selenium/web/web-form.html");
         WebFormPage webform = new WebFormPage(page);
+        try{ Thread.sleep(1500); } catch(Exception) { }
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Empty form", new ByteArrayInputStream(buffer));
         webform.set_input("login");
@@ -57,12 +58,14 @@ public class WebFormTest extends BaseTest {
         webform.set_color("#00ff00");
         webform.set_date("01/01/2024");
         webform.set_range(1);
+        try{ Thread.sleep(1500); } catch(Exception) { }
         buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Complete form", new ByteArrayInputStream(buffer));
         try {
             Allure.addAttachment("File to upload", "application/xml", FileUtils.readFileToString(new File("src/test/resources/file.xml"), "UTF-8"), ".xml");
         } catch (IOException e) { }
         webform.submit();
+        try{ Thread.sleep(1500); } catch(Exception) { }
         buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Submit form", new ByteArrayInputStream(buffer));
         this.closeContext();
