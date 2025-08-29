@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    //allureVersion = '2.29.1'
+    playwrightVersion = '1.54.0'
+    junitVersion = '5.13.4'
+    cucumberVersion = '7.27.2'
+}
+
+dependencies {
+
+    implementation "com.microsoft.playwright:playwright:${playwrightVersion}"
+    implementation "org.apache.commons:commons-lang3:3.18.0"
+
+    testImplementation 'io.cucumber:cucumber-java:${cucumberVersion}'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}'
+    testImplementation 'org.junit.jupiter:junit-jupiter:${junitVersion}'
+    testImplementation 'org.junit.platform:junit-platform-suite:1.13.4'
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties System.getProperties()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = "full"  // shows stack traces
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }
+}

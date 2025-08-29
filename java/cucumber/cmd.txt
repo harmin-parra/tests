@@ -1,0 +1,1 @@
+./gradlew test --tests "*RunnerTest" -Dcucumber.features=classpath:features/calculator.feature
