@@ -43,7 +43,7 @@ public class WebFormTest extends BaseTest {
         Allure.label("parentSuite", "Web interface (Playwright)");
         Allure.suite("Web Form");
         //Allure.feature("Web Form");
-        this.createContextAndPageForVideo();
+        //this.createContextAndPageForVideo();
         this.page.navigate("https://www.selenium.dev/selenium/web/web-form.html");
         WebFormPage webform = new WebFormPage(page);
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
