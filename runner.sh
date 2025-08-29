@@ -190,7 +190,7 @@ echo ===================
 echo Java - Cucumber-JVM
 echo ===================
 cd cucumber
-./gradlew test --tests="RunnerTest" -Dcucumber.features=classpath:features/webform.feature" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
+./gradlew test --tests="RunnerTest" -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
 echo ===================
