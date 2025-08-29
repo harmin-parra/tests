@@ -40,7 +40,7 @@ abstract class BaseTest {
             browser = playwright.chromium().launch(options.setChannel(browserName));
     }
 
-    @BeforeEach
+    //@BeforeEach
     public void createContextAndPage() {
         this.context = browser.newContext();
         this.page = context.newPage();
@@ -56,7 +56,8 @@ abstract class BaseTest {
         this.context.close();
     }
 
-    protected void createContextAndPageForVideo() {
+    @BeforeEach
+    public void createContextAndPageForVideo() {
         this.context = browser.newContext(new Browser.NewContextOptions().setRecordVideoDir(Paths.get("src/test/videos/")));
         this.page = context.newPage();
     }
