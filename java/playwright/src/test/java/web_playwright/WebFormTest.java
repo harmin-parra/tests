@@ -2,6 +2,7 @@ package web_playwright;
 
 import web_playwright.WebFormPage;
 import com.microsoft.playwright.Page;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -65,6 +66,7 @@ public class WebFormTest extends BaseTest {
             Allure.addAttachment("File to upload", "application/xml", FileUtils.readFileToString(new File("src/test/resources/file.xml"), "UTF-8"), ".xml");
         } catch (IOException e) { }
         webform.submit();
+        assertThat(this.page.locator("//h1")).hasText("Form submitted");
         try{ Thread.sleep(1500); } catch(Exception e) { }
         buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Submit form", new ByteArrayInputStream(buffer));

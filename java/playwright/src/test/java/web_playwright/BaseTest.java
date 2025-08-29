@@ -58,7 +58,7 @@ abstract class BaseTest {
 
     @BeforeEach
     public void createContextAndPageForVideo() {
-        this.context = browser.newContext(new Browser.NewContextOptions().setRecordVideoDir(Paths.get("src/test/videos/")));
+        this.context = browser.newContext(new Browser.NewContextOptions().setRecordVideoDir(Paths.get("target/videos/")));
         this.page = context.newPage();
     }
 }
