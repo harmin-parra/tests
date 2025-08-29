@@ -9,8 +9,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import java.nio.file.Paths;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import org.apache.commons.io.FileUtils;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
@@ -52,6 +55,9 @@ public class WebFormSteps extends BaseSteps {
         try{ Thread.sleep(1500); } catch(Exception e) { }
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Complete form", new ByteArrayInputStream(buffer));
+        try {
+            Allure.addAttachment("File to upload", "application/xml", FileUtils.readFileToString(new File("src/test/resources/file.xml"), "UTF-8"), ".xml");
+        } catch (IOException e) { }
     }
 
     @When("I click Submit")
