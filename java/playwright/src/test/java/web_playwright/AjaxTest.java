@@ -65,7 +65,7 @@ public class AjaxTest extends BaseTest {
         Allure.getLifecycle().updateTestCase(tr -> tr.getLabels().removeIf(label -> "suite".equals(label.getName())));
         Allure.label("parentSuite", "Web interface (Playwright)");
         Allure.suite("Ajax");
-        this.createContextAndPageForVideo();
+        //this.createContextAndPageForVideo();
         this.page.navigate("http://qa-demo.gitlab.io/reports/web/ajax.html");
         byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
         Allure.addAttachment("Open page", new ByteArrayInputStream(buffer));
