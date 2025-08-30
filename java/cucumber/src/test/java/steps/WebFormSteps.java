@@ -63,13 +63,13 @@ public class WebFormSteps extends BaseSteps {
     @When("I click Submit")
     public void click_submit() {
         this.webform.submit();
-        try{ Thread.sleep(1500); } catch(Exception e) { }
-        byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
-        Allure.addAttachment("Submit form", new ByteArrayInputStream(buffer));
     }
 
     @Then("The form is submitted")
     public void form_submitted() {
+        try{ Thread.sleep(1500); } catch(Exception e) { }
+        byte[] buffer = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
+        Allure.addAttachment("Submit form", new ByteArrayInputStream(buffer));
         assertThat(this.page.locator("//h1")).hasText("Form submitted");
     }
 
