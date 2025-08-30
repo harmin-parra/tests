@@ -53,3 +53,14 @@ test {
         showStackTraces = true
     }
 }
+
+tasks.register("playwrightInstall", JavaExec) {
+    group = "verification"
+    description = "Download Playwright browser binaries"
+
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass.set("com.microsoft.playwright.CLI")
+    args = ["install"]  // or "install", "firefox", etc.
+}
+
+test.dependsOn(tasks.named("playwrightInstall"))
