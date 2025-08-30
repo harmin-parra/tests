@@ -10,8 +10,7 @@
         <cucumber.version>7.27.2</cucumber.version>
         <playwright.version>1.54.0</playwright.version>
         <junit.version>5.13.4</junit.version>
-        <junit.platform.suite.version>1.13.4</junit.platform.suite.version>
-
+ 
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
@@ -100,7 +99,7 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>5.17.0</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
