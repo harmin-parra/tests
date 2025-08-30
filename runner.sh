@@ -172,8 +172,8 @@ echo Java - Playwright
 echo =================
 cd playwright
 # ./mvnw -q dependency:resolve
-# ./mvnw -Dtest="web_playwright/WebFormTest" test
-# ./mvnw -Dtest="web_playwright/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
+# ./mvnw test -Dtest="web_playwright/WebFormTest"
+# ./mvnw test -Dtest="web_playwright/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 ./gradlew test --tests="web_playwright.*" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
@@ -182,7 +182,7 @@ echo Java - Selenium
 echo ===============
 cd selenium
 # ./mvnw -q dependency:resolve
-# ./mvnw -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test  # -Dhub=$HUB test
+# ./mvnw test -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS  # -Dhub=$HUB test
 ./gradlew test -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
@@ -190,6 +190,8 @@ echo ===================
 echo Java - Cucumber-JVM
 echo ===================
 cd cucumber
+# ./mvnw -q dependency:resolve
+# ./mvnw test -Dtest=RunnerTest -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 ./gradlew test --tests="RunnerTest" -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
@@ -198,7 +200,7 @@ echo Java - Rest-Assured
 echo ===================
 cd rest_assured
 # ./mvnw -q dependency:resolve
-# ./mvnw -Dtest="rest_api/CatalogTest" test
+# ./mvnw test -Dtest="rest_api/CatalogTest"
 ./gradlew test --tests="rest_api.CatalogTest"
 cd ..
 
@@ -217,8 +219,8 @@ echo Java - Karate
 echo =============
 cd karate
 # ./mvnw -q dependency:resolve
-# ./mvnw -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test
-./mvnw -Dtest="karate/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS test > /dev/null
+# ./mvnw test -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
+./mvnw test -Dtest="karate/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS > /dev/null
 # ./gradlew test --tests="karate.TestRunner.runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 
 # Purge weird Allure Karate entries
