@@ -24,7 +24,7 @@ Add an object
     #...  allure.label.package:rest_api.petstore
     #...  allure.label.testMethod:add_object
     #Set Headers    {"Content-Type": "application/json"}
-    &{res}=    POST    https://api.restful-api.dev/objects    ${payload}
+    &{res} =    POST    https://api.restful-api.dev/objects    ${payload}
     Log    Payload: ${payload}
     #Set Test Message    Payload: ${payload}
     Output     request body
