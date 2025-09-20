@@ -23,7 +23,7 @@ dependencies {
 
     implementation "com.microsoft.playwright:playwright:${playwrightVersion}"
     implementation "org.apache.commons:commons-lang3:3.18.0"
-    implementation "commons-io:commons-io:2.19.0"
+    implementation "commons-io:commons-io:2.20.0"
 
     testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
