@@ -59,7 +59,7 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     container:
-      image: openjdk:8-jre
+      image: mcr.microsoft.com/openjdk/jdk:8-ubuntu  #openjdk:8-jre
     steps:
       - name: Checkout
         uses: actions/checkout@v4
