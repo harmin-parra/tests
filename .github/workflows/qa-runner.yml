@@ -59,7 +59,7 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/openjdk/jdk:8-ubuntu  #openjdk:8-jre
+      image: eclipse-temurin:17  #openjdk:8-jre
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -70,6 +70,7 @@ jobs:
           path: reporting
       - name: Report
         run: |
+          cat /etc/os-release
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
           unzip /tmp/allure.zip -d /usr/local/
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
