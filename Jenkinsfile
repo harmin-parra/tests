@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        ALLURE = '2.34.1'
+        ALLURE = '2.35.1'
         EXECUTOR_NAME = 'Jenkins'
         EXECUTOR_TYPE = 'jenkins'
     }
@@ -73,7 +73,7 @@ pipeline {
         stage('Report') {
             agent {
                 docker {
-                    image 'openjdk:8-jre'
+                    image 'eclipse-temurin:8-jre'
                     reuseNode true
                 }
             }
@@ -81,7 +81,7 @@ pipeline {
                 unstash 'reporting'
                 sh '''
                     set -eux
-                    apt-get update && apt-get install -y unzip curl || true
+                    apt-get update && apt-get install -y unzip curl
                     curl -L "https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip" -o /tmp/allure.zip
                     unzip -q /tmp/allure.zip -d /usr/local/
                     ln -sf "/usr/local/allure-${ALLURE}/bin/allure" /usr/local/bin/allure
