@@ -2,7 +2,7 @@ trigger: none
 
 variables:
 - name: allure
-  value: 2.34.1
+  value: 2.35.1
   readonly: true
 - name: EXECUTOR_NAME
   value: "Azure DevOps"
@@ -71,13 +71,14 @@ stages:
     condition: eq(${{ parameters.publish }}, 'true')
     pool:
       vmImage: 'ubuntu-latest'
-    container: openjdk:8-jre
+    container: eclipse-temurin:8-jre
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
         artifactName: 'reporting'
         downloadPath: './'
     - script: |
+        apt-get update && apt-get install -y unzip
         curl https://github.com/allure-framework/allure2/releases/download/${{ variables.allure }}/allure-${{ variables.allure }}.zip -L -o /tmp/allure.zip
         unzip /tmp/allure.zip -d /tmp/
         mv /tmp/allure-${{ variables.allure }} /tmp/allure
