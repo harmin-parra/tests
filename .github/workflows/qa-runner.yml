@@ -1,7 +1,7 @@
 name: qa-runner
 
 env:
-  ALLURE: 2.34.1
+  ALLURE: 2.35.1
   EXECUTOR_NAME: "Github Actions"
   EXECUTOR_TYPE: "github"
 
