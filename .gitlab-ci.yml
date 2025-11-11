@@ -9,7 +9,7 @@ stages:
 
 variables:
   MAVEN: "3.9.8"
-  ALLURE: "2.30.0"
+  ALLURE: "2.35.1"
   EXECUTOR_NAME: "Gitlab CI"
   EXECUTOR_TYPE: "gitlab"
   PLAYWRIGHT_JAVA: "1.44.0"
@@ -203,8 +203,9 @@ tests robotframework playwright:
 
 allure report:
   stage: report
-  image: openjdk:8-jre
+  image: eclipse-temurin:8-jre
   script:
+    - apt-get update && apt-get install -y unzip
     - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
     - unzip /tmp/allure.zip -d /usr/local/
     - ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
