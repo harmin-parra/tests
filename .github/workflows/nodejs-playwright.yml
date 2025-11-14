@@ -22,8 +22,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: harmin/qa-runner-debian:beta
-      #image: mcr.microsoft.com/playwright:v1.56-1-noble
+      #image: harmin/qa-runner-debian:beta
+      image: mcr.microsoft.com/playwright:v1.56-1-noble
     steps:
       - name: Checkout
         uses: actions/checkout@v4
