@@ -16,10 +16,12 @@ pipelines:
             - harmin/qa-runner-ubuntu:latest
             - harmin/qa-runner-debian:beta
             - harmin/qa-runner-ubuntu:beta
+        - name: ALLURE
+          default: 2.35.1
 
       - step:
           name: Test
-          image: $DOCKER
+          image: harmin/qa-runner-debian
           script:
             - export PATH=$PATH:$HOME/.local/bin
             - python3 -m venv ~/venv
@@ -34,7 +36,7 @@ pipelines:
 
       - step:
           name: Report
-          image: openjdk:8-jre
+          image: eclipse-temurin:8-jre
           script:
             - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
             - unzip /tmp/allure.zip -d /usr/local/
