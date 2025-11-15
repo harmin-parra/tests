@@ -120,7 +120,7 @@ echo ====================
 echo Node.js - Playwright
 echo ====================
 cd playwright
-npm install > /dev/null
+npm install #> /dev/null
 npx playwright install #> /dev/null
 HEAD_OPT=""
 if [ $HEADLESS = "false" ]; then
