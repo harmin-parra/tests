@@ -12,26 +12,20 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    allureVersion = '2.29.1'
-    playwrightVersion = '1.54.0'
-    junitVersion = '5.13.4'
-    cucumberVersion = '7.27.2'
-}
-
 dependencies {
+    // Implementation / development dependencies
+    implementation libs.playwright
+    implementation libs.commonsLang3
+    implementation libs.commonsIo
 
-    implementation "com.microsoft.playwright:playwright:${playwrightVersion}"
-    implementation "org.apache.commons:commons-lang3:3.18.0"
-    implementation "commons-io:commons-io:2.20.0"
-
-    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
-    testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
-    testImplementation platform("io.qameta.allure:allure-bom:${allureVersion}")
-    testImplementation "io.qameta.allure:allure-cucumber7-jvm"
-    testImplementation "io.qameta.allure:allure-junit-platform"
-    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
-    testImplementation "org.junit.platform:junit-platform-suite:1.13.4"
+    // Test dependencies
+    testImplementation libs.cucumberJava
+    testImplementation libs.cucumberJUnitPlatform
+    testImplementation platform(libs.allureBom)
+    testImplementation libs.allureCucumber
+    testImplementation libs.allureJunitPlatform
+    testImplementation libs.junitJupiter
+    testImplementation libs.junitPlatformSuite
 }
 
 testing {
@@ -45,22 +39,25 @@ testing {
 test {
     useJUnitPlatform()
     systemProperties System.getProperties()
+
     testLogging {
         events "passed", "skipped", "failed"
-        exceptionFormat = "full"  // shows stack traces
+        exceptionFormat = "full"
         showCauses = true
         showExceptions = true
         showStackTraces = true
     }
 }
 
+// Task to install Playwright browsers before tests
 tasks.register("playwrightInstall", JavaExec) {
     group = "verification"
     description = "Download Playwright browser binaries"
 
     classpath = sourceSets.test.runtimeClasspath
     mainClass.set("com.microsoft.playwright.CLI")
-    args = ["install"]  // or "install", "firefox", etc.
+    args = ["install"]  // can also specify specific browsers like "firefox"
 }
 
+// Make sure Playwright browsers are installed before running tests
 test.dependsOn(tasks.named("playwrightInstall"))

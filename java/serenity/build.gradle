@@ -15,36 +15,33 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    serenityVersion = '4.2.34'
-    junitVersion = '5.13.4'
-}
-
 dependencies {
-    implementation "net.serenity-bdd:serenity-core:${serenityVersion}",
-            "net.serenity-bdd:serenity-junit5:${serenityVersion}",
-            "net.serenity-bdd:serenity-screenplay:${serenityVersion}",
-            "net.serenity-bdd:serenity-screenplay-webdriver:${serenityVersion}",
-            "net.serenity-bdd:serenity-ensure:${serenityVersion}",
-            "net.serenity-bdd:serenity-rest-assured:${serenityVersion}"
+    // Serenity core dependencies
+    implementation libs.serenityCore
+    implementation libs.serenityJUnit5
+    implementation libs.serenityScreenplay
+    implementation libs.serenityScreenplayWebdriver
+    implementation libs.serenityEnsure
+    implementation libs.serenityRestAssured
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}",
-        "ch.qos.logback:logback-classic:1.5.18"
+    // JUnit 5
+    testImplementation libs.junitJupiterApi
+    testRuntimeOnly libs.junitJupiterEngine
+    testRuntimeOnly libs.logbackClassic
 }
 
 test {
     useJUnitPlatform()
-    testLogging.showStandardStreams = true
     systemProperties System.getProperties()
+    testLogging.showStandardStreams = true
+
     testLogging {
         events "passed", "skipped", "failed"
-        exceptionFormat = "full"  // shows stack traces
+        exceptionFormat = 'full'
         showCauses = true
         showExceptions = true
         showStackTraces = true
-    }    
+    }
 }
 
 gradle.startParameter.continueOnFailure = true
@@ -55,6 +52,7 @@ serenity {
 }
 
 test.finalizedBy(aggregate)
+
 
 //tasks.register('aggregateReports', net.serenitybdd.gradle.plugins.SerenityReportsTask) {
 //    dependsOn test

@@ -1,0 +1,24 @@
+[versions]
+playwright = "1.54.0"
+cucumber = "7.27.2"
+junit = "5.13.4"
+allure = "2.29.1"
+commons-lang = "3.18.0"
+commons-io = "2.20.0"
+junitPlatform = "1.13.4"
+
+[libraries]
+playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
+
+cucumberJava = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
+cucumberJUnitPlatform = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
+
+allureBom = { module = "io.qameta.allure:allure-bom", version.ref = "allure" }
+allureCucumber = { module = "io.qameta.allure:allure-cucumber7-jvm", version.ref = "allure" }
+allureJunitPlatform = { module = "io.qameta.allure:allure-junit-platform", version.ref = "allure" }
+
+junitJupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junitPlatformSuite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junitPlatform" }
+
+commonsLang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang" }
+commonsIo = { module = "commons-io:commons-io", version.ref = "commons-io" }

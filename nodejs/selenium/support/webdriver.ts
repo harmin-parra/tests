@@ -20,7 +20,7 @@ export async function getWebDriver(): Promise<WebDriver> {
       options.addArguments("--headless=new");
     builder = builder.forBrowser("chrome").setChromeOptions(options);
   } 
-  else if (browser === "edge") {
+  else if (browser === "msedge") {
     const options = new edge.Options();
     options.addArguments("--disable-gpu", "--window-size=1920,1080");
     if (headless)

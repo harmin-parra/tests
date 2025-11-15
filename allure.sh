@@ -29,13 +29,8 @@ fi
 #
 cat << EOF > reporting/allure-results/java/environment.properties
 Browser = $BROWSER
-OpenJDK = 17
-Selenium = 4.24.0
-Playwright = 1.47.0
-Rest-assured = 5.5.0
-Karate = 1.4.1
+OpenJDK = 25.0.1
 EOF
-#Cucumber-JVM = 7.15.0
 
 if [ -f reporting/allure-results/java/job.url ]; then
   cat << EOF > reporting/allure-results/java/executor.json
@@ -59,9 +54,7 @@ allure generate \
 #
 cat << EOF > reporting/allure-results/nodejs/environment.properties
 Browser = $BROWSER
-Node.js = 20.13.1
-Playwright = 1.47.1
-Cucumber.js = 10.9.0
+Node.js = 24.11.1
 EOF
 
 if [ -f reporting/allure-results/nodejs/job.url ]; then
@@ -86,11 +79,7 @@ allure generate \
 #
 cat << EOF > reporting/allure-results/python/environment.properties
 Browser = $BROWSER
-Python = 3.10.12
-Behave = 1.2.6
-Selenium = 4.24.0
-Playwright = 1.47.0
-RobotFramework = 7.1
+Python = 3.13.5
 EOF
 
 if [ -f reporting/allure-results/python/job.url ]; then

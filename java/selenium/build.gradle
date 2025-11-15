@@ -12,36 +12,31 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    allureVersion = '2.29.1'
-    seleniumVersion = '4.34.0'
-    junitVersion = '5.13.4'
-}
-
 dependencies {
-    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}",
-            "io.qameta.allure:allure-junit5:${allureVersion}",
-            "io.qameta.allure:allure-junit-platform:${allureVersion}",
-            "io.qameta.allure:allure-descriptions-javadoc:${allureVersion}",
-            "org.junit.jupiter:junit-jupiter-api:${junitVersion}",
-            "org.apache.commons:commons-lang3:3.18.0",
-            "commons-io:commons-io:2.20.0"
+    // Development dependencies
+    implementation libs.seleniumJava
+    implementation libs.allureJunit5
+    implementation libs.allureJunitPlatform
+    implementation libs.allureDescriptionsJavadoc
+    implementation libs.commonsLang3
+    implementation libs.commonsIo
+    implementation libs.junitJupiterApi
 
-    //testImplementation platform("org.junit:junit-bom:${junitVersion}")
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-    
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}",
-            "ch.qos.logback:logback-classic:1.5.18"
+    // Test dependencies
+    testRuntimeOnly libs.junitJupiterEngine
+    testRuntimeOnly libs.logbackClassic
 
-    annotationProcessor "io.qameta.allure:allure-descriptions-javadoc:${allureVersion}"
+    // Annotation processor
+    annotationProcessor libs.allureDescriptionsJavadoc
 }
 
 test {
     useJUnitPlatform()
     systemProperties System.getProperties()
+
     testLogging {
         events "passed", "skipped", "failed"
-        exceptionFormat = "full"  // shows stack traces
+        exceptionFormat = 'full'
         showCauses = true
         showExceptions = true
         showStackTraces = true

@@ -12,34 +12,28 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    allureVersion = '2.29.1'
-    playwrightVersion = '1.53.0'
-    seleniumVersion = '4.33.0'
-    karateVersion = '1.5.1'
-    junitVersion = '5.13.2'
-}
-
 dependencies {
-    // Import JUnit BOM (equivalent to Maven dependencyManagement)
-    implementation platform("org.junit:junit-bom:${junitVersion}")
+    // Development dependencies
+    implementation platform(libs.junitBom)
+    implementation libs.seleniumJava
+    implementation libs.playwright
+    implementation libs.karatePlaywright
+    implementation libs.allureJunit5
+    implementation libs.allureJunitPlatform
+    implementation libs.allureKarate
 
-    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
-    implementation "com.microsoft.playwright:playwright:${playwrightVersion}"
-    implementation "io.karatelabs:karate-playwright:${karateVersion}"
-    testImplementation "io.karatelabs:karate-junit5:${karateVersion}"
-    implementation "io.qameta.allure:allure-junit5:${allureVersion}"
-    implementation "io.qameta.allure:allure-junit-platform:${allureVersion}"
-    implementation "io.qameta.allure:allure-karate:${allureVersion}"
+    // Test dependencies
+    testImplementation libs.junitJupiterEngine
+    testImplementation libs.karateJunit5
 }
 
 test {
     useJUnitPlatform()
     systemProperties System.getProperties()
+
     testLogging {
         events "passed", "skipped", "failed"
-        exceptionFormat = "full"  // shows stack traces
+        exceptionFormat = 'full'
         showCauses = true
         showExceptions = true
         showStackTraces = true

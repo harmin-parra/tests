@@ -3,10 +3,7 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as Options_Firefox
 from selenium.webdriver.chrome.options import Options as Options_Chrome
-from selenium.webdriver.chromium.options import ChromiumOptions as Options_Chromium
 from selenium.webdriver.edge.options import Options as Options_Edge
-from selenium.webdriver.chromium.webdriver import ChromiumDriver as WebDriver_Chromium
-from selenium.webdriver.chromium.service import ChromiumService as Service_Chromium
 
 
 def pytest_addoption(parser):
@@ -42,16 +39,12 @@ def driver(optdriver, optheadless, opthub):
         if opthub is None:
             _driver = webdriver.Chrome(options=options)
     elif optdriver == "chromium":
-        options = Options_Chromium()
+        options = Options_Chrome()
         if optheadless:
             options.add_argument("--headless=new")
         if opthub is None:
-            _driver = WebDriver_Chromium(
-                browser_name="Chromium",
-                vendor_prefix="Chromium",
-                options=options,
-                service=Service_Chromium()
-            )
+            options.binary_location = "/usr/bin/chromium"
+            _driver = webdriver.Chrome(options=options)
     elif optdriver == "firefox":
         options = Options_Firefox()
         if optheadless:

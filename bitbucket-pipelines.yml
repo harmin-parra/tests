@@ -34,9 +34,8 @@ pipelines:
 
       - step:
           name: Report
-          image: eclipse-temurin:8-jre
+          image: openjdk:8-jre
           script:
-            - apt-get update && apt-get install -y unzip
             - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
             - unzip /tmp/allure.zip -d /usr/local/
             - ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure

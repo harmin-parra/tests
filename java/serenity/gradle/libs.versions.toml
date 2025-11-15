@@ -1,0 +1,17 @@
+[versions]
+serenity = "4.2.34"
+junit = "5.13.4"
+logback = "1.5.18"
+
+[libraries]
+serenityCore = { module = "net.serenity-bdd:serenity-core", version.ref = "serenity" }
+serenityJUnit5 = { module = "net.serenity-bdd:serenity-junit5", version.ref = "serenity" }
+serenityScreenplay = { module = "net.serenity-bdd:serenity-screenplay", version.ref = "serenity" }
+serenityScreenplayWebdriver = { module = "net.serenity-bdd:serenity-screenplay-webdriver", version.ref = "serenity" }
+serenityEnsure = { module = "net.serenity-bdd:serenity-ensure", version.ref = "serenity" }
+serenityRestAssured = { module = "net.serenity-bdd:serenity-rest-assured", version.ref = "serenity" }
+
+junitJupiterApi = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junitJupiterEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+
+logbackClassic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }

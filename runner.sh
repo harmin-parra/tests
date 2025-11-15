@@ -35,8 +35,8 @@ echo "pip: "  $(pip --version)
 cd python
 # pip install --break-system-packages -r requirements.txt
 pip install -r requirements.txt > /dev/null
-#playwright install #> /dev/null
-#rfbrowser init #> /dev/null
+playwright install > /dev/null
+rfbrowser init > /dev/null
 
 echo =================
 echo Python - Cucumber
@@ -120,8 +120,8 @@ echo ====================
 echo Node.js - Playwright
 echo ====================
 cd playwright
-npm install #> /dev/null
-npx playwright install #> /dev/null
+npm install > /dev/null
+npx playwright install > /dev/null
 HEAD_OPT=""
 if [ $HEADLESS = "false" ]; then
   HEAD_OPT = "--headed"

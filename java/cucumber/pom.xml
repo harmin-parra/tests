@@ -18,6 +18,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+    <repositories>
+        <!-- Adoptium repository for JDK toolchains -->
+        <repository>
+            <id>adoptium-public</id>
+            <url>https://repo.adoptium.net/maven</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -110,6 +118,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
+                <configuration>
+                    <release>17</release>
+                    <compilerId>javac</compilerId>
+                    <toolchain>
+                        <vendor>adoptium</vendor>
+                        <version>17</version>
+                    </toolchain>
+                </configuration>
             </plugin>
 
             <!-- Surefire plugin for JUnit 5 -->
@@ -142,6 +158,35 @@
                 <configuration>
                     <useModulePath>false</useModulePath>
                 </configuration>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-toolchains-plugin</artifactId>
+              <version>3.0.0</version>
+              <executions>
+                <execution>
+                  <phase>validate</phase>
+                  <goals>
+                    <goal>toolchain</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <toolchains>
+                  <jdk>
+                    <version>17</version>
+                    <vendor>adoptium</vendor>
+                  </jdk>
+                </toolchains>
+              </configuration>
+            </plugin>
+
+            <!-- This actually downloads the JDK -->
+            <plugin>
+              <groupId>net.adoptopenjdk</groupId>
+              <artifactId>toolchain-provider</artifactId>
+              <version>1.0.0</version>
             </plugin>
         </plugins>
     </build>
