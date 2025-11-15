@@ -35,8 +35,8 @@ echo "pip: "  $(pip --version)
 cd python
 # pip install --break-system-packages -r requirements.txt
 pip install -r requirements.txt > /dev/null
-playwright install #> /dev/null
-rfbrowser init #> /dev/null
+#playwright install #> /dev/null
+#rfbrowser init #> /dev/null
 
 echo =================
 echo Python - Cucumber
