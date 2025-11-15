@@ -8,27 +8,19 @@ stages:
   - commit
 
 variables:
-  MAVEN: "3.9.8"
+  MAVEN: "3.9.10"
   ALLURE: "2.35.1"
   EXECUTOR_NAME: "Gitlab CI"
   EXECUTOR_TYPE: "gitlab"
-  PLAYWRIGHT_JAVA: "1.44.0"
-  PLAYWRIGHT_NODE: "1.44.1"
-  PLAYWRIGHT_PYTHON: "1.44.0"
-  TOKEN: "glpat-64VubsDGWUwgPgYkgEjs"
+  TOKEN: "glpat-h8Pd72yxtca1J9Yj_ZL4"
   DOCKER:
     value: "harmin/qa-runner-debian"
     options:
       - "harmin/qa-runner-debian"
-      - "playwright/java"
-      - "playwright/python"
-      - "playwright/node.js"
-      - "selenium/java"
-      - "selenium/python"
-      - "cypress"
-      - "karate"
-      - "robotframework/playwright"
-    description: "The docker to run the tests."
+      - "harmin/qa-runner-ubuntu"
+      - "harmin/qa-runner-debian:12"
+      - "harmin/qa-runner-ubuntu:beta"
+    description: "The docker image to use."
   BROWSER:
     value: "firefox"
     options:
@@ -37,164 +29,26 @@ variables:
       - "firefox"
       - "msedge"
     description: "The browser to run the tests."
+  PUBLISH:
+    value: "false"
+    options:
+      - "true"
+      - "false"
+    description: "Whether to publish the reports."
 
 
 tests:
   stage: test
   image: $DOCKER
-  rules:
-    - if: $DOCKER == "harmin/qa-runner-debian"
-    - if: $DOCKER == "harmin/qa-runner-ubuntu"
   script:
     - export PATH=$PATH:$HOME/.local/bin
     - python3 -m venv ~/venv
     - . ~/venv/bin/activate
     - ./runner.sh --browser $BROWSER
-    - ./serenity.sh --browser $BROWSER
+  after_script:
     - echo $CI_JOB_URL > reporting/allure-results/java/job.url
     - echo $CI_JOB_URL > reporting/allure-results/nodejs/job.url
     - echo $CI_JOB_URL > reporting/allure-results/python/job.url
-  artifacts:
-    paths:
-      - reporting/
-    expire_in: 10 mins
-
-
-tests playwright java:
-  stage: test
-  image: mcr.microsoft.com/playwright/java:v${PLAYWRIGHT_JAVA}-jammy
-  rules:
-    - if: $DOCKER == "playwright/java"
-  script:
-    - ./docker.sh --browser $BROWSER --docker playwright/java
-    - echo $CI_JOB_URL > reporting/allure-results/java/job.url
-  artifacts:
-    paths:
-      - reporting/
-    expire_in: 10 mins
-
-
-tests selenium java:
-  stage: test
-  image: maven
-  services:
-    - name: selenium/standalone-${BROWSER}
-      alias: selenium-hub
-  rules:
-    - if: $DOCKER == "selenium/java"
-  script:
-    - ./docker.sh --browser $BROWSER --docker selenium/java --hub selenium-hub
-    - echo $CI_JOB_URL > reporting/allure-results/java/job.url
-  artifacts:
-    paths:
-      - reporting/
-    expire_in: 10 mins
-
-
-tests karate:
-  stage: test
-  image: selenium/standalone-${BROWSER}
-  rules:
-    - if: $BROWSER == "chromium"
-      when: never
-    - if: $BROWSER == "msedge"
-      when: never
-    - if: $DOCKER == "karate"
-  script:
-    - java --version
-    #- curl https://download.java.net/openjdk/jdk17/ri/openjdk-17+35_linux-x64_bin.tar.gz -o openjdk-bin.tar.gz
-    - curl https://download.java.net/openjdk/jdk21/ri/openjdk-21+35_linux-x64_bin.tar.gz -o openjdk-bin.tar.gz
-    - tar -xf openjdk-bin.tar.gz -C /tmp/
-    - JAVA_HOME='/tmp/jdk-21'
-    - PATH="$JAVA_HOME/bin:$PATH"
-    - curl https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz -o maven-bin.tar.gz
-    - tar -xf maven-bin.tar.gz -C /tmp/
-    - M2_HOME='/tmp/apache-maven-3.9.8'
-    - PATH="$M2_HOME/bin:$PATH"
-    - export PATH
-    - ./docker.sh --browser $BROWSER --docker karate
-    - echo $CI_JOB_URL > reporting/allure-results/java/job.url
-    - mv tests-java/target/karate-reports reporting/report-karate
-  artifacts:
-    paths:
-      - reporting
-    expire_in: 10 mins
-
-
-tests playwright node.js:
-  stage: test
-  #image: mcr.microsoft.com/playwright:v${PLAYWRIGHT_NODE}-jammy
-  image: mcr.microsoft.com/playwright
-  rules:
-    - if: $DOCKER == "playwright/node.js"
-  script:
-    - ./docker.sh --browser $BROWSER --docker playwright/node.js
-    - echo $CI_JOB_URL > reporting/allure-results/nodejs/job.url
-  artifacts:
-    paths:
-      - reporting/
-    expire_in: 10 mins
-
-
-tests cypress:
-  stage: test
-  image: cypress/browsers
-  #  docker:
-  #    user: 1001
-  rules:
-    - if: $DOCKER == "cypress"
-  script:
-    - ./docker.sh --browser $BROWSER --docker cypress
-  artifacts:
-    paths:
-      - reporting/
-    expire_in: 10 mins
-
-
-tests playwright python:
-  stage: test
-  image: mcr.microsoft.com/playwright/python:v${PLAYWRIGHT_PYTHON}-jammy
-  rules:
-    - if: $DOCKER == "playwright/python"
-  script:
-    - ./docker.sh --browser $BROWSER --docker playwright/python
-    - echo $CI_JOB_URL > reporting/allure-results/python/job.url
-  artifacts:
-    paths:
-      - reporting/
-    expire_in: 10 mins
-
-
-
-tests selenium python:
-  stage: test
-  image: python:3.11
-  services:
-    - name: selenium/standalone-${BROWSER}
-      alias: selenium-hub
-  rules:
-    - if: $DOCKER == "selenium/python"
-  script:
-    - ./docker.sh --browser $BROWSER --docker selenium/python --hub selenium-hub
-    - echo $CI_JOB_URL > reporting/allure-results/python/job.url
-  artifacts:
-    paths:
-      - reporting/
-    expire_in: 10 mins
-
-
-tests robotframework playwright:
-  stage: test
-  image: marketsquare/robotframework-browser
-  rules:
-    - if: $BROWSER == "chrome"
-      when: never
-    - if: $BROWSER == "msedge"
-      when: never
-    - if: $DOCKER == "robotframework/playwright"
-  script:
-    - ./docker.sh --browser $BROWSER --docker robotframework/playwright
-    #- echo $CI_JOB_URL > reporting/allure-results/python/job.url
   artifacts:
     paths:
       - reporting/
@@ -219,10 +73,13 @@ allure report:
 commit:
   stage: commit
   image: bitnami/git
-  script:
+  rules:
+    - if: $PUBLISH == "true"
+  before_script:
     - git config --global user.name "Gitlab CI"
     - git config --global user.email "gitlab@mg.gitlab.com"
-    - git clone https://gitlab-ci-token:${TOKEN}@gitlab.com/harmin-demo/reports.git
+  script:
+    - git clone https://gitlab-ci-token:${TOKEN}@gitlab.com/qa-demo/reports.git
     - cd reports
     - git rm -r report-*
     - mv ../reporting/report-* ./
