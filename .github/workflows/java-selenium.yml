@@ -17,15 +17,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    #services:
-    #  selenium-hub:
-    #    image: selenium/standalone-${{ inputs.browser }}
-    #    ports: 
-    #    - 4444:4444
-    #    options: --shm-size=2gb
+    services:
+      selenium-hub:
+        image: selenium/standalone-${{ inputs.browser }}
+        ports: 
+        - 4444:4444
+        options: --shm-size=2gb
     container:
-       image: selenium/standalone-${{ inputs.browser }}  #maven:latest
-       options: --user root
+       image: mcr.microsoft.com/openjdk/jdk:25  #maven:latest
+       #options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
