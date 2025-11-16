@@ -27,6 +27,7 @@ jobs:
       - name: Test execution
         run: |
           export PATH=$PATH:$HOME/.local/bin
+          apt-get update && apt-get install -y python3-venv python3-pip
           mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
           python3 -m venv ~/venv
           . ~/venv/bin/activate
