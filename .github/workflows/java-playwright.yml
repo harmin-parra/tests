@@ -21,12 +21,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      #- uses: actions/setup-node@v4
+      #  with:
+      #    node-version: '20'
       - name: Test
         run: |
-          ./.github/workflows/docker.sh --browser "${{ inputs.browser }}" --test java/playwright
+          ./docker.sh --browser "${{ inputs.browser }}" --test java/playwright
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
         env:
           HOME: /root
