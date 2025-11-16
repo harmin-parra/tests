@@ -1,10 +1,5 @@
 name: java/selenium
 
-env:
-  ALLURE: 2.35.1
-  EXECUTOR_NAME: "Github Actions"
-  EXECUTOR_TYPE: "github"
-
 on:
   workflow_dispatch:
     inputs:
@@ -48,5 +43,4 @@ jobs:
     uses: ./.github/workflows/report-job.yml
     needs: [test]
     with:
-      allure: ${ALLURE}
       browser: ${{ inputs.browser }}
