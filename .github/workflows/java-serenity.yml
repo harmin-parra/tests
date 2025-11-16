@@ -22,13 +22,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '25'
       - name: Test
         run: |
-          curl -OL https://aka.ms/download-jdk/microsoft-jdk-25-linux-x64.tar.gz -o openjdk-bin.tar.gz
+          #curl -OL https://aka.ms/download-jdk/microsoft-jdk-25-linux-x64.tar.gz -o openjdk-bin.tar.gz
           # curl -L https://download.java.net/openjdk/jdk21/ri/openjdk-21+35_linux-x64_bin.tar.gz -o openjdk-bin.tar.gz
-          tar -xf openjdk-bin.tar.gz -C /tmp/
-          JAVA_HOME='/tmp/jdk-21'
-          PATH="$JAVA_HOME/bin:$PATH"
+          #tar -xf openjdk-bin.tar.gz -C /tmp/
+          #JAVA_HOME='/tmp/jdk-21'
+          #PATH="$JAVA_HOME/bin:$PATH"
           curl https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz -o maven-bin.tar.gz
           tar -xf maven-bin.tar.gz -C /tmp/
           M2_HOME='/tmp/apache-maven-3.9.8'
