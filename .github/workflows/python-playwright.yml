@@ -12,18 +12,23 @@ on:
         - chromium
         - firefox
         - webkit
+      docker:
+        description: 'The docker to run'
+        default: mcr.microsoft.com/playwright/python:v1.55.0-noble
+        type: choice
+        options:
+        - harmin/qa-runner-debian
+        - harmin/qa-runner-ubuntu
+        - mcr.microsoft.com/playwright/python:v1.55.0-noble
 
 jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright/python:v1.55.0-noble
+      image: ${{ inputs.docker }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      #- uses: actions/setup-node@v4
-      #  with:
-      #    node-version: '20'
       - name: Test execution
         run: |
           #export PATH=$PATH:$HOME/.local/bin
