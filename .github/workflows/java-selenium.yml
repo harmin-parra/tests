@@ -24,16 +24,11 @@ jobs:
         - 4444:4444
         options: --shm-size=2gb
     container:
-       image: mcr.microsoft.com/openjdk/jdk:25  #maven:latest
+       image: eclipse-temurin:25 #maven:latest
        #options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'microsoft'
-          java-version: '25'
       - name: Test
         run: |
           java --version
