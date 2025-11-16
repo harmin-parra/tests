@@ -48,7 +48,7 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     container:
-      image: openjdk:8-jre
+      image: eclipse-temurin:8-jre
     steps:
       - name: Checkout
         uses: actions/checkout@v4
