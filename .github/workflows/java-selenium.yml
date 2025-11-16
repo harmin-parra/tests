@@ -24,8 +24,8 @@ jobs:
         - 4444:4444
         options: --shm-size=2gb
     container:
-       image: eclipse-temurin:25 #maven:latest
-       #options: --user root
+       image: eclipse-temurin:25
+       # options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
