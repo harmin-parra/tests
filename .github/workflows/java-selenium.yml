@@ -25,6 +25,7 @@ jobs:
     #    options: --shm-size=2gb
     container:
        image: selenium/standalone-${{ inputs.browser }}  #maven:latest
+       options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
