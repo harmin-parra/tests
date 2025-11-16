@@ -40,6 +40,9 @@ jobs:
       - name: Test
         run: |
           python3 --version
+          mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          python3 -m venv ~/venv
+          . ~/venv/bin/activate
           ./docker.sh --browser "${{ inputs.browser }}" --test python/selenium --hub "selenium-hub"
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
       - name: Upload artifact
