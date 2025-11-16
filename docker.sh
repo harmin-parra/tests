@@ -118,8 +118,7 @@ fi
 #
 if [ $TEST = "java/playwright" ]; then
   cd $TEST
-  mvn dependency:resolve
-  mvn -Dtest="web_playwright/**" -Dbrowser=$BROWSER test
+  ./gradlew test --tests="web_playwright.*" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
   cd ../..
 fi
 
@@ -127,38 +126,8 @@ fi
 # Java - Selenium
 #
 if [ $TEST = "java/selenium" ]; then
-  if [[ $BROWSER == *"edge" ]]; then
-    BROWSER=msedge
-  fi
   cd $TEST
-  mvn dependency:resolve
-  mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER test -Dhub=$HUB test
-  cd ../..
-fi
-
-#
-# Java tests
-#
-if [ $TEST = "playwright/java" ] || [ $TEST = "selenium/java" ] || [ $TEST = "karate" ]; then
-  cd tests-java
-  mvn dependency:resolve
-
-  if [ $TEST = "playwright/java" ]; then
-    mvn -Dtest="web_playwright/**, rest_api_rest_assured/**" -Dbrowser=$BROWSER test
-
-  elif [ $TEST = "selenium/java" ]; then
-    mvn -Dtest="web_selenium/**" -Dbrowser=$BROWSER test -Dhub=$HUB test
-
-  elif [ $TEST = "karate" ]; then
-    mvn -Dtest="web/TestRunner#runner" -Dbrowser=$BROWSER test
-    for filename in ../reporting/allure-results/java/*result.json; do
-      RES=$(egrep '"testCaseName":"\[[0-9]+:[0-9]+\]' $filename)
-      if [ -n "$RES" ]; then
-        rm -f $filename
-      fi
-    done
-    mv tests-java/target/karate-reports reporting/report-karate
-  fi
+  ./gradlew test --tests="web_selenium.*" -Dbrowser=$BROWSER test -Dhub=$HUB test
   cd ../..
 fi
 
@@ -179,8 +148,8 @@ fi
 # Serenity
 if [ $TEST = "java/serenity" ]; then
   cd $TEST
-  mvn dependency:resolve
-  mvn -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER clean verify
+  ./gradlew test -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
+  mv target/site/serenity ../../reporting/report-serenity
   cd ../..
 fi
 
@@ -188,7 +157,6 @@ fi
 # RestAssured
 if [ $TEST = "java/rest_assured" ]; then
   cd $TEST
-  mvn dependency:resolve
-  mvn -Dtest="rest_api/CatalogTest" test
+  ./gradlew test --tests="rest_api.CatalogTest"
   cd ../..
 fi
