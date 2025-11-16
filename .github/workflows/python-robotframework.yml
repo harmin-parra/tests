@@ -1,8 +1,5 @@
 name: python/robotframework
 
-env:
-  ALLURE: 2.34.1
-
 on:
   workflow_dispatch:
     inputs:
@@ -32,3 +29,9 @@ jobs:
         with:
           name: artifact_test
           path: reporting
+
+  report:
+    uses: ./.github/workflows/report-job.yml
+    needs: [test]
+    with:
+      browser: ${{ inputs.browser }}
