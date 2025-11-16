@@ -90,21 +90,7 @@ if [ $TEST = "nodejs/playwright" ]; then
   cd ../..
 fi
 
-
-#
-# Node.js - Selenium
-#
-if [ $TEST = "nodejs/selenium" ]; then
-  cd $TEST
-  npm install
-  npx mocha tests -- --browser=$BROWSER --headless=$HEADLESS
-  cd ../..
-fi
-
-
-#
-# Node.js - Cypress
-#
+# Cypress
 if [ $TEST = "nodejs/cypress" ]; then
   cd $TEST
   npm install

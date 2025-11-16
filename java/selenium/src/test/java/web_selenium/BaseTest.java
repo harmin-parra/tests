@@ -68,7 +68,7 @@ abstract class BaseTest {
                 else
                     driver = new RemoteWebDriver(hub, opt2);
                 break;
-            case "msedge":
+            case "msedge": case "edge":
                 EdgeOptions opt3 = new EdgeOptions();
                 opt3.setCapability("webSocketUrl", true);
                 if (headless)

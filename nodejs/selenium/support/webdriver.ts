@@ -13,14 +13,14 @@ export async function getWebDriver(): Promise<WebDriver> {
 
   let builder = new Builder();
   
-  if (browser === "chrome") {
+  if (browser == "chrome") {
     const options = new chrome.Options();
     options.addArguments("--disable-gpu", "--window-size=1920,1080");
     if (headless)
       options.addArguments("--headless=new");
     builder = builder.forBrowser("chrome").setChromeOptions(options);
   } 
-  else if (browser === "msedge") {
+  else if (browser == "msedge" || browser == "edge") {
     const options = new edge.Options();
     options.addArguments("--disable-gpu", "--window-size=1920,1080");
     if (headless)
