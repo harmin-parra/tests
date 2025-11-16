@@ -21,9 +21,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      #- uses: actions/setup-node@v4
-      #  with:
-      #    node-version: '20'
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '25'
       - name: Test
         run: |
           ./docker.sh --browser "${{ inputs.browser }}" --test java/playwright
