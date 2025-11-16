@@ -1,10 +1,5 @@
 name: java/serenity
 
-env:
-  ALLURE: 2.34.1
-  EXECUTOR_NAME: "Github Actions"
-  EXECUTOR_TYPE: "github"
-
 on:
   workflow_dispatch:
     inputs:
