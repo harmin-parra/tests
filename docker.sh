@@ -91,12 +91,12 @@ if [ $TEST = "nodejs/playwright" ]; then
 fi
 
 #
-# Node.js - Playwright
+# Node.js - Selenium
 #
 if [ $TEST = "nodejs/selenium" ]; then
   cd $TEST
   npm install
-  npx mocha tests -- --browser=$BROWSER --headless=$HEADLESS
+  npx mocha tests -- --browser=$BROWSER --headless=$HEADLESS --hub $HUB
   cd ../..
 fi
 
