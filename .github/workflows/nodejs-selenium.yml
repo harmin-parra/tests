@@ -1,4 +1,4 @@
-name: nodejs/selenium
+name: node.js/selenium
 
 on:
   workflow_dispatch:
