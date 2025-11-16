@@ -3,7 +3,7 @@ name: shared-report-job
 on:
   workflow_call:
     inputs:
-      allure-version:
+      allure:
         required: true
         type: string
       browser:
@@ -12,7 +12,6 @@ on:
 
 jobs:
   report:
-    needs: [test]
     runs-on: ubuntu-latest
     container:
       image: eclipse-temurin:8-jre
@@ -28,13 +27,11 @@ jobs:
           path: reporting
 
       - name: Report
-        env:
-          ALLURE: ${{ inputs.allure-version }}
         run: |
           apt-get update && apt-get install -y unzip
-          curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
+          curl https://github.com/allure-framework/allure2/releases/download/${{ inputs.allure }}/allure-${{ inputs.allure }}.zip -L -o /tmp/allure.zip
           unzip /tmp/allure.zip -d /usr/local/
-          ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
+          ln -s /usr/local/allure-${{ inputs.allure }}/bin/allure /usr/local/bin/allure
           ./allure.sh --browser ${{ inputs.browser }}
 
       - name: Upload artifact
