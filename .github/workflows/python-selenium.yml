@@ -41,7 +41,7 @@ jobs:
         run: |
           python3 --version
           mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
-          if [ $HEADLESS = "false" ]; then
+          if [[ ${{ inputs.docker }} == harmin/* ]]; then
             # export PATH=$PATH:$HOME/.local/bin
             python3 -m venv ~/venv
             . ~/venv/bin/activate
