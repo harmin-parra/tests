@@ -1,10 +1,5 @@
 name: python/playwright
 
-env:
-  ALLURE: 2.34.1
-  EXECUTOR_NAME: "Github Actions"
-  EXECUTOR_TYPE: "github"
-
 on:
   workflow_dispatch:
     inputs:
@@ -22,8 +17,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: harmin/qa-runner-debian:beta
-      #image: mcr.microsoft.com/playwright/python
+      image: mcr.microsoft.com/playwright/python:v1.55.0-noble
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,26 +41,7 @@ jobs:
           path: reporting/
 
   report:
-    needs: test
-    runs-on: ubuntu-latest
-    container:
-      image: openjdk:8-jre
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: artifact_test
-          path: reporting
-      - name: Report
-        run: |
-          curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
-          unzip /tmp/allure.zip -d /usr/local/
-          ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
-          ./allure.sh --browser ${{ inputs.browser }}
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: artifact_report
-          path: reporting
+    uses: ./.github/workflows/report-job.yml
+    needs: [test]
+    with:
+      browser: ${{ inputs.browser }}
