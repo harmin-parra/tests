@@ -31,11 +31,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Test execution
         run: |
-          #export PATH=$PATH:$HOME/.local/bin
-          #apt-get update && apt-get install -y python3-venv python3-pip
           mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
-          if [ $HEADLESS = "false" ]; then
-            export PATH=$PATH:$HOME/.local/bin
+          if echo "${{ inputs.docker }}" | grep -q '^harmin/'; then
             python3 -m venv ~/venv
             . ~/venv/bin/activate
           fi
