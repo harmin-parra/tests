@@ -19,6 +19,7 @@ on:
         options:
         - harmin/qa-runner-debian
         - harmin/qa-runner-ubuntu
+        - harmin/qa-runner-debian:beta
         - mcr.microsoft.com/playwright/python:v1.55.0-noble
 
 jobs:
