@@ -40,14 +40,14 @@ jobs:
       - name: Test
         run: |
           python3 --version
-          mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          mkdir -p reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
           if [[ ${{ inputs.docker }} == harmin/* ]]; then
             # export PATH=$PATH:$HOME/.local/bin
             python3 -m venv ~/venv
             . ~/venv/bin/activate
           fi
           ./docker.sh --browser "${{ inputs.browser }}" --test python/selenium --hub "selenium-hub"
-          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
+          echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" > reporting/allure-results/python/job.url
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
