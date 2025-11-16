@@ -17,17 +17,22 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      selenium-hub:
-        image: selenium/standalone-${{ inputs.browser }}
-        ports: 
-        - 4444:4444
-        options: --shm-size=2gb
+    #services:
+    #  selenium-hub:
+    #    image: selenium/standalone-${{ inputs.browser }}
+    #    ports: 
+    #    - 4444:4444
+    #    options: --shm-size=2gb
     container:
-       image: maven:latest
+       image: selenium/standalone-${{ inputs.browser }}  #maven:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '25'
       - name: Test
         run: |
           java --version
