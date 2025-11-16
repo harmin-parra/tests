@@ -33,7 +33,7 @@ jobs:
           M2_HOME='/tmp/apache-maven-3.9.8'
           PATH="$M2_HOME/bin:$PATH"
           export PATH
-          .github/workflows/docker.sh --browser "${{ inputs.browser }}" --test java/serenity
+          ./docker.sh --browser "${{ inputs.browser }}" --test java/serenity
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
       - name: Upload artifact
         uses: actions/upload-artifact@v4
