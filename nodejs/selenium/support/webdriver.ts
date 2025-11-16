@@ -27,7 +27,7 @@ export async function getWebDriver(): Promise<WebDriver> {
       options.addArguments("--headless=new");
     builder = builder.forBrowser("MicrosoftEdge").setEdgeOptions(options);
   }
-  else if (browser === "chromium") {
+  else if (browser == "chromium") {
     const options = new chrome.Options();
     options.setChromeBinaryPath("/usr/bin/chromium");  // adjust path if needed
     options.addArguments("--disable-gpu", "--window-size=1920,1080");

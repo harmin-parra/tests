@@ -3,7 +3,7 @@ export function getBrowserName(): string {
   if (!arg)
     return "firefox";
   let value = arg.split("=")[1].toLowerCase();
-  const supported = ["chrome", "firefox", "edge", "msedge", "chromium"];
+  const supported = ["chrome", "firefox", "msedge", "edge", "chromium"];
   if (!supported.includes(value))
     value = "firefox";
   return value;
