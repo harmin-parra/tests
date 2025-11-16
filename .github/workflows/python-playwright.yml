@@ -21,16 +21,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      #- uses: actions/setup-node@v4
+      #  with:
+      #    node-version: '20'
       - name: Test execution
         run: |
-          export PATH=$PATH:$HOME/.local/bin
-          apt-get update && apt-get install -y python3-venv python3-pip
-          mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
-          python3 -m venv ~/venv
-          . ~/venv/bin/activate
+          #export PATH=$PATH:$HOME/.local/bin
+          #apt-get update && apt-get install -y python3-venv python3-pip
+          #mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          #python3 -m venv ~/venv
+          #. ~/venv/bin/activate
           ./docker.sh --browser "${{ inputs.browser }}" --test python/playwright
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
         env:
