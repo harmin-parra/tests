@@ -25,6 +25,8 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '25'
+          maven-version: '3.9.8'
+          cache: 'maven'
       - name: Test
         run: |
           curl -L https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz -o maven-bin.tar.gz
