@@ -37,7 +37,7 @@ jobs:
       - name: Test
         run: |
           java --version
-          ./docker.sh --browser "${{ inputs.browser }}" --test java/selenium --hub "selenium-hub"
+          ./docker.sh --browser "${{ inputs.browser }}" --test java/selenium #--hub "selenium-hub"
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
       - name: Upload artifact
         uses: actions/upload-artifact@v4
