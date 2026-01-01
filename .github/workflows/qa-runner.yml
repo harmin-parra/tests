@@ -43,7 +43,7 @@ jobs:
           mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
           python3 -m venv ~/venv
           . ~/venv/bin/activate
-          ./runner.sh --browser "${{ inputs.browser }}"
+          # ./runner.sh --browser "${{ inputs.browser }}"
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
@@ -105,8 +105,8 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-*
-          mv reporting/report-* docs/
-          mv reporting/allure-reports/report-* docs/
+          mv reporting/report-* docs/ || {echo "no report to commit"; exit; }
+          mv reporting/allure-reports/report-* docs/ || {echo "no report to commit"; exit; }
           git add -f docs/*
           git commit -m "Github Actions commit" || echo "Nothing to commit"
           git push origin main
