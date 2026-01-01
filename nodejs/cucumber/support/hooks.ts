@@ -18,7 +18,7 @@ BeforeAll(async function () {
 
 
 Before({ tags: '@ui' }, async function (this: CustomWorld) {
-  this.ui = await UiContext.create(sharedBrowser);
+  this.ui = await UiContext.create(null);
 });
 
 
