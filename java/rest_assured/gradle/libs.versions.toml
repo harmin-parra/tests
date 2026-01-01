@@ -1,0 +1,26 @@
+[versions]
+junit = "5.13.4"
+restAssured = "5.5.5"
+allure = "2.29.1"
+jackson = "2.19.1"
+commonsLang = "3.18.0"
+commonsIo = "2.19.0"
+logback = "1.5.18"
+
+[libraries]
+junitJupiterApi = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junitJupiterEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+
+restAssured = { module = "io.rest-assured:rest-assured", version.ref = "restAssured" }
+restAssuredJsonPath = { module = "io.rest-assured:json-path", version.ref = "restAssured" }
+restAssuredXmlPath = { module = "io.rest-assured:xml-path", version.ref = "restAssured" }
+
+allureJunitPlatform = { module = "io.qameta.allure:allure-junit-platform", version.ref = "allure" }
+allureRestAssured = { module = "io.qameta.allure:allure-rest-assured", version.ref = "allure" }
+allureDescriptionsJavadoc = { module = "io.qameta.allure:allure-descriptions-javadoc", version.ref = "allure" }
+
+jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+commonsLang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang" }
+commonsIo = { module = "commons-io:commons-io", version.ref = "commonsIo" }
+
+logbackClassic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }

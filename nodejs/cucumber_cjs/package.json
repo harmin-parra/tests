@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "allure-cucumberjs": "^3.3.2",
+    "playwright": "^1.53.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

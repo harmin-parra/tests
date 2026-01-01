@@ -1,0 +1,7 @@
+{
+  "timeout": 6000,
+  "extension": ["ts"],
+  "spec": "mocha",
+  "require": ["ts-node/register"],
+  "recursive": true
+}

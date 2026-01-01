@@ -1,0 +1,33 @@
+name: java/serenity
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'The browser to use'
+        default: 'firefox'
+        required: true
+        type: choice
+        options:
+        - chrome
+        - firefox
+        - edge
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: harmin/qa-runner-debian  # selenium/standalone-${{ inputs.browser }}
+      # options: --user root
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test
+        run: |
+          ./docker.sh --browser "${{ inputs.browser }}" --test java/serenity
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting/

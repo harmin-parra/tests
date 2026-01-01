@@ -1,0 +1,25 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    // Modules
+    "module": "commonjs",
+    // "moduleResolution": "node",
+    // "types": ["node", "@playwright/test", "@types/mocha"],
+
+    // Language and Environment
+    "target": "esnext",
+
+    // Type Checking
+    "strict": true,
+    "strictNullChecks": false,
+
+
+    // Interop Constraints
+    "esModuleInterop": true,
+  
+    // Completeness
+    "skipLibCheck": true,
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}

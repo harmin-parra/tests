@@ -1,0 +1,44 @@
+name: node.js/playwright
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'The browser to use'
+        default: 'chromium'
+        required: true
+        type: choice
+        options:
+        - chromium
+        - firefox
+        - webkit
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      #- uses: actions/setup-node@v4
+      #  with:
+      #    node-version: '22'
+      - name: Test
+        run: |
+          node --version
+          ./docker.sh --browser "${{ inputs.browser }}" --test nodejs/playwright
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
+        env:
+          HOME: /root
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting/
+
+  report:
+    uses: ./.github/workflows/report-job.yml
+    needs: [test]
+    with:
+      browser: ${{ inputs.browser }}

@@ -1,0 +1,100 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+stages:
+  - test
+  - report
+  - commit
+
+variables:
+  MAVEN: "3.9.10"
+  ALLURE: "2.35.1"
+  EXECUTOR_NAME: "Gitlab CI"
+  EXECUTOR_TYPE: "gitlab"
+  TOKEN: "glpat-h8Pd72yxtca1J9Yj_ZL4"
+  DOCKER:
+    value: "harmin/qa-runner-debian"
+    options:
+      - "harmin/qa-runner-debian"
+      - "harmin/qa-runner-ubuntu"
+      - "harmin/qa-runner-debian:12"
+      - "harmin/qa-runner-ubuntu:beta"
+    description: "The docker image to use."
+  BROWSER:
+    value: "firefox"
+    options:
+      - "chrome"
+      - "chromium"
+      - "firefox"
+      - "msedge"
+    description: "The browser to run the tests."
+  PUBLISH:
+    value: "false"
+    options:
+      - "true"
+      - "false"
+    description: "Whether to publish the reports."
+
+
+tests:
+  stage: test
+  image: $DOCKER
+  script:
+    - export PATH=$PATH:$HOME/.local/bin
+    - python3 -m venv ~/venv
+    - . ~/venv/bin/activate
+    - ./runner.sh --browser $BROWSER
+  after_script:
+    - echo $CI_JOB_URL > reporting/allure-results/java/job.url
+    - echo $CI_JOB_URL > reporting/allure-results/nodejs/job.url
+    - echo $CI_JOB_URL > reporting/allure-results/python/job.url
+  artifacts:
+    paths:
+      - reporting/
+    expire_in: 10 mins
+
+
+allure report:
+  stage: report
+  image: eclipse-temurin:8-jre
+  script:
+    - apt-get update && apt-get install -y unzip
+    - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
+    - unzip /tmp/allure.zip -d /usr/local/
+    - ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
+    - ./allure.sh --browser $BROWSER
+  artifacts:
+    paths:
+      - reporting
+    expire_in: 10 mins
+
+
+commit:
+  stage: commit
+  image: bitnami/git
+  rules:
+    - if: $PUBLISH == "true"
+  before_script:
+    - git config --global user.name "Gitlab CI"
+    - git config --global user.email "gitlab@mg.gitlab.com"
+  script:
+    - git clone https://gitlab-ci-token:${TOKEN}@gitlab.com/qa-demo/reports.git
+    - cd reports
+    - git rm -r report-*
+    - mv ../reporting/report-* ./
+    - mv ../reporting/allure-reports/report-* ./
+    - git add *
+    - git commit -m "Gitlab-CI commit"
+    - git push
+
+
+#pages:
+#  stage: pages
+#  script:
+#    - mkdir public
+#    - mv reporting/allure-reports/* public/
+#    - mv reporting/report-* public/
+#  artifacts:
+#    paths:
+#      - public

@@ -1,0 +1,35 @@
+package starter.acceptancetests;
+
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import starter.actions.PetstoreActions;
+import starter.actions.Pet;
+
+@ExtendWith(SerenityJUnit5Extension.class)
+public class PetstoreTest {
+
+    Pet pet;
+    PetstoreActions petApi;
+
+    @Test
+    public void addPet() {
+        petApi.givenPetstoreExits();
+        pet = petApi.whenIAddPet();
+        petApi.thenPetIsAdded();
+    }
+
+    @Test
+    public void getPet() {
+        petApi.givenPetExists();
+        pet = petApi.whenIGetPet();
+        petApi.thenIGetPetInfo();
+    }
+
+    @Test
+    public void deletePet() {
+        petApi.givenPetExists();
+        petApi.whenIDeletePet();
+        petApi.thenPetIsDeleted();
+    }
+}

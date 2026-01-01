@@ -1,0 +1,11 @@
+{
+  "default": {
+    "paths": ["features/**/*.feature"],
+    "loader": ["ts-node/esm"],
+    "import": ["steps/**/*.ts", "support/*.ts"],
+    "format": [
+      "html:index.html",
+      "allure-cucumberjs/reporter"
+    ]
+  }
+}

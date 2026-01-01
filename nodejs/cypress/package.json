@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "allure-cypress": "^3.3.2",
+    "allure-js-commons": "^3.3.2",
+    "cypress": "^14.5.4",
+    "cypress-mochawesome-reporter": "^3.8.2",
+    "typescript": "^5.9.2"
+  }
+}

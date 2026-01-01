@@ -1,0 +1,62 @@
+pipelines:
+  custom:
+    default:
+      - variables:
+        - name: BROWSER
+          default: firefox
+          allowed-values:
+            - chrome
+            - chromium
+            - firefox
+            - msedge
+        - name: DOCKER
+          default: harmin/qa-runner-debian:latest
+          allowed-values:
+            - harmin/qa-runner-debian:latest
+            - harmin/qa-runner-ubuntu:latest
+            - harmin/qa-runner-debian:beta
+            - harmin/qa-runner-ubuntu:beta
+        - name: ALLURE
+          default: 2.35.1
+
+      - step:
+          name: Test
+          image: harmin/qa-runner-debian
+          script:
+            - export PATH=$PATH:$HOME/.local/bin
+            - python3 -m venv ~/venv
+            - . ~/venv/bin/activate
+            - ./runner.sh --browser $BROWSER
+            - CI_JOB_URL="https://bitbucket.org/${BITBUCKET_REPO_FULL_NAME}/pipelines/results/${BITBUCKET_BUILD_NUMBER}"
+            - echo $CI_JOB_URL > reporting/allure-results/java/job.url
+            - echo $CI_JOB_URL > reporting/allure-results/nodejs/job.url
+            - echo $CI_JOB_URL > reporting/allure-results/python/job.url
+          artifacts:
+            - reporting/**
+
+      - step:
+          name: Report
+          image: eclipse-temurin:8-jre
+          script:
+            - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
+            - unzip /tmp/allure.zip -d /usr/local/
+            - ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
+            - allure --version
+            - ./allure.sh --browser $BROWSER
+          artifacts:
+            - reporting/**
+
+      - step:
+          name: Commit
+          script:
+            - exit
+            - git config --global user.name "Bitbucket Pipeline"
+            - git config --global user.email "bitbucket@bitbucket.org"
+            - git clone https://x-token-auth:$TOKEN@bitbucket.org/harmin-parra/reports.git
+            - cd reports
+            - git rm -r report-*
+            - mv ../reporting/report-* ./
+            - mv ../reporting/allure-reports/report-* ./
+            - git add *
+            - git commit -m "Bitbucket Pipeline"
+            - git push

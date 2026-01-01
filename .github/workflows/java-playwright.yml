@@ -1,0 +1,58 @@
+name: java/playwright
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'The browser to use'
+        default: 'chromium'
+        required: true
+        type: choice
+        options:
+        - chromium
+        - firefox
+        - webkit
+      docker:
+        description: 'The docker to run'
+        default: mcr.microsoft.com/playwright/java:v1.55.0-noble
+        type: choice
+        options:
+        - harmin/qa-runner-debian
+        - harmin/qa-runner-ubuntu
+        - mcr.microsoft.com/playwright/java:v1.55.0-noble
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ inputs.docker }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '25'
+      - name: Test
+        run: |
+          mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          if echo "${{ inputs.docker }}" | grep -q '^harmin/'; then
+            python3 -m venv ~/venv
+            . ~/venv/bin/activate
+          fi
+          ./docker.sh --browser "${{ inputs.browser }}" --test java/playwright
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
+        env:
+          HOME: /root
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting/
+
+  report:
+    uses: ./.github/workflows/report-job.yml
+    needs: [test]
+    with:
+      browser: ${{ inputs.browser }}

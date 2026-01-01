@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Implementation / development dependencies
+    implementation libs.playwright
+    implementation libs.commonsLang3
+    implementation libs.commonsIo
+
+    // Test dependencies
+    testImplementation libs.cucumberJava
+    testImplementation libs.cucumberJUnitPlatform
+    testImplementation platform(libs.allureBom)
+    testImplementation libs.allureCucumber
+    testImplementation libs.allureJunitPlatform
+    testImplementation libs.junitJupiter
+    testImplementation libs.junitPlatformSuite
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties System.getProperties()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = "full"
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }
+}
+
+// Task to install Playwright browsers before tests
+tasks.register("playwrightInstall", JavaExec) {
+    group = "verification"
+    description = "Download Playwright browser binaries"
+
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass.set("com.microsoft.playwright.CLI")
+    args = ["install"]  // can also specify specific browsers like "firefox"
+}
+
+// Make sure Playwright browsers are installed before running tests
+test.dependsOn(tasks.named("playwrightInstall"))

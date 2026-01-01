@@ -1,0 +1,21 @@
+[versions]
+junit = "5.13.4"
+playwright = "1.54.0"
+allure = "2.29.1"
+commons-lang = "3.18.0"
+commons-io = "2.19.0"
+logback = "1.5.18"
+
+[libraries]
+junitJupiterApi = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junitJupiterEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+
+playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
+
+allureJunit5 = { module = "io.qameta.allure:allure-junit5", version.ref = "allure" }
+allureJunitPlatform = { module = "io.qameta.allure:allure-junit-platform", version.ref = "allure" }
+allureDescriptionsJavadoc = { module = "io.qameta.allure:allure-descriptions-javadoc", version.ref = "allure" }
+
+commonsLang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang" }
+commonsIo = { module = "commons-io:commons-io", version.ref = "commons-io" }
+logbackClassic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }

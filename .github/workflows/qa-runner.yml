@@ -1,0 +1,111 @@
+name: qa-runner
+
+env:
+  ALLURE: 2.35.1
+  EXECUTOR_NAME: "Github Actions"
+  EXECUTOR_TYPE: "github"
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'The browser to use'
+        default: 'firefox'
+        required: true
+        type: choice
+        options:
+        - chrome
+        - chromium
+        - firefox
+        - msedge
+      docker:
+        description: 'The docker to run'
+        default: harmin/qa-runner-debian
+        type: choice
+        options:
+        - harmin/qa-runner-debian
+        - harmin/qa-runner-ubuntu
+        - harmin/qa-runner-debian:12
+        - harmin/qa-runner-debian:beta
+        - harmin/qa-runner-ubuntu:beta
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ inputs.docker }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          python3 -m venv ~/venv
+          . ~/venv/bin/activate
+          ./runner.sh --browser "${{ inputs.browser }}"
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
+        env:
+          HOME: /root
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting
+
+
+  report:
+    needs: tests
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:8-jre
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting
+      - name: Report
+        run: |
+          apt-get update && apt-get install -y unzip
+          curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
+          unzip /tmp/allure.zip -d /usr/local/
+          ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
+          ./allure.sh --browser ${{ inputs.browser }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_report
+          path: reporting
+
+
+  commit:
+    needs: report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        # for commit in same repo, delete the 'with' section
+        with:
+          repository: harmin-parra/reports
+          ref: 'main'
+          token:  ${{ vars.TOKEN }}
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact_report
+          path: reporting
+      - name: Commit
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "noreply@github.com"
+          git rm -r docs/report-*
+          mv reporting/report-* docs/
+          mv reporting/allure-reports/report-* docs/
+          git add -f docs/*
+          git commit -m "Github Actions commit"
+          git push origin main

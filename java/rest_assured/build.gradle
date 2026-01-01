@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Development dependencies
+    implementation libs.restAssured
+    implementation libs.restAssuredJsonPath
+    implementation libs.restAssuredXmlPath
+    implementation libs.allureJunitPlatform
+    implementation libs.allureRestAssured
+    implementation libs.allureDescriptionsJavadoc
+    implementation libs.jacksonDatabind
+    implementation libs.commonsLang3
+    implementation libs.commonsIo
+     
+    // Test dependencies
+    testImplementation libs.junitJupiterApi
+    testRuntimeOnly libs.junitJupiterEngine
+    testRuntimeOnly libs.logbackClassic
+
+    // Annotation processor
+    annotationProcessor libs.allureDescriptionsJavadoc
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties System.getProperties()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }
+}
+
+// Ensure UTF-8 encoding for Java compilation
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

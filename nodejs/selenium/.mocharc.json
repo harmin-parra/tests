@@ -1,0 +1,11 @@
+{
+  "timeout": 60000,
+  "extension": ["ts"],
+  "require": ["ts-node/register"],
+  "recursive": true,
+  "reporter": "allure-mocha",
+  "reporterOptions": [
+    "resultsDir=../../reporting/allure-results/nodejs",
+    "extraReporters=spec"
+  ]
+}

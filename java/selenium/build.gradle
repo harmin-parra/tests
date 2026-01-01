@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Development dependencies
+    implementation libs.seleniumJava
+    implementation libs.allureJunit5
+    implementation libs.allureJunitPlatform
+    implementation libs.allureDescriptionsJavadoc
+    implementation libs.commonsLang3
+    implementation libs.commonsIo
+    implementation libs.junitJupiterApi
+
+    // Test dependencies
+    testRuntimeOnly libs.junitJupiterEngine
+    testRuntimeOnly libs.logbackClassic
+
+    // Annotation processor
+    annotationProcessor libs.allureDescriptionsJavadoc
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties System.getProperties()
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }
+}

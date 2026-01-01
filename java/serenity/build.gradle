@@ -1,0 +1,62 @@
+plugins {
+    id "net.serenity-bdd.serenity-gradle-plugin" version "4.2.34"
+    id 'java'
+}
+
+defaultTasks 'clean', 'test', 'aggregate'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Serenity core dependencies
+    implementation libs.serenityCore
+    implementation libs.serenityJUnit5
+    implementation libs.serenityScreenplay
+    implementation libs.serenityScreenplayWebdriver
+    implementation libs.serenityEnsure
+    implementation libs.serenityRestAssured
+
+    // JUnit 5
+    testImplementation libs.junitJupiterApi
+    testRuntimeOnly libs.junitJupiterEngine
+    testRuntimeOnly libs.logbackClassic
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties System.getProperties()
+    testLogging.showStandardStreams = true
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = 'full'
+        showCauses = true
+        showExceptions = true
+        showStackTraces = true
+    }
+}
+
+gradle.startParameter.continueOnFailure = true
+
+serenity {
+    reports = ["single-page-html"]
+    testRoot = "demo"
+}
+
+test.finalizedBy(aggregate)
+
+
+//tasks.register('aggregateReports', net.serenitybdd.gradle.plugins.SerenityReportsTask) {
+//    dependsOn test
+//    doFirst {
+//        println "Generating Serenity reports..."
+//    }
+//}

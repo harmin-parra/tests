@@ -1,0 +1,60 @@
+name: python/selenium
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'The browser to use'
+        default: 'firefox'
+        required: true
+        type: choice
+        options:
+        - chrome
+        - chromium
+        - edge
+        - firefox
+      docker:
+        description: 'The docker to run'
+        default: python:3.11
+        type: choice
+        options:
+        - harmin/qa-runner-debian
+        - harmin/qa-runner-ubuntu
+        - python:3.11
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      selenium-hub:
+        image: selenium/standalone-${{ inputs.browser }}
+        ports: 
+        - 4444:4444
+        options: --shm-size=2gb
+    container:
+       image: ${{ inputs.docker }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test
+        run: |
+          python3 --version
+          mkdir -p reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          if echo "${{ inputs.docker }}" | grep -q '^harmin/'; then
+            python3 -m venv ~/venv
+            . ~/venv/bin/activate
+          fi
+          ./docker.sh --browser "${{ inputs.browser }}" --test python/selenium --hub "selenium-hub"
+          echo "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" > reporting/allure-results/python/job.url
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting/*
+
+  report:
+    uses: ./.github/workflows/report-job.yml
+    needs: [test]
+    with:
+      browser: ${{ inputs.browser }}

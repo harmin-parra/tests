@@ -1,0 +1,37 @@
+name: python/robotframework
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'The browser to use'
+        default: 'firefox'
+        required: true
+        type: choice
+        options:
+        - chromium
+        - firefox
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: marketsquare/robotframework-browser
+      options: --user pwuser
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test
+        run: |
+          ./docker.sh --browser "${{ inputs.browser }}" --test python/robotframework
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting
+
+  report:
+    uses: ./.github/workflows/report-job.yml
+    needs: [test]
+    with:
+      browser: ${{ inputs.browser }}

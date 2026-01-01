@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+    "module": "commonjs",
+    "target": "es2024",
+    "strict": true,
+    "esModuleInterop": true,
+    "strictNullChecks": false
+  },
+  "include": ["steps/**/*.ts", "support/**/*.ts"]
+}

@@ -1,0 +1,36 @@
+name: java/restassured
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+      - name: Test
+        run: |
+          mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
+          ./docker.sh --test java/rest_assured
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
+        env:
+          HOME: /root
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting/
+
+  report:
+    uses: ./.github/workflows/report-job.yml
+    needs: [test]
+    with:
+      browser: 'firefox'

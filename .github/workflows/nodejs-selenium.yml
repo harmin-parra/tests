@@ -1,0 +1,46 @@
+name: node.js/selenium
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'The browser to use'
+        default: 'firefox'
+        required: true
+        type: choice
+        options:
+        - chrome
+        - chromium
+        - edge
+        - firefox
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      selenium-hub:
+        image: selenium/standalone-${{ inputs.browser }}
+        ports: 
+        - 4444:4444
+        options: --shm-size=2gb
+    container:
+       image: node:24
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test
+        run: |
+          node --version
+          ./docker.sh --browser "${{ inputs.browser }}" --test nodejs/selenium --hub "selenium-hub"
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: reporting/*
+
+  report:
+    uses: ./.github/workflows/report-job.yml
+    needs: [test]
+    with:
+      browser: ${{ inputs.browser }}

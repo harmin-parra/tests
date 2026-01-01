@@ -1,0 +1,20 @@
+[versions]
+junit = "5.13.2"
+selenium = "4.33.0"
+playwright = "1.53.0"
+karate = "1.5.1"
+allure = "2.29.1"
+
+[libraries]
+junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junitJupiterEngine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+
+seleniumJava = { module = "org.seleniumhq.selenium:selenium-java", version.ref = "selenium" }
+playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
+
+karatePlaywright = { module = "io.karatelabs:karate-playwright", version.ref = "karate" }
+karateJunit5 = { module = "io.karatelabs:karate-junit5", version.ref = "karate" }
+
+allureJunit5 = { module = "io.qameta.allure:allure-junit5", version.ref = "allure" }
+allureJunitPlatform = { module = "io.qameta.allure:allure-junit-platform", version.ref = "allure" }
+allureKarate = { module = "io.qameta.allure:allure-karate", version.ref = "allure" }

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "es2024",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "strictNullChecks": false
+  },
+  "include": ["steps/**/*.ts"]
+}
