@@ -86,16 +86,14 @@ jobs:
   commit:
     needs: report
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout
+      - name: Checkout reports repo
         uses: actions/checkout@v4
         # for commit in same repo, delete the 'with' section
         with:
           repository: harmin-parra/reports
           ref: 'main'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN_REPORT }}
           persist-credentials: true
       - name: Download artifact
         uses: actions/download-artifact@v4
