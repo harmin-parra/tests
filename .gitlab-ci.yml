@@ -12,7 +12,6 @@ variables:
   ALLURE: "2.35.1"
   EXECUTOR_NAME: "Gitlab CI"
   EXECUTOR_TYPE: "gitlab"
-  TOKEN: "glpat-h8Pd72yxtca1J9Yj_ZL4"
   DOCKER:
     value: "harmin/qa-runner-debian"
     options:
@@ -79,11 +78,12 @@ commit:
     - git config --global user.name "Gitlab CI"
     - git config --global user.email "gitlab@mg.gitlab.com"
   script:
-    - git clone https://gitlab-ci-token:${TOKEN}@gitlab.com/qa-demo/reports.git
+    # - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/qa-demo/reports.git
+    - git clone https://oauth2:${TOKEN}@gitlab.com/qa-demo/reports.git
     - cd reports
     - git rm -r report-*
-    - mv ../reporting/report-* ./
-    - mv ../reporting/allure-reports/report-* ./
+    - mv ../reporting/report-* ./ || { echo "no report to commit"; exit; }
+    - mv ../reporting/allure-reports/report-* ./ || { echo "no report to commit"; exit; }
     - git add *
     - git commit -m "Gitlab-CI commit"
     - git push

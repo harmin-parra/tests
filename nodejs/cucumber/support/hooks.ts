@@ -9,7 +9,7 @@ import fs from 'node:fs';
 setWorldConstructor(CustomWorld);
 setDefaultTimeout(60 * 1000);
 
-let sharedBrowser: Browser;
+let sharedBrowser: Browser = null;
 
 
 BeforeAll(async function () {
