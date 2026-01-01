@@ -93,7 +93,8 @@ jobs:
         with:
           repository: harmin-parra/reports
           ref: 'main'
-          token: "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"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -104,8 +105,8 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-*
-          mv reporting/report-* docs/
-          mv reporting/allure-reports/report-* docs/
+          mv reporting/report-* docs/ || true
+          mv reporting/allure-reports/report-* docs/ || true
           git add -f docs/*
-          git commit -m "Github Actions commit"
+          git commit -m "Github Actions commit" || echo "Nothing to commit"
           git push origin main
