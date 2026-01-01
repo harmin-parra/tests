@@ -1,9 +1,10 @@
 import { Before, After, setDefaultTimeout, BeforeAll, AfterAll } from '@cucumber/cucumber';
-import { chromium, type Browser } from 'playwright';
+import { type Browser } from 'playwright';
 import { setWorldConstructor } from '@cucumber/cucumber';
 import { CustomWorld, UiContext } from './world';
 import { Catalog } from '../model/catalog';
 import fs from 'node:fs';
+
 
 setWorldConstructor(CustomWorld);
 setDefaultTimeout(60 * 1000);

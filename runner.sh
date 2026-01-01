@@ -113,7 +113,7 @@ echo ==================
 cd cucumber
 npm install > /dev/null
 npx playwright install > /dev/null
-npx cucumber-js
+npx cucumber-js -- --browser=$BROWSER --headless=$HEADLESS
 cd ..
 
 echo ====================
