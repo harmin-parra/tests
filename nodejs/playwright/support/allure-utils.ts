@@ -8,15 +8,12 @@ import { TestCase } from "@playwright/test/reporter";
  * so custom reporters can access them.
  */
 export async function setAllureHierarchy(parentSuite?: string, suite?: string, subSuite?: string) {
-  if (parentSuite) {
+  if (parentSuite)
     await allure.parentSuite(parentSuite);
-  }
-  if (suite) {
+  if (suite)
     await allure.suite(suite);
-  }
-  if (subSuite) {
+  if (subSuite)
     await allure.subSuite(subSuite);
-  }
 }
 
 

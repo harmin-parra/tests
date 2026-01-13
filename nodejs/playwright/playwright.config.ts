@@ -10,7 +10,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  globalSetup: './support/global-setup.ts',
+  // globalSetup: './support/global-setup.ts',
   testDir: './tests',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,

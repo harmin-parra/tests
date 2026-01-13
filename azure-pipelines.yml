@@ -2,7 +2,7 @@ trigger: none
 
 variables:
 - name: allure
-  value: 2.35.1
+  value: 2.36.0
   readonly: true
 - name: EXECUTOR_NAME
   value: "Azure DevOps"
@@ -79,8 +79,8 @@ stages:
         downloadPath: './'
     - script: |
         apt-get update && apt-get install -y unzip
-        curl https://github.com/allure-framework/allure2/releases/download/${{ variables.allure }}/allure-${{ variables.allure }}.zip -L -o /tmp/allure.zip
-        unzip /tmp/allure.zip -d /tmp/
+        curl https://github.com/allure-framework/allure2/releases/download/${{ variables.allure }}/allure-${{ variables.allure }}.tgz -L -o /tmp/allure.tgz
+        tar -xzf /tmp/allure.tgz -C /tmp/
         mv /tmp/allure-${{ variables.allure }} /tmp/allure
         ./allure.sh --browser ${{ parameters.browser }}
     - task: PublishBuildArtifacts@1
