@@ -10,14 +10,12 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  // globalSetup: './support/global-setup.ts',
   testDir: './tests',
-  /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   outputDir: '../../reporting/playwright-results',
@@ -26,26 +24,24 @@ export default defineConfig({
     ['html', { open: 'never', outputFolder: '../../reporting/report-playwright' }],
     ['line'],
     ['junit', { 
-        outputFile: './reporting/report-junit/report.xml',
-        embedAnnotationsAsProperties: true
-        }
-    ],
+      outputFile: './reporting/report-junit/report.xml',
+      embedAnnotationsAsProperties: true
+    }],
     ['allure-playwright', {
-        detail: false,
-        resultsDir: '../../reporting/allure-results/nodejs',
-        suiteTitle: true,
-        links: {
-          issue: {
-            nameTemplate: "JIRA-%s",
-            urlTemplate: "https://issues.example.com/%s",
-          },
-          tms: {
-            nameTemplate: "TEST-%s",
-            urlTemplate: "https://tms.example.com/%s",
-          }
+      detail: false,
+      resultsDir: '../../reporting/allure-results/nodejs',
+      suiteTitle: true,
+      links: {
+        issue: {
+          nameTemplate: "JIRA-%s",
+          urlTemplate: "https://issues.example.com/%s",
+        },
+        tms: {
+          nameTemplate: "TEST-%s",
+          urlTemplate: "https://tms.example.com/%s",
         }
-      },
-    ]
+      }
+    }]
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -53,6 +49,11 @@ export default defineConfig({
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    //storageState: storagePath,
+    viewport: { width: 1440, height: 900 },  // { width: 1920, height: 1080 },
+    launchOptions: {
+      args: ['--window-size=1440,900']
+    },
     trace: 'on-first-retry',
     /*
     video: {
@@ -68,10 +69,10 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'chromium' },
     { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-    { name: 'msedge', use: { ...devices['Desktop Edge'], channel: 'msedge' } },
-    { name: 'chrome', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },
+    { name: 'chrome', use: { browserName: 'chromium', channel: 'chrome' } },
+    { name: 'msedge', use: { browserName: 'chromium', channel: 'msedge' } }
   ],
 });
