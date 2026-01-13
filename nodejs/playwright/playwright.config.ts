@@ -25,6 +25,11 @@ export default defineConfig({
     ['list'],
     ['html', { open: 'never', outputFolder: '../../reporting/report-playwright' }],
     ['line'],
+    ['junit', { 
+        outputFile: './reporting/report-junit/report.xml',
+        embedAnnotationsAsProperties: true
+        }
+    ],
     ['allure-playwright', {
         detail: false,
         resultsDir: '../../reporting/allure-results/nodejs',
