@@ -6,7 +6,7 @@ export async function waitFor(
   locator: Locator,
   state: "attached"|"detached"|"visible"|"hidden"|"enabled"|"disabled"|"value" = 'visible',
   timeout: number = 10_000,
-  interval: number= 100
+  interval: number = 100
 ): Promise<void> {
   if (state == "attached" || state == "detached" || state == "visible" || state == "hidden")
     return locator.waitFor({ state: state, timeout: timeout });
@@ -33,7 +33,7 @@ export async function waitFor(
     }
     await sleep(interval);
   }
-  throw new Error(`Timeout: locator not ${state} within ${timeout}ms`);
+  throw new Error(`Timeout: locator didn't reach the '${state}' state within ${timeout}ms`);
 }
 
 export async function getElementValue(locator: Locator): Promise<string> {

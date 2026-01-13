@@ -10,21 +10,19 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  // globalSetup: './support/global-setup.ts',
+  globalSetup: './support/global-setup.ts',
   testDir: './tests',
   fullyParallel: false,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   outputDir: '../../reporting/playwright-results',
   reporter: [
     ['list'],
     ['html', { open: 'never', outputFolder: '../../reporting/report-playwright' }],
     ['line'],
     ['junit', { 
-      outputFile: './reporting/report-junit/report.xml',
+      outputFile: '../../reporting/report-junit/report.xml',
       embedAnnotationsAsProperties: true
     }],
     ['allure-playwright', {
@@ -70,7 +68,7 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     { name: 'chromium' },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'firefox', use: { browserName: 'firefox' } },
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
     { name: 'chrome', use: { browserName: 'chromium', channel: 'chrome' } },
     { name: 'msedge', use: { browserName: 'chromium', channel: 'msedge' } }

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { chromium, expect, FullConfig } from '@playwright/test';
 
 
@@ -17,8 +17,7 @@ async function storeManagerSession(baseURL: string) {
   const page = await browser.newPage();
   await page.goto(baseURL + '/login', { timeout: 60_000 });
   // do the login
-  await expect(page).toHaveURL(/\/home-*/, { timeout: 60_000 });
-
+  await expect(page).toHaveURL(/\/home*/, { timeout: 60_000 });
   // Save session/localStorage to a file
   await page.context().storageState({ path: storagePath });
 
