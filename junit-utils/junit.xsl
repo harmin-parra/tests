@@ -6,7 +6,7 @@
   exclude-result-prefixes="str"
 >
 
-  <xsl:output method="html" indent="yes" encoding="UTF-8"/>
+  <xsl:output method="html" indent="yes" encoding="UTF-8" doctype-system="about:legacy-compat"/>
 
   <!-- Match the document root -->
   <xsl:template match="/">
@@ -47,28 +47,37 @@
           }
 
           /* Modal content */
-          .modal-content {
+          .modal-box {
             background-color: #fefefe;
             margin: auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
-            max-width: 1200px;     /* cap width for large screens */
-            max-height: 80vh;     /* prevent modal from exceeding viewport height */
+            max-width: 1440px;    /* cap width for large screens */
+            max-height: 85vh;     /* prevent modal from exceeding viewport height */
             overflow: auto;       /* add scrollbars if content is too tall */
             box-sizing: border-box;
           }
 
+          // Style for images
+          .modal-content-img {
+             margin: auto;
+             display: block;
+             width: 95%;   /* scales responsively */
+             height: auto; /* preserves aspect ratio */
+             box-shadow: 0 0 16px rgba(0,0,0,0.8);
+          }
+
           /* The close button */
-          .close {
+          .close-btn {
             color: #aaaaaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
           }
 
-          .close:hover,
-          .close:focus {
+          .close-btn:hover,
+          .close-btn:focus {
             color: #000;
             text-decoration: none;
             cursor: pointer;
@@ -78,14 +87,12 @@
       <body>
         <h1>JUnit Test Report</h1>
 
-        <!-- Modal for stack trace -->
         <div id="modal" class="modal">
-          <div class="modal-content">
-              <span id="modal-close" class="close">&#215;</span>
-              <div id="modal-content">
-              </div>
-            </div>
+          <div id="modal-box" class="modal-box">
+            <span id="close-btn" class="close-btn">×</span>  <!-- &#215; -->
+            <div id="modal-content"></div>
           </div>
+        </div>
 
         <!-- Handle both <testsuites> root or single <testsuite> root -->
         <xsl:choose>
@@ -96,29 +103,39 @@
             <xsl:apply-templates select="testsuite"/>
           </xsl:otherwise>
         </xsl:choose>
-      </body>
-      <script>
-        var modal = document.getElementById("modal");
-        var modal_content = document.getElementById("modal-content");
-        var modal_close = document.getElementById("modal-close");
+        <script type="text/javascript">
+        <![CDATA[
+          var modal = document.getElementById("modal");
+          var modal_box = document.getElementById("modal-box");
+          var close_btn = document.getElementById("close-btn");
+          var modal_content = document.getElementById("modal-content");
 
-        function open_modal(content) {
-          modal.style.display = "block";
-          modal_content.innerHTML = "<pre>" + content + "</pre>";
-        }
+          function open_modal_pre(content) {
+            modal_box.style.width = "80%";
+            modal.style.display = "block";
+            modal_content.innerHTML = `<pre>${content}</pre>`;
+          }
 
-        // When the user clicks on span (x), close the modal
-        modal_close.onclick = function() {
-          modal.style.display = "none";
-        }
+          function open_modal_img(filepath) {
+            modal_box.style.width = "90%";
+            modal.style.display = "block";
+            modal_content.innerHTML = `<a href="${filepath}" target="_blank"><img class="modal-content-img" src="${filepath}" style="width: 100%"></a>`;
+          }
 
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-          if (event.target == modal) {
+          // When the user clicks on span (x), close the modal
+          close_btn.onclick = function() {
             modal.style.display = "none";
           }
-        }
-      </script>
+
+          // When the user clicks anywhere outside of the modal, close it
+          window.onclick = function(event) {
+            if (event.target == modal) {
+              modal.style.display = "none";
+            }
+          }
+        ]]>
+        </script>
+      </body>
     </html>
   </xsl:template>
 
@@ -146,7 +163,7 @@
         Failures: <xsl:value-of select="@failures"/>,
         Errors: <xsl:value-of select="@errors"/>,
         Skipped: <xsl:value-of select="@skipped | @disabled"/>,
-        Time: <xsl:value-of select="@time"/>s
+        Time: <xsl:value-of select="@time"/>s<a href="javascript:void(0);" onclick="open_modal_img(${screenshot})">screenshot</a>
       </span>
     </h2>
 
@@ -232,17 +249,24 @@
               <!-- Adding stack trace -->
               <xsl:if test="failure">
                 <xsl:variable name="failureText" select="string(failure)"/>
-                🔍 <a href="javascript:void(0);" onclick="open_modal(this.nextElementSibling.textContent)">stack trace</a>
+                🔍 <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">stack trace</a>
                 <pre class="stacktrace-content" style="display:none;">
                   <xsl:value-of select="failure/text()"/>
                 </pre>
               </xsl:if>
               <!-- Adding last screenshot -->
-              <xsl:if test="properties/property[@name='testrail_attachment']">
-                <xsl:variable name="screenshot" select="properties/property[@name='testrail_attachment']/@value"/>
-                <xsl:if test="string($screenshot)">
-                📎 <a href="{$screenshot}" target="_blank">screenshot</a>
-                </xsl:if>
+              <xsl:variable name="screenshot" select="properties/property[@name='testrail_attachment']/@value"/>
+              <!--xsl:if test="properties/property[@name='testrail_attachment']"-->
+              <xsl:if test="string($screenshot)">s
+                📎
+                <a href="javascript:void(0);">
+                  <xsl:attribute name="onclick">
+                    <xsl:text>open_modal_img('</xsl:text>
+                      <xsl:value-of select="$screenshot"/>
+                    <xsl:text>')</xsl:text>
+                  </xsl:attribute>
+                  screenshot
+                </a>
               </xsl:if>
               <!-- Adding issue links -->
               <xsl:if test="properties/property[@name='issues'] and failure">
