@@ -31,7 +31,7 @@
             color: inherit;
           }
 
-          /* Modal view */
+          /* Modal window */
           .modal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
@@ -46,7 +46,7 @@
             background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
           }
 
-          /* Modal content */
+          /* Modal box */
           .modal-box {
             background-color: #fefefe;
             margin: auto;
@@ -59,7 +59,7 @@
             box-sizing: border-box;
           }
 
-          // Style for images
+          /* Style for images */
           .modal-content-img {
              margin: auto;
              display: block;
@@ -111,27 +111,28 @@
           var modal_content = document.getElementById("modal-content");
 
           function open_modal_pre(content) {
-            modal_box.style.width = "80%";
             modal.style.display = "block";
+            modal.style.paddingTop = "100px";
+            modal_box.style.width = "80%";
             modal_content.innerHTML = `<pre>${content}</pre>`;
           }
 
           function open_modal_img(filepath) {
-            modal_box.style.width = "90%";
             modal.style.display = "block";
+            modal.style.paddingTop = "80px";
+            modal_box.style.width = "90%";
             modal_content.innerHTML = `<a href="${filepath}" target="_blank"><img class="modal-content-img" src="${filepath}" style="width: 100%"></a>`;
           }
 
           // When the user clicks on span (x), close the modal
-          close_btn.onclick = function() {
+          close_btn.onclick = function () {
             modal.style.display = "none";
           }
 
           // When the user clicks anywhere outside of the modal, close it
-          window.onclick = function(event) {
-            if (event.target == modal) {
+          window.onclick = function (event) {
+            if (event.target == modal)
               modal.style.display = "none";
-            }
           }
         ]]>
         </script>
@@ -163,7 +164,7 @@
         Failures: <xsl:value-of select="@failures"/>,
         Errors: <xsl:value-of select="@errors"/>,
         Skipped: <xsl:value-of select="@skipped | @disabled"/>,
-        Time: <xsl:value-of select="@time"/>s<a href="javascript:void(0);" onclick="open_modal_img(${screenshot})">screenshot</a>
+        Time: <xsl:value-of select="@time"/>s
       </span>
     </h2>
 
@@ -195,7 +196,7 @@
               <xsl:if test="failure">
                 <details>
                   <summary>🔍 Stack trace ....</summary>
-                  <pre><xsl:value-of select="failure/text()"/></pre>
+                  <pre><xsl:value-of select="string(failure)"/></pre>
                 </details>
               </xsl:if>
 
@@ -246,32 +247,52 @@
             </td>
             -->
             <td>
-              <!-- Adding stack trace -->
+              <!-- Stack trace -->
               <xsl:if test="failure">
-                <xsl:variable name="failureText" select="string(failure)"/>
-                🔍 <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">stack trace</a>
-                <pre class="stacktrace-content" style="display:none;">
-                  <xsl:value-of select="failure/text()"/>
-                </pre>
+                <xsl:variable name="failureMessage" select="string(failure)"/>
+                <xsl:if test="$failureMessage">
+                  <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a>
+                  <pre style="display:none;">
+                    <xsl:value-of select="$failureMessage"/>
+                  </pre>
+                </xsl:if>
               </xsl:if>
-              <!-- Adding last screenshot -->
-              <xsl:variable name="screenshot" select="properties/property[@name='testrail_attachment']/@value"/>
-              <!--xsl:if test="properties/property[@name='testrail_attachment']"-->
-              <xsl:if test="string($screenshot)">s
-                📎
+              <!-- Skip message -->
+              <xsl:if test="skipped">
+                <xsl:variable name="skipMessage" select="string(properties/property[@name='skip']/@value)"/>
+                <xsl:if test="$skipMessage">
+                  <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a>
+                  <pre style="display:none;">
+                    <xsl:value-of select="$skipMessage"/>
+                  </pre>
+                </xsl:if>
+              </xsl:if>
+              <!-- Last screenshot -->
+              <xsl:variable name="screenshot" select="string(properties/property[@name='testrail_attachment']/@value)"/>
+              <xsl:if test="$screenshot">
                 <a href="javascript:void(0);">
                   <xsl:attribute name="onclick">
-                    <xsl:text>open_modal_img('</xsl:text>
-                      <xsl:value-of select="$screenshot"/>
-                    <xsl:text>')</xsl:text>
+                    <xsl:text>
+                      open_modal_img('</xsl:text><xsl:value-of select="$screenshot"/><xsl:text>')
+                    </xsl:text>
                   </xsl:attribute>
-                  screenshot
+                  📎
                 </a>
               </xsl:if>
-              <!-- Adding issue links -->
-              <xsl:if test="properties/property[@name='issues'] and failure">
+              <!-- Standard output -->
+              <xsl:if test="system-out">
+                <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">📜</a>
+                <pre style="display:none;"><xsl:value-of select="string(system-out)"/></pre>
+              </xsl:if>
+              <!-- Error output -->
+              <xsl:if test="system-err">
+                <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🛑</a>
+                <pre style="display:none;"><xsl:value-of select="string(system-err)"/></pre>
+              </xsl:if>
+              <!-- Issue -->
+              <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
+              <xsl:if test="$issues and failure">
                 🐞
-                <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/> 
                 <xsl:for-each select="str:tokenize($issues, ',')">
                   <xsl:variable name="key" select="normalize-space(.)"/>
                   <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
