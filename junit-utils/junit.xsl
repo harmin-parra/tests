@@ -193,7 +193,8 @@
               </xsl:choose>
             </td>
             <td><xsl:value-of select="format-number(number(@time), '0.0')"/></td> <!-- select="round(number(@time))" -->
-            <!--td>
+            <!--
+            <td>
               <xsl:if test="failure">
                 <details>
                   <summary>🔍 Stack trace ....</summary>
@@ -233,17 +234,6 @@
                   <summary>🛑 Error Output</summary>
                   <pre><xsl:value-of select="system-err"/></pre>
                 </details>
-              </xsl:if>
-
-              <xsl:if test="
-                not(failure)
-                and not(error)
-                and not(skipped)
-                and not(system-out)
-                and not(system-err)
-                and not(properties/property[@name='testrail_attachment'])
-                and not(properties/property[@name='skip'])"
-              >
               </xsl:if>
             </td>
             -->
