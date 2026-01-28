@@ -176,6 +176,7 @@
           <th>Status</th>
           <th>Time</th>
           <th>Details</th>
+          <th>Issues</th>
         </tr>
       </thead>
       <tbody>
@@ -289,6 +290,8 @@
                 <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🛑</a>
                 <pre style="display:none;"><xsl:value-of select="string(system-err)"/></pre>
               </xsl:if>
+            </td>
+            <td>
               <!-- Issue -->
               <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
               <xsl:if test="$issues and failure">
