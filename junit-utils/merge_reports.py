@@ -13,6 +13,9 @@ from decorators import (
 )
 
 
+file_report = "report.html"
+
+
 def read_properties(element):
     """
     Returns a dict of properties from a <properties> block, if present.
@@ -138,9 +141,9 @@ def parse_junit_report(xml_path):
 
 
 def parse_junit_reports(xml_paths: list[str]):
-    f = open("report.html", "w")
+    f = open(file_report, "w")
     f.close()
-    f = open("report.html", "a")
+    f = open(file_report, "a")
     f.write(open_html())
 
     tree = [None] * len(xml_paths)
@@ -178,7 +181,6 @@ def parse_junit_reports(xml_paths: list[str]):
             for s in range(len(xml_paths)):
                 testcase[s] = testcases[s][j]
                 info.append(get_info(testcase[s]))
-                print(testcase[s].get('name'))
             verifyName(testcase)
 
             test_name = testcase[0].get("name")
@@ -225,14 +227,8 @@ def verifySize(items: list):
 
 
 if __name__ == "__main__":
-    parse_junit_report("./results1.xml")
-    sys.exit(0)
+    # parse_junit_report(sys.argv[1])
     parse_junit_reports(sys.argv[1:])
-    parse_junit_reports([
-      "./results1.xml",
-      "./results2.xml",
-      "./results3.xml",
-    ])
 
 
 # python ./merge_reports.py folder/*.xml
