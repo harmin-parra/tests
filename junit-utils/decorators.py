@@ -65,8 +65,6 @@ def decorate_details(testcase: dict, sub_folder: str):
           f'<pre style="display:none;">{testcase["text_msg"]}</pre>'
         )
     if testcase['attachment'] not in (None, ''):
-        # row += f"{testcase['attachment']}"
-        # row += "📎 "
         row += (
           f'<a href="javascript:void(0);" onclick="open_modal_img(\'{sub_folder}/{testcase['attachment']}\')">📎 </a>'
         )
