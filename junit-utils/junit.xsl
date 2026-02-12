@@ -159,12 +159,24 @@
   <xsl:template match="testsuite">
     <h2>
       <xsl:value-of select="@name"/>
+
+      <xsl:text>&#160;&#160;</xsl:text>
+
+      <xsl:variable name="time" select="number(@time)"/>
+      <xsl:variable name="minutes" select="floor($time div 60)"/>
+      <xsl:variable name="seconds" select="$time mod 60"/>
       <span class="small">
-        — Tests: <xsl:value-of select="@tests"/>,
+        Tests: <xsl:value-of select="@tests"/>,
         Failures: <xsl:value-of select="@failures"/>,
         Errors: <xsl:value-of select="@errors"/>,
         Skipped: <xsl:value-of select="@skipped | @disabled"/>,
-        Time: <xsl:value-of select="@time"/>s
+        Time:
+        <xsl:if test="$minutes &gt; 0">
+          <xsl:value-of select="$minutes"/><xsl:text> m </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="format-number($seconds, '0.00')"/><xsl:text> s</xsl:text>
+        <!-- <xsl:value-of select="concat($minutes, ' m ', format-number($seconds, '0.00'), ' s')"/> -->
+        <!-- <xsl:value-of select="$minutes"/> m <xsl:value-of select="format-number($seconds, '0.00')"/> s -->
       </span>
     </h2>
 
