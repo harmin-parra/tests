@@ -11,14 +11,13 @@ export class SoftAssert {
   /**
    * Generic soft assertion that logs success or failure.
    */
-  async assert(condition: boolean | Promise<boolean>, description?: string): Promise<void> {
+  assert(condition: boolean, description?: string): void {
     try {
-      const result = await condition;
-      if (!result) throw new Error();
-      console.log(`✅ PASS: ${description ?? 'Condition passed'}`);
+      if (!condition) throw new Error();
+      console.log(`✅ PASS: ${description ?? 'Assertion passed'}`);
     } catch (error: any) {
-      console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
-      this.errors.push(`${description ?? 'Condition failed'}`);
+      console.error(`❌ FAIL: ${description ?? 'Assertion failed'}`);
+      this.errors.push(`${description ?? 'Assertion failed'}`);
     }
     this.verification_pending = true;
   }
@@ -26,8 +25,8 @@ export class SoftAssert {
   /**
    * Check if two values are equal.
    */
-  async equals<T>(actual: T, expected: T, description?: string): Promise<void> {
-    if (await actual !== await expected) {
+  equals<T>(actual: T, expected: T, description?: string): void {
+    if (actual !== expected) {
       console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
       console.error(`   Expected: ${expected}, but got: ${actual}`);
       this.errors.push(`${description ?? 'Condition failed'}: Expected ${expected}, got ${actual}`);
@@ -40,11 +39,11 @@ export class SoftAssert {
   /**
    * Check if two values are not equal.
    */
-  async notEquals<T>(actual: T, expected: T, description?: string): Promise<void> {
-    if (await actual === await expected) {
+  notEquals<T>(actual: T, expected: T, description?: string): void {
+    if (actual === expected) {
       console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
-      console.error(`   Unexpected: ${actual}`);
-      this.errors.push(`${description ?? 'Condition failed'}: Expected ${expected}, got ${actual}`);
+      console.error(`   Unexpected: ${expected}`);
+      this.errors.push(`${description ?? 'Condition failed'}: Unexpected ${expected}`);
     } else {
       console.log(`✅ PASS: ${description ?? 'Condition passed'}`);
     }
@@ -54,23 +53,23 @@ export class SoftAssert {
   /**
    * Assert that a value is true.
    */
-  async isTrue(value: boolean | Promise<boolean>, description?: string): Promise<void> {
-    await this.assert(await value === true, description);
+  isTrue(value: boolean, description?: string): void {
+    this.equals(value, true, description);
     this.verification_pending = true;
   }
 
   /**
    * Assert that a value is false.
    */
-  async isFalse(value: boolean | Promise<boolean>, description?: string): Promise<void> {
-    await this.assert(await value === false, description);
+  isFalse(value: boolean, description?: string): void {
+    this.equals(value, false, description);
     this.verification_pending = true;
   }
 
   /**
    * At the end of the test, verify all soft assertions.
    */
-  async verifyAll(): Promise<void> {
+  verifyAll(): void {
     if (this.errors.length > 0) {
       console.error('\n❌ Soft assertion failures:');
       this.errors.forEach((err, i) => console.error(`  ${i + 1}. ${err}`));
@@ -87,7 +86,7 @@ export class SoftAssert {
     try {
       await locator.waitFor();
       const visible = await locator.isVisible();
-      await this.assert(visible, description);
+      this.assert(visible, description);
       if (visible) {
         const bg = await locator.evaluate(element => element.style.backgroundColor);
         await changeBackgroundColor(locator);
@@ -98,7 +97,7 @@ export class SoftAssert {
         await changeBackgroundColor(locator, bg);
       }
     } catch(error) {
-      await this.assert(false, description);
+      this.assert(false, description);
       console.error(error.toString());
     }
   }
