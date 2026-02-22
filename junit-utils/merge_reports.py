@@ -6,6 +6,7 @@ from decorators import (
     decorate_details,
     decorate_issues,
     decorate_status,
+    decorate_summary,
     decorate_testcase_row,
     decorate_testsuite,
     open_html,
@@ -16,7 +17,7 @@ from decorators import (
 file_report = "report.html"
 
 
-def read_properties(element):
+def read_properties(element: ET.Element) -> dict:
     """
     Returns a dict of properties from a <properties> block, if present.
     """
@@ -30,7 +31,7 @@ def read_properties(element):
     return props
 
 
-def get_result_details(testcase):
+def get_result_details(testcase: ET.Element) -> tuple[str, str, str, str]:
     """
     Returns (status, message, type, details)
     """
@@ -56,7 +57,7 @@ def get_result_details(testcase):
     return status, message, error_type, details
 
 
-def get_console_output(testcase):
+def get_console_output(testcase: ET.Element) -> tuple[str, str]:
     """
     Returns (status, message, type, details)
     """
@@ -74,7 +75,7 @@ def get_console_output(testcase):
     return text_out, text_err
 
 
-def get_info(testcase):
+def get_info(testcase: ET.Element) -> dict:
     name = testcase.get('name')
     test_props = read_properties(testcase)
     issues = test_props.get("issues")
@@ -93,7 +94,26 @@ def get_info(testcase):
     }
 
 
-def parse_junit_report(xml_path):
+def get_summary(suites: int, roots: list[ET.Element]) -> list[dict]:
+    summaries = []
+    counter = 1
+    for testsuites in roots:
+        summary = {
+          'env': testsuites.get("env", f"ENV{counter}"),
+          'screenshot_folder': testsuites.get("screenshot_folder", '.'),
+          'suites': suites,
+          'tests': testsuites.get("tests"),
+          'failures': testsuites.get("failures"),
+          'errors': testsuites.get("errors"),
+          'skipped': testsuites.get("skipped"),
+          'time': format_duration(testsuites.get("time")),
+        }
+        summaries.append(summary)
+        counter += 1
+    return summaries
+
+
+def parse_junit_report(xml_path: str) -> None:
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
@@ -140,7 +160,7 @@ def parse_junit_report(xml_path):
                 print(f"    System Err: {text_err}")
 
 
-def parse_junit_reports(xml_paths: list[str]):
+def parse_junit_reports(xml_paths: list[str]) -> None:
     f = open(file_report, "w")
     f.close()
     f = open(file_report, "a")
@@ -152,6 +172,8 @@ def parse_junit_reports(xml_paths: list[str]):
     suite = [None] * len(xml_paths)
     testcases = [None] * len(xml_paths)
     testcase = [None] * len(xml_paths)
+    is_root_testsuites = None
+    summaries = None
 
     # Root can be <testsuite> or <testsuites>
     for i in range(len(xml_paths)):
@@ -159,9 +181,15 @@ def parse_junit_reports(xml_paths: list[str]):
         root[i] = tree[i].getroot()
         if root[i].tag == "testsuite":
             testsuites[i] = [root[i]]
+            is_root_testsuites = False
         else:
             testsuites[i] = root[i].findall("testsuite")
+            is_root_testsuites = True
     verifySize(testsuites)
+
+    if is_root_testsuites:
+        summaries = get_summary(len(testsuites[0]), root)
+        f.write(decorate_summary(summaries))
 
     for i in range(len(testsuites[0])):
         for s in range(len(xml_paths)):
@@ -170,22 +198,22 @@ def parse_junit_reports(xml_paths: list[str]):
 
         suite_name = suite[0].get("name")
         f.write(decorate_testsuite(suite_name))
-        f.write(open_testsuite_table())
+        f.write(open_testsuite_table(summaries))
 
         for s in range(len(xml_paths)):
             testcases[s] = suite[s].findall("testcase")
         verifySize(testcases)
 
         for j in range(len(testcases[0])):
-            info = []
+            cases = []
             for s in range(len(xml_paths)):
                 testcase[s] = testcases[s][j]
-                info.append(get_info(testcase[s]))
+                cases.append(get_info(testcase[s]))
             verifyName(testcase)
 
             test_name = testcase[0].get("name")
             classname = testcase[0].get("classname")
-            f.write(decorate_testcase_row(info))
+            f.write(decorate_testcase_row(cases, summaries))
 
         f.write(close_testsuite_table())
 
@@ -193,7 +221,7 @@ def parse_junit_reports(xml_paths: list[str]):
     f.close()
 
 
-def verify(items: list):
+def verify(items: list) -> None:
     name = None
     size = -1
     for item in items:
@@ -206,7 +234,7 @@ def verify(items: list):
             sys.exit(1)
 
 
-def verifyName(items: list):
+def verifyName(items: list) -> None:
     name = None
     for item in items:
         if name is None:
@@ -216,7 +244,7 @@ def verifyName(items: list):
             sys.exit(1)
 
 
-def verifySize(items: list):
+def verifySize(items: list) -> None:
     size = -1
     for item in items:
         if size == -1:
@@ -224,6 +252,17 @@ def verifySize(items: list):
         if size != len(item):
             print("Items size mismatch", file=sys.stderr)
             sys.exit(1)
+
+
+def format_duration(duration: int | float | str) -> str:
+    total_seconds = float(duration)
+    minutes = int(total_seconds // 60)
+    seconds = total_seconds % 60
+
+    if minutes == 0:
+        return f"{seconds:.2f} s"
+    else:
+        return f"{minutes} m {seconds:.2f} s"
 
 
 if __name__ == "__main__":

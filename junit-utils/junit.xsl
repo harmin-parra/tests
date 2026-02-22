@@ -25,10 +25,20 @@
           .failed { color: #d1242f; }
           .skipped { color: #42a5f5; }
           .error { color: #b000b5; }
-          .small { color: #666; font-size: 0.9em; }
+          .small { color: #666; font-size: 0.8em; }
           a, a:hover, a:focus, a:active {
             text-decoration: none;
             color: inherit;
+          }
+          /* button styled as a link */
+          .link-button {
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            text-decoration: none;
           }
 
           /* Modal window */
@@ -85,14 +95,14 @@
         </style>
       </head>
       <body>
-        <h1>JUnit Test Report</h1>
-
         <div id="modal" class="modal">
           <div id="modal-box" class="modal-box">
             <span id="close-btn" class="close-btn">×</span>  <!-- &#215; -->
             <div id="modal-content"></div>
           </div>
         </div>
+
+        <h1>JUnit Test Report</h1>
 
         <!-- Handle both <testsuites> root or single <testsuite> root -->
         <xsl:choose>
@@ -142,12 +152,21 @@
 
   <!-- If the root is <testsuites> -->
   <xsl:template match="testsuites">
+    <xsl:variable name="time" select="number(@time)"/>
+    <xsl:variable name="minutes" select="floor($time div 60)"/>
+    <xsl:variable name="seconds" select="$time mod 60"/>
+
     <div class="summary">
-      <strong>Suites:</strong> <xsl:value-of select="count(testsuite)"/> |
-      <strong>Total tests:</strong> <xsl:value-of select="sum(testsuite/@tests)"/> |
-      <strong>Failures:</strong> <xsl:value-of select="sum(testsuite/@failures)"/> |
-      <strong>Errors:</strong> <xsl:value-of select="sum(testsuite/@errors)"/> |
-      <strong>Skipped:</strong> <xsl:value-of select="sum(testsuite/@skipped | testsuite/@disabled)"/>
+      <strong>Suites: </strong> <xsl:value-of select="count(testsuite)"/> |
+      <strong>Total tests: </strong> <xsl:value-of select="@tests"/> |
+      <strong>Failures: </strong> <xsl:value-of select="@failures"/> |
+      <strong>Errors: </strong> <xsl:value-of select="@errors"/> |
+      <strong>Skipped: </strong> <xsl:value-of select="@skipped"/> |
+      <strong>Total time: </strong>
+        <xsl:if test="$minutes &gt; 0">
+          <xsl:value-of select="$minutes"/><xsl:text> m </xsl:text>
+        </xsl:if>
+        <xsl:value-of select="format-number($seconds, '0.00')"/><xsl:text> s</xsl:text>
     </div>
 
     <xsl:for-each select="testsuite">
@@ -158,25 +177,23 @@
   <!-- For each <testsuite> -->
   <xsl:template match="testsuite">
     <h2>
-      <xsl:value-of select="@name"/>
-
-      <xsl:text>&#160;&#160;</xsl:text>
-
       <xsl:variable name="time" select="number(@time)"/>
       <xsl:variable name="minutes" select="floor($time div 60)"/>
       <xsl:variable name="seconds" select="$time mod 60"/>
+
+      <xsl:value-of select="@name"/>
+      <xsl:text>&#160;&#160;</xsl:text>
       <span class="small">
         Tests: <xsl:value-of select="@tests"/>,
         Failures: <xsl:value-of select="@failures"/>,
         Errors: <xsl:value-of select="@errors"/>,
-        Skipped: <xsl:value-of select="@skipped | @disabled"/>,
+        Skipped: <xsl:value-of select="@skipped"/>,
         Time:
         <xsl:if test="$minutes &gt; 0">
           <xsl:value-of select="$minutes"/><xsl:text> m </xsl:text>
         </xsl:if>
         <xsl:value-of select="format-number($seconds, '0.00')"/><xsl:text> s</xsl:text>
         <!-- <xsl:value-of select="concat($minutes, ' m ', format-number($seconds, '0.00'), ' s')"/> -->
-        <!-- <xsl:value-of select="$minutes"/> m <xsl:value-of select="format-number($seconds, '0.00')"/> s -->
       </span>
     </h2>
 
@@ -254,7 +271,9 @@
               <xsl:if test="failure">
                 <xsl:variable name="failureMessage" select="string(failure)"/>
                 <xsl:if test="$failureMessage">
-                  <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a>
+                  <!-- a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a -->
+                  <!-- a href="" onclick="event.preventDefault(); open_modal_pre(this.nextElementSibling.textContent)">🔍</a -->
+                  <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</button>
                   <pre style="display:none;">
                     <xsl:value-of select="$failureMessage"/>
                   </pre>
@@ -264,7 +283,7 @@
               <xsl:if test="skipped">
                 <xsl:variable name="skipMessage" select="string(properties/property[@name='skip']/@value)"/>
                 <xsl:if test="$skipMessage">
-                  <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a>
+                  <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</button>
                   <pre style="display:none;">
                     <xsl:value-of select="$skipMessage"/>
                   </pre>
@@ -273,23 +292,23 @@
               <!-- Last screenshot -->
               <xsl:variable name="screenshot" select="string(properties/property[@name='testrail_attachment']/@value)"/>
               <xsl:if test="$screenshot">
-                <a href="javascript:void(0);">
+                <button class="link-button">
                   <xsl:attribute name="onclick">
                     <xsl:text>
                       open_modal_img('</xsl:text><xsl:value-of select="$screenshot"/><xsl:text>')
                     </xsl:text>
                   </xsl:attribute>
                   📎
-                </a>
+                </button>
               </xsl:if>
               <!-- Standard output -->
               <xsl:if test="system-out">
-                <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">📜</a>
+                <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">📜</button>
                 <pre style="display:none;"><xsl:value-of select="string(system-out)"/></pre>
               </xsl:if>
               <!-- Error output -->
               <xsl:if test="system-err">
-                <a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🛑</a>
+                <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🛑</button>
                 <pre style="display:none;"><xsl:value-of select="string(system-err)"/></pre>
               </xsl:if>
             </td>
@@ -314,5 +333,6 @@
         </xsl:for-each>
       </tbody>
     </table>
+    <br/>
   </xsl:template>
 </xsl:stylesheet>

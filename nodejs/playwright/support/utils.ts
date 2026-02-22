@@ -5,7 +5,11 @@ import { Attach } from "./allure-utils";
 
 
 export function typeOf(value: any): string {
-  return Object.prototype.toString.call(value).slice(8, -1);
+  let result = Object.prototype.toString.call(value).slice(8, -1);
+  if (result == "Object")
+    return value.constructor.name;
+  else
+    return result;
 }
 
 export async function sleep(delay: number): Promise<void> {

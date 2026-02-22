@@ -3,6 +3,9 @@ import { changeBackgroundColor, removeBackgroundColor } from "./locator-utils";
 import { Attach } from "./allure-utils";
 
 
+type ErrorConstructor<T extends Error> = new (...args: any[]) => T;
+
+
 export class SoftAssert {
 
   private errors: string[] = [];
@@ -25,7 +28,7 @@ export class SoftAssert {
   /**
    * Check if two values are equal.
    */
-  equals<T>(actual: T, expected: T, description?: string): void {
+  equal<T>(actual: T, expected: T, description?: string): void {
     if (actual !== expected) {
       console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
       console.error(`   Expected: ${expected}, but got: ${actual}`);
@@ -39,11 +42,11 @@ export class SoftAssert {
   /**
    * Check if two values are not equal.
    */
-  notEquals<T>(actual: T, expected: T, description?: string): void {
+  notEqual<T>(actual: T, expected: T, description?: string): void {
     if (actual === expected) {
       console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
-      console.error(`   Unexpected: ${expected}`);
-      this.errors.push(`${description ?? 'Condition failed'}: Unexpected ${expected}`);
+      console.error(`   Expected: !${expected}, but got: ${actual}`);
+      this.errors.push(`${description ?? 'Condition failed'}: Expected: !${expected}, got: ${actual}`);
     } else {
       console.log(`✅ PASS: ${description ?? 'Condition passed'}`);
     }
@@ -51,19 +54,83 @@ export class SoftAssert {
   }
 
   /**
-   * Assert that a value is true.
+   * Assert that a condition is true.
    */
-  isTrue(value: boolean, description?: string): void {
-    this.equals(value, true, description);
+  true(condition: boolean, description?: string): void {
+    this.equal(condition, true, description);
     this.verification_pending = true;
   }
 
   /**
-   * Assert that a value is false.
+   * Assert that a condition is false.
    */
-  isFalse(value: boolean, description?: string): void {
-    this.equals(value, false, description);
+  false(condition: boolean, description?: string): void {
+    this.equal(condition, false, description);
     this.verification_pending = true;
+  }
+
+  doesNotExist<T>(value: T, description?: string): void {
+    if (value != null) {
+      console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
+      console.error(`   Expected: null|undefined, but got: ${value}`);
+      this.errors.push(`${description ?? 'Condition failed'}: Expected: null|undefined, got ${value}`);
+    } else {
+      console.log(`✅ PASS: ${description ?? 'Condition passed'}`);
+    }
+    this.verification_pending = true;
+  }
+
+  exits<T>(value: T, description?: string): void {
+    if (value == null) {
+      console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
+      console.error(`   Expected: !(null|undefined), but got: ${value}`);
+      this.errors.push(`${description ?? 'Condition failed'}: Expected: !(null|undefined), got ${value}`);
+    } else {
+      console.log(`✅ PASS: ${description ?? 'Condition passed'}`);
+    }
+    this.verification_pending = true;
+  }
+
+  // throws<T extends Error>(fn: (...args: unknown[]) => unknown, ex: new (...args: any[]) => T, description?: string) {
+  throws<T extends Error>(fn: (...args: unknown[]) => unknown, ex: ErrorConstructor<T>, description?: string) {
+    try {
+      fn()
+      console.log(`❌ FAIL: ${description ?? 'Expected exception not thrown'}`);
+      console.log(`   Expected ${ex.name}, but nothing got thrown`);
+      this.errors.push(`${description ?? 'Expected exception not thrown'}: Expected: ${ex.name}, nothing got thrown`);
+    } catch(error) {
+      if (error instanceof ex) {
+        console.log(`✅ PASS: ${description ?? 'Expected exception thrown'}`)
+      } else {
+        const actual = error instanceof Error ? error.constructor.name : typeof error;
+        const message = error instanceof Error ? error.message : String(error);
+        console.log(`❌ FAIL: ${description ?? 'Unexpected exception thrown'}`);
+        console.log(`   Expected ${ex.name}, but got ${actual}: ${message}`);
+        this.errors.push(`${description ?? 'Unexpected exception thrown'}: Expected: ${ex.name}, got: ${actual}`);
+      }
+    } finally {
+      this.verification_pending = true;
+    }
+  }
+
+  // throws<T extends Error>(fn: (...args: unknown[]) => unknown, ex: new (...args: any[]) => T, description?: string) {
+  doesNotThrow<T extends Error>(fn: (...args: unknown[]) => unknown, ex: ErrorConstructor<T>, description?: string) {
+    try {
+      fn()
+      console.log(`✅ PASS: ${description ?? 'Expected exception not thrown'}`);
+    } catch(error) {
+      if (!(error instanceof ex)) {
+        console.log(`✅ PASS: ${description ?? 'Expected exception not thrown'}`)
+      } else {
+        const actual = error instanceof Error ? error.constructor.name : typeof error;
+        const message = error instanceof Error ? error.message : String(error);
+        console.log(`❌ FAIL: ${description ?? 'Unexpected exception thrown'}`);
+        console.log(`   Unexpected ${actual}: ${message}`);
+        this.errors.push(`${description ?? 'Unexpected exception thrown'}: ${actual}`);
+      }
+    } finally {
+      this.verification_pending = true;
+    }
   }
 
   /**
@@ -90,10 +157,8 @@ export class SoftAssert {
       if (visible) {
         const bg = await locator.evaluate(element => element.style.backgroundColor);
         await changeBackgroundColor(locator);
-        //await locator.page().waitForTimeout(pause)
         await Attach.image(locator.page(), description);
         await removeBackgroundColor(locator);
-        //await locator.page().waitForTimeout(pause);
         await changeBackgroundColor(locator, bg);
       }
     } catch(error) {

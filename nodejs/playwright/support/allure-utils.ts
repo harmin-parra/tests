@@ -1,4 +1,5 @@
 import * as allure from "allure-js-commons";
+import fs from 'node:fs';
 import { type Page } from '@playwright/test';
 import { TestCase } from "@playwright/test/reporter";
 
@@ -57,7 +58,19 @@ export class Attach {
 
   static async json(title: string, content: any): Promise<void> {
     try {
-      await Attach.text(title, JSON.stringify(content, null, 4));
+      await allure.attachment(title, JSON.stringify(content, null, 4), allure.ContentType.JSON);
+    } catch(error) { }
+  }
+
+  static async xml(title: string, content: string): Promise<void> {
+    try {
+      await allure.attachment(title, content, allure.ContentType.XML);
+    } catch(error) { }
+  }
+
+  static async pdf(title: string, filepath: string): Promise<void> {
+    try {
+      await allure.attachment(title, fs.readFileSync(filepath), 'application/pdf');
     } catch(error) { }
   }
 
@@ -67,6 +80,8 @@ export class Attach {
       const buffer: Buffer = await page.screenshot({ path: screenshotPath });
       await allure.attachment("Last screenshot before failure", buffer, allure.ContentType.PNG);
       return screenshotPath;
-    } catch(error) { }
+    } catch(error) {
+      return null;
+    }
   }
 }

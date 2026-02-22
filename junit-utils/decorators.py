@@ -1,8 +1,10 @@
-env = ["C21", "GH", "CITYA"]
-sub_folder = ["recette_c21", "recette_gh", "recette_citya"]
+from typing import Literal
 
 
-def decorate_status(status):
+bugtracker_url = "https://naxosdionysos.atlassian.net/browse"
+
+
+def decorate_status(status: Literal['passed', 'error', 'failed', 'skipped']) -> str:
     if status == "passed":
         return "✅"
     if status == "error":
@@ -13,88 +15,131 @@ def decorate_status(status):
         return "🔷"
 
 
-def decorate_testsuite(testsuite):
-    return f"<h2>{testsuite}</h2>"
+def decorate_summary(summaries: list[dict]) -> str:
+    content = f"""
+        <h3>Summary</h3>
+        <table style="width: unset">
+          <thead>
+            <tr>
+              <td/>
+              <th>Suites</th>
+              <th>Total tests</th>
+              <th>Failures</th>
+              <th>Errors</th>
+              <th>Skipped</th>
+              <th>Total time</th>
+            </tr>
+          </thead>
+
+          <tbody>
+    """
+    for summary in summaries:
+        content += f"""
+            <tr>
+              <th>{summary['env']}</th>
+              <td>{summary['suites']}</td>
+              <td>{summary['tests']}</td>
+              <td>{summary['failures']}</td>
+              <td>{summary['errors']}</td>
+              <td>{summary['skipped']}</td>
+              <td>{summary['time']}</td>
+            </tr>
+        """
+    content += """
+          </tbody>
+        <table>
+        <br/>
+    """
+    return content
 
 
-def open_testsuite_table():
-    return f"""
+def decorate_testsuite(name: str) -> str:
+    return f"<h2>{name}</h2>"
+
+
+def open_testsuite_table(summaries: list[dict]) -> str:
+    content = f"""
         <table>
           <thead>
             <tr>
               <th>Test</th>
-              <th>{env[0]}</th>
-              <th>{env[1]}</th>
-              <th>{env[2]}</th>
+        """
+    for summary in summaries:
+        content += f"""
+              <th>{summary['env']}</th>
+        """
+    content += """
               <th>Issues</th>
             </tr>
           </thead>
           <tbody>
     """
+    return content
 
 
-def close_testsuite_table():
+def close_testsuite_table() -> str:
     return """
           </tbody>
         </table>
     """  
 
 
-def decorate_testcase_row(testcases: list[dict]):
+def decorate_testcase_row(testcases: list[dict], summaries: list[dict]) -> str:
     overall_passed = True
     for i in range(len(testcases)):
         overall_passed = overall_passed and testcases[i]['status'] == "passed"
     if overall_passed:
         testcases[0]['issues'] = ''
-    return f"""
+    content = f"""
         <tr>
           <td>{testcases[0]['name']}</td>
-          <td class="cell_{testcases[0]['status']}">{decorate_details(testcases[0], sub_folder[0])}</td>
-          <td class="cell_{testcases[1]['status']}">{decorate_details(testcases[1], sub_folder[1])}</td>
-          <td class="cell_{testcases[2]['status']}">{decorate_details(testcases[2], sub_folder[2])}</td>
-          <td>{decorate_issues(testcases[0]['issues'])}</td>
+    """
+    for i in range(len(testcases)):
+        content += f"""
+          <td class="cell_{testcases[i]['status']}">{decorate_details(testcases[i], summaries[i]['screenshot_folder'])}</td>
+        """
+    content += """
         </tr>
     """
+    return content
 
 
-def decorate_details(testcase: dict, sub_folder: str):
+def decorate_details(testcase: dict, sub_folder: str) -> str:
     row = f"{decorate_status(testcase['status'])} "
     if testcase['text_msg'] not in (None, ''):
         row += (
-          f'<a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍 </a>'
+          # f'<a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a>'
+          # f'<a href="" onclick="event.preventDefault(); open_modal_pre(this.nextElementSibling.textContent)">🔍</a>'
+          f'<button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</button>'
           f'<pre style="display:none;">{testcase["text_msg"]}</pre>'
         )
     if testcase['attachment'] not in (None, ''):
         row += (
-          f'<a href="javascript:void(0);" onclick="open_modal_img(\'{sub_folder}/{testcase['attachment']}\')">📎 </a>'
+          f'<button class="link-button" onclick="open_modal_img(\'{sub_folder}/{testcase['attachment']}\')">📎</button>'
         )
     if testcase['text_out'] not in (None, ''):
         row += (
-          f'<a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">📜 </a>'
+          f'<button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">📜</button>'
           f'<pre style="display:none;">{testcase["text_out"]}</pre>'
         )
     if testcase['text_err'] not in (None, ''):
         row += (
-          f'<a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🛑 </a>'
+          f'<button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🛑</button>'
           f'<pre style="display:none;">{testcase["text_err"]}</pre>'
         )
     return row
 
 
-def decorate_issues(issues: list[str]):
+def decorate_issues(issues: list[str]) -> str:
     if issues in (None, '', []):
         return ""
     cell = "🐞 "
     for issue in issues:
-        cell += f"""
-            <a href="https://naxosdionysos.atlassian.net/browse/{issue}" target="_blank">
-              {issue}
-            </a> 
-        """
+        cell += f'<a href="{bugtracker_url}/{issue}" target="_blank">{issue}</a> '
     return cell
 
 
-def open_html():
+def open_html() -> str:
     return """
     <!DOCTYPE html>
     <html>
@@ -116,6 +161,16 @@ def open_html():
           a, a:hover, a:focus, a:active {
             text-decoration: none;
             color: inherit;
+          }
+          /* button styled as a link */
+          .link-button {
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            text-decoration: none;
           }
 
           /* Modal window */
@@ -185,17 +240,17 @@ def open_html():
         </style>
       </head>
       <body>
-        <h1>JUnit Test Report</h1>
         <div id="modal" class="modal">
           <div id="modal-box" class="modal-box">
             <span id="close-btn" class="close-btn">×</span>  <!-- &#215; -->
             <div id="modal-content"></div>
           </div>
         </div>
+        <h1>JUnit Test Report</h1>
     """
 
 
-def close_html():
+def close_html() -> str:
     return """
         <script type="text/javascript">
           var modal = document.getElementById("modal");
