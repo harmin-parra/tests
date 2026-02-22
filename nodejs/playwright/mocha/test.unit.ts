@@ -5,7 +5,7 @@ import { typeOf } from "../support/utils";
 describe("typeOf Tests", function () {
 
   it("typeof Array", function () {
-    const type = typeOf([]);
+    const _type = typeOf([]);
     assert(_type == "Array", "verifying " + _type);
   });
 
