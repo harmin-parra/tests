@@ -4,9 +4,9 @@ import argparse
 # -----------------------------
 # CONFIG — UPDATE THESE VALUES
 # -----------------------------
-TESTRAIL_URL = "https://naxosautomation.testrail.io/"
-USER = "dev@naxos.fr"
-API_KEY = "rQ7REmd0Z79ksbq./OR/-9LoTy/AZnJdecXDXJGfa"
+TESTRAIL_URL = "https://my_company.testrail.io/index.php?/api/v2/"
+USER = "user@email.com"
+API_KEY = "YOUR_TOKEN"
 PROJECT_ID = 1
 
 # -----------------------------
@@ -28,7 +28,7 @@ def tr_post(api, payload):
 # GET SUITES
 # -----------------------------
 def get_suites() -> list[int]:
-    response = tr_get(f"index.php?/api/v2/get_suites/{PROJECT_ID}")
+    response = tr_get(f"get_suites/{PROJECT_ID}")
     suites = []
     for suite in response['suites']:
         suites.append(suite['id'])
@@ -48,7 +48,7 @@ def add_plan(name: str, description: str = None) -> int:
             "include_all": True
         })
     plan = tr_post(
-        f"index.php?/api/v2/add_plan/{PROJECT_ID}", 
+        f"add_plan/{PROJECT_ID}", 
         {
             "name": name,
             "description": description,

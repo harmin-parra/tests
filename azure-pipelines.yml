@@ -53,7 +53,7 @@ stages:
         python3 -m venv ~/venv
         . ~/venv/bin/activate
         ./runner.sh --browser ${{ parameters.browser }}
-        CI_JOB_URL=$(System.CollectionUri)$(Build.Repository.Name)/_build/results?buildId=$(Build.BuildId)"&view=logs"
+        CI_JOB_URL="$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs"
         echo $CI_JOB_URL > reporting/allure-results/java/job.url
         echo $CI_JOB_URL > reporting/allure-results/nodejs/job.url
         echo $CI_JOB_URL > reporting/allure-results/python/job.url

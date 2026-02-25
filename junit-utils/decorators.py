@@ -1,7 +1,7 @@
 from typing import Literal
 
 
-bugtracker_url = "https://naxosdionysos.atlassian.net/browse"
+bugtracker_url = "https://bugtracker.com"
 
 
 def decorate_status(status: Literal['passed', 'error', 'failed', 'skipped']) -> str:

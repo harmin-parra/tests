@@ -1,8 +1,8 @@
 #!/bin/bash
 
-env_names=('C21' 'GH' 'CITYA')
-report_files=("${PIPELINE_WORKSPACE}/junit_report_recette_c21/results.xml" "${PIPELINE_WORKSPACE}/junit_report_recette_gh/results.xml" "${PIPELINE_WORKSPACE}/junit_report_recette_citya/results.xml")
-screenshot_folders=('recette_c21' 'recette_gh' 'recette_citya')
+env_names=('ENV1' 'ENV2' 'ENV3')
+report_files=("${PIPELINE_WORKSPACE}/env1/results.xml" "${PIPELINE_WORKSPACE}/env2/results.xml" "${PIPELINE_WORKSPACE}/env3/results.xml")
+screenshot_folders=('env1' 'env2' 'env3')
 
 for i in "${!report_files[@]}"
 do
