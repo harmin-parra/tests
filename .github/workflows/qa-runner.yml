@@ -42,6 +42,7 @@ jobs:
           mkdir reporting/allure-results/java reporting/allure-results/nodejs reporting/allure-results/python
           python3 -m venv ~/venv
           . ~/venv/bin/activate
+          pip install --upgrade pip setuptools
           ./runner.sh --browser "${{ inputs.browser }}"
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
