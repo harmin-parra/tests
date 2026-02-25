@@ -1,8 +1,9 @@
 import { expect, type Locator } from "@playwright/test";
-import { NG_EVENT } from "./constants";
 import { sleep } from "./utils";
 import { stat } from "fs";
 
+
+const DELAY = 20_000
 
 export async function waitFor(
   locator: Locator,
@@ -13,7 +14,7 @@ export async function waitFor(
   }
 ): Promise<void> {
   let state = options?.state ?? 'visible';
-  let timeout = options?.timeout ?? NG_EVENT;
+  let timeout = options?.timeout ?? DELAY;
   let interval = options?.interval ?? 500;
 
   if (state == "attached" || state == "detached" || state == "visible" || state == "hidden") {
@@ -52,7 +53,7 @@ export async function getElementValue(locator: Locator, timeout?: number): Promi
   return await locator.evaluate((elem: any) => elem.value, { timeout: timeout });
 }
 
-export async function isElementPresent(locator: Locator, timeout: number = 10_000): Promise<boolean> {
+export async function isElementPresent(locator: Locator, timeout: number = DELAY): Promise<boolean> {
   let exists = false;
   try {
     await locator.waitFor({ state: 'attached', timeout: timeout });
@@ -63,7 +64,7 @@ export async function isElementPresent(locator: Locator, timeout: number = 10_00
   return exists;
 }
 
-export async function isElementVisible(locator: Locator, timeout: number = 10_000): Promise<boolean> {
+export async function isElementVisible(locator: Locator, timeout: number = DELAY): Promise<boolean> {
   let visible = false;
   try {
     await locator.waitFor({ state: 'visible', timeout: timeout });
