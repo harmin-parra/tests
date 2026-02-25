@@ -6,9 +6,9 @@ from junitparser import JUnitXml
 # -----------------------------
 # CONFIG — UPDATE THESE VALUES
 # -----------------------------
-TESTRAIL_URL = "https://naxosautomation.testrail.io/index.php?/api/v2/"
-USER = "dev@naxos.fr"
-API_KEY = "rQ7REmd0Z79ksbq./OR/-9LoTy/AZnJdecXDXJGfa"
+TESTRAIL_URL = "https://my_company.testrail.io/index.php?/api/v2/"
+USER = "user@email.com"
+API_KEY = "YOUR_TOKEN"
 
 # -----------------------------
 # HELPER FUNCTIONS
