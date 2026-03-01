@@ -23,8 +23,10 @@ on:
         default: harmin/qa-runner-debian
         type: choice
         options:
-        - harmin/qa-runner-debian
-        - harmin/qa-runner-ubuntu
+        - harmin/qa-runner-debian:13
+        - harmin/qa-runner-ubuntu:13
+        - harmin/qa-runner-debian:12
+        - harmin/qa-runner-ubuntu:12
         - harmin/qa-runner-debian:beta
         - harmin/qa-runner-ubuntu:beta
 
