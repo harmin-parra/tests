@@ -1,15 +1,16 @@
+import fs from 'node:fs';
 import path from 'node:path';
+import { generateDateLabel } from './date-utils';
+import { DATE_FILE, storagePath } from './shared-variables';
 import { chromium, firefox, expect, FullConfig } from '@playwright/test';
 
 
-const FOLDER = "runtime";
-const storagePath = path.join(FOLDER, "storageState.json");
-
-
 export default async function globalSetup(config: FullConfig) {
+  fs.writeFileSync(DATE_FILE, generateDateLabel());
   const baseURL = config.projects[0].use?.baseURL;
   await storeManagerSession(baseURL);
 }
+
 
 async function storeManagerSession(baseURL: string) {
   console.log("Creating and saving shared manager session");

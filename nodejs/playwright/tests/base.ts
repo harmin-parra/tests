@@ -3,6 +3,9 @@ import * as allure from "allure-js-commons";
 import { Junit } from '../support/junit-utils';
 import { addJiraReferences, logLastScreenshot } from '../support/utils';
 import { SoftAssert } from '../support/SoftAssert';
+import path from 'node:path';
+import fs from 'node:fs';
+import { COVERAGE_RAW_FOLDER } from '../support/shared-variables';
 
 
 const regex = /-\s*C(\d+)$/;
@@ -34,4 +37,33 @@ export const test = base.extend<Fixtures>({
       await logLastScreenshot(page, caseid);
     }
   },
+});
+
+
+test.beforeEach(async ({ page }) => {
+  await page.coverage.startJSCoverage();
+  await page.coverage.startCSSCoverage();
+});
+
+
+test.afterEach(async ({ page }) => {
+  const jsCoverage = await page.coverage.stopJSCoverage();
+  const cssCoverage = await page.coverage.stopCSSCoverage();
+
+  const coverageDir = path.join(COVERAGE_RAW_FOLDER);
+  if (!fs.existsSync(coverageDir)) {
+    fs.mkdirSync(coverageDir, { recursive: true });
+  }
+
+  const stamp = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  fs.writeFileSync(
+    path.join(coverageDir, `js-${stamp}.json`),
+    JSON.stringify(jsCoverage, null, 2)
+  );
+
+  fs.writeFileSync(
+    path.join(coverageDir, `css-${stamp}.json`),
+    JSON.stringify(cssCoverage, null, 2)
+  );
 });

@@ -1,6 +1,5 @@
 import { expect, type Locator } from "@playwright/test";
 import { sleep } from "./utils";
-import { stat } from "fs";
 
 
 const DELAY = 20_000

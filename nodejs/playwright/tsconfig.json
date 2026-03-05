@@ -3,8 +3,12 @@
   "compilerOptions": {
     // Modules
     "module": "commonjs",
-    // "moduleResolution": "node",
-    // "types": ["node", "@playwright/test", "@types/mocha"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": ["node", "@playwright/test", "@types/mocha"],
+
+    // Emit
+    "noEmit": true,
 
     // Language and Environment
     "target": "esnext",
@@ -13,10 +17,11 @@
     "strict": true,
     "strictNullChecks": false,
 
-
     // Interop Constraints
     "esModuleInterop": true,
-  
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+
     // Completeness
     "skipLibCheck": true,
   },
