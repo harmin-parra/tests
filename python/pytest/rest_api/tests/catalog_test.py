@@ -103,5 +103,5 @@ def step_impl(context, report):
     report.attach(f"Status code: <code>{result.status_code}</code>", escape_html=False)
     report.attach("Response:", body=result.json(), mime=report.Mime.JSON)
     assert result.status_code == 404
-    assert result.json()['error'] == f"Oject with id={id} was not found."
+    assert result.json()['error'] == f"Object with id={id} was not found."
     context['result'] = result

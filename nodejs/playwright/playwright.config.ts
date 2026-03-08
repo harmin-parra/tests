@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 
 export default defineConfig({
-  globalSetup: './support/global-setup.ts',
+  // globalSetup: './support/global-setup.ts',
   testDir: './tests',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
@@ -36,7 +36,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     // baseURL: 'http://127.0.0.1:3000',
-    //storageState: storagePath,
+    // storageState: storagePath,
     viewport: { width: 1440, height: 900 },  // { width: 1920, height: 1080 },
     launchOptions: {
       args: ['--window-size=1440,900']
