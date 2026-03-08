@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { generateDateLabel } from './date-utils';
-import { DATE_FILE, storagePath } from './shared-variables';
+import { DATE_FILE, COUNTER_FILE, storagePath } from './shared-variables';
 import { chromium, firefox, expect, FullConfig } from '@playwright/test';
 
 
@@ -23,5 +23,6 @@ async function storeManagerSession(baseURL: string) {
   // Save session/localStorage to a file
   await page.context().storageState({ path: storagePath });
 
+  await page.close();
   await browser.close();
 }
