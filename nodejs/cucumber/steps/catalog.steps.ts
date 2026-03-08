@@ -112,6 +112,6 @@ Then('The object is deleted', async function(this: CustomWorld) {
     .catch(error => {
       this.attach("Status code: " + error.status);
       this.attach("Response:\n" + JSON.stringify(error.response.data, null, 2));
-      assert.equal(error.response.data.error, `Oject with id=${api_context.id} was not found.`)
+      assert.equal(error.response.data.error, `Object with id=${api_context.id} was not found.`)
     });
 });

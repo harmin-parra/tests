@@ -141,7 +141,7 @@ public class CatalogTest {
         then().
             log().all().
             statusCode(404).
-            body("error", equalTo("Oject with id=" + id + " was not found."));
+            body("error", equalTo("Object with id=" + id + " was not found."));
     }
 
 }

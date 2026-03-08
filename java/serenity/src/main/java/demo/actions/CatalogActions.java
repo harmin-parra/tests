@@ -88,7 +88,7 @@ public class CatalogActions extends UIInteractions {
         when()
             .get("/" + id)
         .then()
-            .body("error", Matchers.equalTo("Oject with id=" + id + " was not found."));
+            .body("error", Matchers.equalTo("Object with id=" + id + " was not found."));
     }
 
 }

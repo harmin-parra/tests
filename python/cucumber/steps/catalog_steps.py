@@ -76,4 +76,4 @@ def step_impl(context):
     global payload, id, result
     result = catalog.get(id)
     assert result.status_code == 404
-    assert result.json()['error'] == f"Oject with id={id} was not found."
+    assert result.json()['error'] == f"Object with id={id} was not found."
