@@ -41,12 +41,17 @@ export const test = base.extend<Fixtures>({
 
 
 test.beforeEach(async ({ page }) => {
+  if (process.env.BROWSER == "firefox" ||  process.env.BROWSER == "webkit")
+    return;
   await page.coverage.startJSCoverage();
   await page.coverage.startCSSCoverage();
 });
 
 
 test.afterEach(async ({ page }) => {
+  if (process.env.BROWSER == "firefox" ||  process.env.BROWSER == "webkit")
+    return;
+
   const jsCoverage = await page.coverage.stopJSCoverage();
   const cssCoverage = await page.coverage.stopCSSCoverage();
 
