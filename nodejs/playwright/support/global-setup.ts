@@ -7,6 +7,7 @@ import { chromium, firefox, expect, FullConfig } from '@playwright/test';
 
 export default async function globalSetup(config: FullConfig) {
   fs.writeFileSync(DATE_FILE, generateDateLabel());
+  fs.writeFileSync(COUNTER_FILE, '0');
   const baseURL = config.projects[0].use?.baseURL;
   await storeManagerSession(baseURL);
 }

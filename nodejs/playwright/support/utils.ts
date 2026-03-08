@@ -8,6 +8,7 @@ import path from "node:path";
 import fs from 'node:fs';
 
 
+/*
 function nextId(): number {
   const raw = fs.readFileSync(COUNTER_FILE, "utf8").trim();
   const current = parseInt(raw, 10);
@@ -19,6 +20,7 @@ function nextId(): number {
 export function getNextSuffix(): string {
   return DATE_LABEL + '-' + nextId();
 }
+*/
 
 export function typeOf(value: any): string {
   let result = Object.prototype.toString.call(value).slice(8, -1);
