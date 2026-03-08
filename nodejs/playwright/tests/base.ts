@@ -40,16 +40,16 @@ export const test = base.extend<Fixtures>({
 });
 
 
-test.beforeEach(async ({ page }) => {
-  if (process.env.BROWSER == "firefox" ||  process.env.BROWSER == "webkit")
+test.beforeEach(async ({ page, browserName }) => {
+  if (browserName == "firefox" || browserName == "webkit")
     return;
   await page.coverage.startJSCoverage();
   await page.coverage.startCSSCoverage();
 });
 
 
-test.afterEach(async ({ page }) => {
-  if (process.env.BROWSER == "firefox" ||  process.env.BROWSER == "webkit")
+test.afterEach(async ({ page, browserName }) => {
+  if (browserName == "firefox" || browserName == "webkit")
     return;
 
   const jsCoverage = await page.coverage.stopJSCoverage();
