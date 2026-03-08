@@ -12,5 +12,5 @@ requests
 robotframework==7.3.2
 robotframework-browser==19.7.0
 robotframework-seleniumlibrary==6.7.1
-RESTinstance==1.5.2
+RESTinstance==1.6.2
 selenium==4.38.0
