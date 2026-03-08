@@ -28,25 +28,35 @@ th {
     text-align: left;
 }
 
-.passed {
-    color: #1a7f37;
-}
-
-.failed {
-    color: #d1242f;
-}
-
-.skipped {
-    color: #42a5f5;
-}
-
-.error {
-    color: #b000b5;
-}
-
 .small {
     color: #666;
     font-size: 0.8em;
+}
+
+.text_passed {
+    color: #1a7f37;
+}
+.text_failed {
+    color: #d1242f;
+}
+.text_skipped {
+    color: #42a5f5;
+}
+.text_error {
+    color: #b000b5;
+}
+
+.cell_passed {
+    background-color: #6aff6a35;
+}
+.cell_error {
+    background-color: #ff6a6a35;  /* #ff6a6a75; */
+}
+.cell_failed {
+    background-color: #ff6a6a35;
+}
+.cell_skipped {
+    background-color: #6adcff35;
 }
 
 a,

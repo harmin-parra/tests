@@ -105,10 +105,10 @@
             <td><xsl:value-of select="@name"/></td>
             <td>
               <xsl:choose>
-                <xsl:when test="failure"><span class="failed">❌ Failed</span></xsl:when>
-                <xsl:when test="error"><span class="error">🔥 Error</span></xsl:when>
-                <xsl:when test="skipped"><span class="skipped">🔷 Skipped</span></xsl:when>
-                <xsl:otherwise><span class="passed">✅ Passed</span></xsl:otherwise>
+                <xsl:when test="failure"><span class="text_failed">❌ Failed</span></xsl:when>
+                <xsl:when test="error"><span class="text_error">🔥 Error</span></xsl:when>
+                <xsl:when test="skipped"><span class="text_skipped">🔷 Skipped</span></xsl:when>
+                <xsl:otherwise><span class="text_passed">✅ Passed</span></xsl:otherwise>
               </xsl:choose>
             </td>
             <td><xsl:value-of select="format-number(number(@time), '0.0')"/></td> <!-- select="round(number(@time))" -->

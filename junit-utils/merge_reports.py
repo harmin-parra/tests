@@ -3,9 +3,6 @@ import xml.etree.ElementTree as ET
 from decorators import (
     close_html,
     close_testsuite_table,
-    decorate_details,
-    decorate_issues,
-    decorate_status,
     decorate_summary,
     decorate_testcase_row,
     decorate_testsuite,
