@@ -17,7 +17,7 @@ pipelines:
             - harmin/qa-runner-debian:beta
             - harmin/qa-runner-ubuntu:beta
         - name: ALLURE
-          default: 2.35.1
+          default: 2.37.0
 
       - step:
           name: Test
@@ -38,6 +38,7 @@ pipelines:
           name: Report
           image: eclipse-temurin:8-jre
           script:
+            - apt-get update && apt-get install -y unzip
             - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
             - unzip /tmp/allure.zip -d /usr/local/
             - ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
