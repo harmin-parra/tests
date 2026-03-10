@@ -42,7 +42,6 @@ jobs:
             . ~/venv/bin/activate
           fi
           ./docker.sh --browser "${{ inputs.browser }}" --test java/playwright
-          ls java/playwright/junit-report
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
         env:
           HOME: /root
@@ -51,12 +50,6 @@ jobs:
         with:
           name: artifact_test
           path: reporting/
-
-      - name: Upload artifact junit
-        uses: actions/upload-artifact@v4
-        with:
-          name: junit_test
-          path: java/playwright/junit-report/
 
   report:
     uses: ./.github/workflows/report-job.yml
