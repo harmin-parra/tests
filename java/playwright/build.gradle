@@ -44,7 +44,9 @@ test {
 
     reports {
         html.required = true
-        html.outputLocation = layout.buildDirectory.dir("test-report")
+        // html.outputLocation = layout.buildDirectory.dir("reports")
+        // html.outputLocation = layout.projectDirectory.dir("reports/test-html")
+        // html.outputLocation = file("/tmp/reports")        
         junitXml.required = true
         junitXml.outputLocation = layout.buildDirectory.dir("test-report")
     }
