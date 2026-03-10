@@ -214,6 +214,9 @@ cd serenity
 mv target/site/serenity ../../reporting/report-serenity
 cd ..
 
+cd ..
+exit
+
 echo =============
 echo Java - Karate
 echo =============
