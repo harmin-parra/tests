@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        ALLURE = '2.35.1'
+        ALLURE = '2.37.0'
         EXECUTOR_NAME = 'Jenkins'
         EXECUTOR_TYPE = 'jenkins'
     }
@@ -32,11 +32,6 @@ pipeline {
             steps {
                 sh '''
                     set -eux
-
-                    # Workspace-local Gradle cache
-                    export GRADLE_USER_HOME=$PWD/.gradle
-                    mkdir -p "$GRADLE_USER_HOME"
-                    find "$GRADLE_USER_HOME" -name "*.lck" -delete
 
                     # Activate Python venv
                     export PATH="$PATH:$HOME/.local/bin"
