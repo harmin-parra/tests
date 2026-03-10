@@ -8,8 +8,7 @@ stages:
   - commit
 
 variables:
-  MAVEN: "3.9.10"
-  ALLURE: "2.35.1"
+  ALLURE: "2.37.0"
   EXECUTOR_NAME: "Gitlab CI"
   EXECUTOR_TYPE: "gitlab"
   DOCKER:
@@ -18,7 +17,7 @@ variables:
       - "harmin/qa-runner-debian"
       - "harmin/qa-runner-ubuntu"
       - "harmin/qa-runner-debian:12"
-      - "harmin/qa-runner-ubuntu:beta"
+      - "harmin/qa-runner-debian:beta"
     description: "The docker image to use."
   BROWSER:
     value: "firefox"
