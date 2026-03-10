@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: junit_test
-          path: junit-report/
+          path: java/playwright/junit-report/
 
   report:
     uses: ./.github/workflows/report-job.yml
