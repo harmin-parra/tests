@@ -51,6 +51,12 @@ jobs:
           name: artifact_test
           path: reporting/
 
+      - name: Upload artifact junit
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit_test
+          path: junit-report/
+
   report:
     uses: ./.github/workflows/report-job.yml
     needs: [test]
