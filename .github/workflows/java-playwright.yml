@@ -42,6 +42,8 @@ jobs:
             . ~/venv/bin/activate
           fi
           ./docker.sh --browser "${{ inputs.browser }}" --test java/playwright
+          ls
+          ls java/playwright
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
         env:
           HOME: /root
