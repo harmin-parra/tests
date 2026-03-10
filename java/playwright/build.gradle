@@ -41,4 +41,11 @@ test {
         showExceptions = true
         showStackTraces = true
     }
+
+    reports {
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir("test-report")
+        junitXml.required = true
+        junitXml.outputLocation = layout.buildDirectory.dir("test-report")
+    }
 }
