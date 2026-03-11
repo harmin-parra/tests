@@ -23,7 +23,6 @@ pipelines:
           name: Test
           image: harmin/qa-runner-debian
           script:
-            - export PATH=$PATH:$HOME/.local/bin
             - python3 -m venv ~/venv
             - . ~/venv/bin/activate
             - ./runner.sh --browser $BROWSER
