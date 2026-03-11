@@ -39,7 +39,6 @@ tests:
   stage: test
   image: $DOCKER
   script:
-    - export PATH=$PATH:$HOME/.local/bin
     - python3 -m venv ~/venv
     - . ~/venv/bin/activate
     - ./runner.sh --browser $BROWSER
