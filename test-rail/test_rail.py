@@ -7,11 +7,32 @@ from update_test_plan import update_plan
 # -----------------------------
 def main():
     parser = argparse.ArgumentParser(description="Publish JUnit results to TestRail")
-    parser.add_argument("-p", "--plan", required=False, type=int, default=0, help="Test plan id")
-    parser.add_argument("-n", "--name", required=False, default='Test plan', help="Test plan name")
-    parser.add_argument("-d", "--description", required=False, default=None, help="Test plan description")
-    parser.add_argument("-f", "--file", required=True, help="JUnit XML file")
-    parser.add_argument("-w", "--folder", required=False, default=".", help="Attachment base folder")
+    parser.add_argument(
+        "-p", "--plan",
+        type=int,
+        default=0,
+        help="Test plan id"
+    )
+    parser.add_argument(
+        "-n", "--name",
+        default='Test plan',
+        help="Test plan name"
+    )
+    parser.add_argument(
+        "-d", "--description",
+        default=None,
+        help="Test plan description"
+    )
+    parser.add_argument(
+        "-f", "--file",
+        required=True,
+        help="JUnit XML file"
+    )
+    parser.add_argument(
+        "-w", "--folder",
+        default=".",
+        help="Attachment base folder"
+    )
     args = parser.parse_args()
 
     plan_id = args.plan

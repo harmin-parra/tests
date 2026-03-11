@@ -199,10 +199,27 @@ def update_plan(plan_id: int, junit_file: str, folder: str = ".", description: s
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Upload JUnit results to TestRail Plan")
-    parser.add_argument("-p", "--plan", required=True, type=int, help="TestRail plan ID")
-    parser.add_argument("-f", "--file", required=True, help="JUnit XML file path")
-    parser.add_argument("-w", "--folder", default=".", help="Attachment folder")
-    parser.add_argument("-d", "--description", default=None, help="Test plan description")
+    parser.add_argument(
+        "-p", "--plan",
+        required=True,
+        type=int,
+        help="TestRail plan ID"
+    )
+    parser.add_argument(
+        "-f", "--file",
+        required=True,
+        help="JUnit XML file path"
+    )
+    parser.add_argument(
+        "-w", "--folder",
+        default=".",
+        help="Attachment folder"
+    )
+    parser.add_argument(
+        "-d", "--description",
+        default=None,
+        help="Test plan description"
+    )
     args = parser.parse_args()
 
     plan_id = args.plan
@@ -211,6 +228,7 @@ def main():
     description = args.description
 
     update_plan(plan_id, junit_file, folder, description)
+
 
 # -----------------------------
 if __name__ == "__main__":

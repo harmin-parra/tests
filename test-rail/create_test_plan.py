@@ -63,12 +63,23 @@ def add_plan(name: str, description: str = None) -> int:
 # -----------------------------
 def main():
     parser = argparse.ArgumentParser(description="Create plan in TestRail")
-    parser.add_argument("-n", "--name", required=False, default="Test Plan", help="Test plan name")
-    parser.add_argument("-d", "--description", required=False, default='', help="Test plan description")
+    parser.add_argument(
+        "-n", "--name",
+        default="Test Plan",
+        help="Test plan name"
+    )
+    parser.add_argument(
+        "-d", "--description",
+        default='',
+        help="Test plan description"
+    )
     args = parser.parse_args()
+
     name = args.name
     description = args.description
+
     plan_id = add_plan(name, description)
+
 
 # -----------------------------
 if __name__ == "__main__":

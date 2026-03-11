@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as ET
 import glob
+from pathlib import Path
+
 
 def merge_junit_files(directory: str, merged_file: str) -> None:
     # Path to your JUnit XML files
@@ -53,13 +55,27 @@ def merge_junit_files(directory: str, merged_file: str) -> None:
 # -----------------------------
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Upload JUnit results to TestRail Plan")
-    parser.add_argument("-d", "--directoy", required=True, help="Directory containing the JUnit XML files")
-    parser.add_argument("-o", "--output", required=True, help="The output file")
+    parser = argparse.ArgumentParser(description="Merge JUnit XML reports")
+    parser.add_argument(
+        "-d", "--directory",
+        type=Path,
+        default=Path('.'),
+        help="Directory containing the JUnit XML files"
+    )
+    parser.add_argument(
+        "-o", "--output",
+        type=Path,
+        help="The output file"
+    )
     args = parser.parse_args()
 
-    directory = args.directoy
-    merged_file = args.output
+    directory = Path(args.directory)
+    merged_file = directory / "merged.xml" if args.output is None else Path(args.output)
+
+    if not (directory.exists() and directory.is_dir()):
+        raise ValueError(f"{directory} is not a valid directory")
+    if not (merged_file.parent.exists() and merged_file.parent.is_dir()):
+        raise ValueError(f"{merged_file.parent} is not a valid directory")
 
     merge_junit_files(directory, merged_file)
 
