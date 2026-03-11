@@ -48,7 +48,6 @@ stages:
         container: ${{ parameters.docker }}
         steps:
           - script: |
-              export PATH=$PATH:$HOME/.local/bin
               python3 -m venv ~/venv
               . ~/venv/bin/activate
               ./runner.sh --browser ${{ parameters.browser }}

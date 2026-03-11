@@ -214,25 +214,23 @@ cd serenity
 mv target/site/serenity ../../reporting/report-serenity
 cd ..
 
-cd ..
-exit
+# echo =============
+# echo Java - Karate
+# echo =============
+# cd karate
+# # ./mvnw -q dependency:resolve
+# # ./mvnw test -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
+# ./mvnw test -Dtest="karate/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS > /dev/null
+# # ./gradlew test --tests="karate.TestRunner.runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 
-echo =============
-echo Java - Karate
-echo =============
-cd karate
-# ./mvnw -q dependency:resolve
-# ./mvnw test -Dtest="web/**, rest_api/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
-./mvnw test -Dtest="karate/TestRunner#runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS > /dev/null
-# ./gradlew test --tests="karate.TestRunner.runner" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
+# # Purge weird Allure Karate entries
+# mv target/karate-reports ../../reporting/report-karate
+# for filename in ../../reporting/allure-results/java/*result.json; do
+#   RES=$(egrep '"testCaseName":"\[[0-9]+:[0-9]+\]' $filename)
+#   if [ -n "$RES" ]; then
+#     rm -f $filename
+#   fi
+# done
+# cd ..
 
-# Purge weird Allure Karate entries
-mv target/karate-reports ../../reporting/report-karate
-for filename in ../../reporting/allure-results/java/*result.json; do
-  RES=$(egrep '"testCaseName":"\[[0-9]+:[0-9]+\]' $filename)
-  if [ -n "$RES" ]; then
-    rm -f $filename
-  fi
-done
-cd ..
 cd ..
