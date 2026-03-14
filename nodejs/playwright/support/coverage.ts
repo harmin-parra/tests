@@ -5,219 +5,353 @@ import v8toIstanbul from 'v8-to-istanbul';
 import { createCoverageMap } from 'istanbul-lib-coverage';
 import { createContext } from 'istanbul-lib-report';
 import reports from 'istanbul-reports';
-import { COVERAGE_RAW_FOLDER, COVERAGE_REPORT_FOLDER } from './shared-variables';
+import { COVERAGE_RESULTS_FOLDER, COVERAGE_REPORT_FOLDER } from './shared-variables';
+
+
+const hostname = 'localhost';
 
 
 async function generate() {
-  if (!fs.existsSync(COVERAGE_RAW_FOLDER)) {
+  if (!fs.existsSync(COVERAGE_RESULTS_FOLDER)) {
     console.warn('No coverage data found');
     return;
   }
-  await processJSCoverage(COVERAGE_RAW_FOLDER);
-  await processCSSCoverage(COVERAGE_RAW_FOLDER);
+  recreateFolder(COVERAGE_REPORT_FOLDER);
+  await processJSCoverage(COVERAGE_RESULTS_FOLDER, false);
+  await processCSSCoverage(COVERAGE_RESULTS_FOLDER);
   console.log('✅ Coverage generation complete!');
 }
 
 
-export async function processJSCoverage(coverageDir: string) {
+function recreateFolder(folder: string): void {
+  try {
+    fs.rmSync(folder, { recursive: true, force: true });
+    fs.mkdirSync(folder, { recursive: true });
+  } catch (err) {
+    console.error("Error recreating folder: " + folder + '\n', err);
+  }
+}
+
+
+type CSSResult = {
+  file: string;
+  used: number;
+  total: number;
+  percent: string;
+  ranges?: { start: number; end: number }[];
+  content?: string;
+  link?: string;
+};
+
+
+type CSSRange = { start: number; end: number };
+
+
+function sanitizePath(filepath: string, extension?: string) {
+  let result = filepath.replace(/\(([^)]+)\)/g, (_, inner) => {
+    const sanitized = inner.replace(/:/g, '_').replace(/\//g, '-');
+    return `(${sanitized})`;
+  }).replace(/^\/+/, '');   // remove leading /
+  if (extension != null && !result.endsWith('.' + extension))
+    result = path.join(result, 'inline.' + extension);
+  return result;
+}
+
+
+async function processJSCoverage(
+  coverageDir: string,
+  useSourceMaps = false,
+  allowedHost = hostname
+) {
   const coverageMap = createCoverageMap({});
   const jsFiles = fs.readdirSync(coverageDir).filter(f => f.startsWith('js-'));
-  if (!jsFiles.length) {
-    console.warn('No JS coverage files found.');
-    return;
-  }
+  if (!jsFiles.length) return console.warn('No JS coverage files found.');
 
-  const allowedHost = 'localhost';
-  // const allowedHosts = ['localhost'];
-
-  // temp directory for inline/remote scripts
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'v8-coverage-js-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'js-coverage-'));
 
   for (const file of jsFiles) {
     const raw = JSON.parse(fs.readFileSync(path.join(coverageDir, file), 'utf-8'));
 
     for (const script of raw) {
       try {
-        if (!script.functions || script.functions.length === 0) continue;
-        if (!script.url) continue;
-
-        // Filter third-party scripts
+        if (
+          !script.functions?.length ||
+          !script.url ||
+          !script.source ||
+          typeof script.source !== 'string'
+        ) continue;
+        // Filter scripts by host
         let parsedUrl: URL | null = null;
         try {
           parsedUrl = new URL(script.url);
           if (parsedUrl.hostname !== allowedHost) continue;
-          // if (!allowedHosts.includes(parsedUrl.hostname)) continue;
+          if (!parsedUrl.pathname || parsedUrl.pathname === '/') continue;
         } catch {
-          // skip invalid URLs
-          continue;
+          continue; // skip invalid URLs
         }
 
-        let sourceFilePath: string | null = null;
+        // Remove css source maps
+        script.source = script.source.replace(/\/\/# sourceMappingURL=.*\.css\.map$/gm, '');
+        // Remove sourceMappingURL if skipping maps
+        if (!useSourceMaps)
+          script.source = script.source.replace(/\/\/# sourceMappingURL=.*$/gm, '');
 
-        // Try local source file
-        const filePath = parsedUrl.pathname.startsWith('/')
-          ? parsedUrl.pathname.slice(1)
-          : parsedUrl.pathname;
+        // Determine source file path
+        let relativePath = path.join(parsedUrl.pathname.slice(1)) || 'inline.js';
+        // Sanitize filename
+        relativePath = sanitizePath(relativePath, 'js');
 
-        const absolutePath = path.join(process.cwd(), filePath);
+        const baseFolder = path.join(tmpDir, 'src', path.dirname(relativePath));
+        fs.mkdirSync(baseFolder, { recursive: true });
+        const sourceFilePath = path.join(baseFolder, path.basename(relativePath));
 
-        if (fs.existsSync(absolutePath) && fs.statSync(absolutePath).isFile()) {
-          sourceFilePath = absolutePath;
+        // Save file if it doesn't exist
+        if (!fs.existsSync(sourceFilePath))
+          fs.writeFileSync(sourceFilePath, script.source, 'utf-8');
+
+        const downloadedSources = new Set<string>();
+        if (useSourceMaps) {
+          try {
+            const mapUrl = script.url + '.map';
+            const resp = await fetch(mapUrl);
+            if (!resp.ok) throw new Error(`Failed to fetch ${mapUrl}`);
+
+            const mapText = await resp.text();
+            const map = JSON.parse(mapText);
+
+            const mapPath = sourceFilePath + '.map';
+            fs.writeFileSync(mapPath, mapText, 'utf-8');
+
+            if (map.sources) {
+              for (const src of map.sources) {
+                try {
+                  // Normalize webpack paths
+                  const cleanSrc = src
+                    .replace(/^webpack:\/\//, '')
+                    .replace(/^\.\//, '')
+                    .replace(/^\/+/, '');
+
+                    const srcUrl = new URL(cleanSrc, script.url).href;
+
+                  // Prevent downloading the same source multiple times
+                  if (downloadedSources.has(srcUrl))
+                    continue;
+                  downloadedSources.add(srcUrl);
+
+                  const srcResp = await fetch(srcUrl);
+                  if (!srcResp.ok) {
+                    console.warn(`Could not fetch source ${srcUrl}`);
+                    continue;
+                  }
+
+                  const content = await srcResp.text();
+
+                  const localPath = path.join(path.dirname(sourceFilePath), cleanSrc);
+                  fs.mkdirSync(path.dirname(localPath), { recursive: true });
+
+                  if (!fs.existsSync(localPath)) {
+                    fs.writeFileSync(localPath, content, 'utf-8');
+                  }
+
+                } catch (err) {
+                  console.warn(
+                    `Failed to fetch source ${src}: ${
+                      err instanceof Error ? err.message : String(err)
+                    }`
+                  );
+                }
+              }
+            }
+
+          } catch (err) {
+            console.warn(
+              `Failed to fetch map for ${script.url}: ${
+                err instanceof Error ? err.message : String(err)
+              }`
+            );
+          }
         }
 
-        // Fallback to inline source
-        else if (script.source) {
-          const tempFilePath = path.join(tmpDir, filePath);
-          const tempDir = path.dirname(tempFilePath);
-          fs.mkdirSync(tempDir, { recursive: true });
-          fs.writeFileSync(tempFilePath, script.source, 'utf-8');
-          sourceFilePath = tempFilePath;
-        } else continue;
-
+        // Load coverage
         const converter = v8toIstanbul(sourceFilePath);
-        await converter.load();
+        try {
+          await converter.load();
+        } catch (err) {
+          if (!useSourceMaps) {
+            console.warn(`Ignored map error for ${script.url} because useSourceMaps=false`);
+          } else {
+            throw err;
+          }
+        }
         converter.applyCoverage(script.functions);
-
         coverageMap.merge(converter.toIstanbul());
+
       } catch (err) {
         console.warn(`Skipped JS coverage for ${script.url}: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
   }
 
+  // Generate reports
   const outputDir = path.join(COVERAGE_REPORT_FOLDER, 'js');
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-
+  fs.mkdirSync(outputDir, { recursive: true });
   const context = createContext({ dir: outputDir, coverageMap });
-
   reports.create('html').execute(context);
   reports.create('text-summary').execute(context);
 
-  console.log(`✅ JS coverage report generated at: ${outputDir}/index.html`);
-
+  // Cleanup
   fs.rmSync(tmpDir, { recursive: true, force: true });
+
+  console.log(`✅ JS coverage report generated at: ${outputDir}/index.html`);
 }
 
 
-export async function processCSSCoverage(coverageDir: string) {
+async function processCSSCoverage(
+  coverageDir: string,
+  fetchRemote = true,
+  allowedHost = hostname
+) {
   const cssFiles = fs.readdirSync(coverageDir).filter(f => f.startsWith('css-'));
-  if (!cssFiles.length) {
-    console.warn('No CSS coverage files found.');
-    return;
-  }
-
-  const allowedHost = 'localhost';
-  // const allowedHosts = ['localhost'];
+  if (!cssFiles.length) return console.warn('No CSS coverage files found.');
 
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'css-coverage-'));
 
-  // Type-safe results array including optional 'link'
-  const resultsMap: Record<string, { used: number; total: number; ranges: { start: number; end: number }[]; content: string }> = {};
+  const resultsMap: Record<string, {
+    used: number;
+    total: number;
+    ranges: { start: number; end: number }[];
+    content: string;
+  }> = {};
 
-  // Collect coverage from all files
   for (const file of cssFiles) {
     const raw = JSON.parse(fs.readFileSync(path.join(coverageDir, file), 'utf-8'));
 
     for (const stylesheet of raw) {
       try {
-        if (!stylesheet.url) continue;
+        if (!stylesheet.url && !stylesheet.text) continue;
 
-        // Filter third-party scripts
         let parsedUrl: URL | null = null;
         try {
           parsedUrl = new URL(stylesheet.url);
           if (parsedUrl.hostname !== allowedHost) continue;
-          // if (!allowedHosts.includes(parsedUrl.hostname)) continue;
         } catch {
-          // skip invalid URLs
-          continue;
+          parsedUrl = null;
         }
 
-        const filePath = parsedUrl.pathname.startsWith('/')
-          ? parsedUrl.pathname.slice(1)
-          : parsedUrl.pathname;
+        // Determine base path
+        let relativePath = parsedUrl ? parsedUrl.pathname.slice(1) : 'inline.css';
+        relativePath = sanitizePath(relativePath, 'css');
 
-        const absolutePath = path.join(process.cwd(), filePath);
+        let content = stylesheet.text || '';
 
-        let content = '';
-        let totalBytes = 0;
-
-        // Try local source file
-        if (fs.existsSync(absolutePath) && fs.statSync(absolutePath).isFile()) {
-          content = fs.readFileSync(absolutePath, 'utf-8');
-          totalBytes = content.length;
-        } 
-        // Fallback to inline source
-        else if (stylesheet.text) {
-          const tempFilePath = path.join(tmpDir, filePath);
-          const tempDir = path.dirname(tempFilePath);
-          fs.mkdirSync(tempDir, { recursive: true });
-          fs.writeFileSync(tempFilePath, stylesheet.text, 'utf-8');
-          content = stylesheet.text;
-          totalBytes = content.length;
-        } else continue;
-
-        const usedBytes = stylesheet.ranges.reduce((sum: number, r: { start: number; end: number }) => sum + (r.end - r.start), 0);
-
-        if (!resultsMap[filePath]) {
-          resultsMap[filePath] = { used: 0, total: totalBytes, ranges: [], content };
+        // Fetch CSS if missing
+        if (!content && fetchRemote && parsedUrl) {
+          try {
+            const resp = await fetch(stylesheet.url);
+            if (!resp.ok) {
+              console.warn(`Skipped CSS coverage for ${stylesheet.url}: failed to fetch`);
+              continue;
+            }
+            content = await resp.text();
+          } catch (err) {
+            console.warn(`Skipped CSS coverage for ${stylesheet.url}: ${err}`);
+            continue;
+          }
         }
 
-        resultsMap[filePath].used += usedBytes;
-        resultsMap[filePath].ranges.push(...stylesheet.ranges);
+        if (!content) continue;
 
-        if (resultsMap[filePath].used > resultsMap[filePath].total) {
-          resultsMap[filePath].used = resultsMap[filePath].total;
+        if (!stylesheet.ranges || !stylesheet.ranges.length)
+          stylesheet.ranges = [{ start: 0, end: content.length }];
+
+        const sourceFilePath = path.join(tmpDir, relativePath);
+        fs.mkdirSync(path.dirname(sourceFilePath), { recursive: true });
+        // Save file if it doesn't exist
+        if (!fs.existsSync(sourceFilePath))
+          fs.writeFileSync(sourceFilePath, content, 'utf-8');
+
+        // Init result
+        if (!resultsMap[relativePath]) {
+          resultsMap[relativePath] = {
+            used: 0,
+            total: content.length,
+            ranges: [],
+            content: content
+          };
         }
 
+        // Add new ranges
+        resultsMap[relativePath].ranges.push(...stylesheet.ranges);
+        // Merge ranges
+        resultsMap[relativePath].ranges = mergeRanges(resultsMap[relativePath].ranges);
+        // Recalculate used bytes
+        resultsMap[relativePath].used = resultsMap[relativePath].ranges.reduce(
+          (sum, r) => sum + (r.end - r.start),
+          0
+        );
       } catch (err) {
-        console.warn(`Skipped CSS coverage for ${stylesheet.url}: ${err instanceof Error ? err.message : String(err)}`);
+        console.warn(
+          `Skipped CSS coverage for ${stylesheet.url || 'inline'}: ${
+            err instanceof Error ? err.message : String(err)
+          }`
+        );
       }
     }
   }
 
-  const outputDir = path.join(COVERAGE_REPORT_FOLDER, 'css');
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-
-  // Convert map to array with type-safe link property
-  const results: {
-    file: string;
-    used: number;
-    total: number;
-    percent: string;
-    ranges?: { start: number; end: number }[];
-    content?: string;
-    link?: string;
-  }[] = Object.entries(resultsMap).map(([file, data]) => ({
+  const results: CSSResult[] = Object.entries(resultsMap).map(([file, data]) => ({
     file,
     used: data.used,
     total: data.total,
-    percent: data.total ? ((data.used / data.total) * 100).toFixed(2) : '0.00',
+    percent: data.total
+      ? ((data.used / data.total) * 100).toFixed(2)
+      : '0.00',
     ranges: data.ranges,
-    content: data.content,
+    content: data.content
   }));
 
-  // Generate main index and per-file HTML pages
-  generateCSSHtmlPages(results, outputDir);
-  console.log(`✅ CSS coverage report generated at: ${path.join(outputDir, 'index.html')}`);
+  generateCSSHtmlPages(results, path.join(COVERAGE_REPORT_FOLDER, 'css'));
 
   fs.rmSync(tmpDir, { recursive: true, force: true });
+
+  console.log(
+    `✅ CSS coverage report generated at: ${path.join(
+      COVERAGE_REPORT_FOLDER,
+      'css',
+      'index.html'
+    )}`
+  );
 }
 
 
 /**
- * Generate index.html + per-file HTML pages
+ * Merge overlapping or adjacent ranges
  */
+function mergeRanges(ranges: CSSRange[]): CSSRange[] {
+  if (!ranges || !ranges.length) return [];
+
+  // Sort by start position
+  const sorted = [...ranges].sort((a, b) => a.start - b.start);
+  const merged: CSSRange[] = [sorted[0]];
+
+  for (let i = 1; i < sorted.length; i++) {
+    const last = merged[merged.length - 1];
+    const current = sorted[i];
+
+    if (current.start <= last.end) {
+      // overlapping or adjacent → merge
+      last.end = Math.max(last.end, current.end);
+    } else {
+      merged.push({ ...current });
+    }
+  }
+
+  return merged;
+}
+
+
 function generateCSSHtmlPages(
-  results: {
-    file: string;
-    used: number;
-    total: number;
-    percent: string;
-    ranges?: { start: number; end: number }[];
-    content?: string;
-    link?: string;
-  }[],
+  results: CSSResult[],
   outputDir: string
 ) {
   results.forEach((r) => {
@@ -249,7 +383,7 @@ function generateCSSHtmlPages(
     const relativeIndex = path.relative(path.dirname(htmlPath), path.join(outputDir, 'index.html'));
 
     fs.mkdirSync(path.dirname(htmlPath), { recursive: true });
-    fs.writeFileSync(htmlPath, `
+    const pageHtml = `
       <html>
         <head>
           <title>${r.file} - CSS Coverage</title>
@@ -266,7 +400,8 @@ function generateCSSHtmlPages(
           <pre>${highlighted}</pre>
         </body>
       </html>
-    `, 'utf-8');
+    `;
+    fs.writeFileSync(htmlPath, pageHtml, 'utf-8');
 
     r.link = r.file + '.html';
   });
@@ -284,6 +419,7 @@ function generateCSSHtmlPages(
       <td>${r.total}</td>
     </tr>
   `).join('');
+
 
   const indexHtml = `
     <html>
@@ -320,7 +456,6 @@ function generateCSSHtmlPages(
 
 
 // Run the generator if this script is executed directly
-// CommonJS entry point
 if (require.main === module) {
   generate().catch(err => console.error(err));
 }

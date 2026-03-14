@@ -5,21 +5,21 @@ export class Junit {
 
   static async annotation_result() {
     test.info().annotations.push({
-      type: 'result_comment',
+      type: 'testrail_result_comment',
       description: "Test executed with Playwright"
     });
   }
 
   static async annotation_case_id(caseid: number | string) {
     test.info().annotations.push({
-      type: 'case_id',
+      type: 'testrail_case_id',
       description: caseid.toString()
     });
   }
 
   static async annotation_attachment(filepath: string) {
     test.info().annotations.push({
-      type: 'attachment',
+      type: 'testrail_attachment',
       description: filepath
     });
   }
