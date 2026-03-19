@@ -59,6 +59,8 @@ jobs:
   report:
     needs: tests
     runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:8-jre
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -68,8 +70,6 @@ jobs:
           name: artifact_test
           path: results.tar.gz
       - name: Allure2 report
-        container:
-          image: eclipse-temurin:8-jre
         run: |
           apt-get update && apt-get install -y unzip
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
