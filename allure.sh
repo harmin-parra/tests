@@ -48,10 +48,10 @@ allure generate \
   --clean \
   --output reports/allure-reports/report-java \
   --single-file reports/allure-results \
-      reports/java/cucumber/reports/allure-results \
-      reports/java/playwright/reports/allure-results \
-      reports/java/rest_assured/reports/allure-results \
-      reports/java/selenium/reports/allure-results 
+      reports/allure-results/java/cucumber \
+      reports/allure-results/java/playwright \
+      reports/allure-results/java/rest_assured \
+      reports/allure-results/java/selenium
 
 #
 # Node.js Allure report
@@ -60,10 +60,10 @@ allure generate \
   --clean \
   --output reports/allure-reports/report-nodejs \
   --single-file reports/allure-results \
-      reports/nodejs/cucumber/reports/allure-results \
-      reports/nodejs/cypress/reports/allure-results \
-      reports/nodejs/playwright/reports/allure-results \
-      reports/nodejs/selenium/reports/allure-results
+      reports/allure-results/nodejs/cucumber \
+      reports/allure-results/nodejs/cypress \
+      reports/allure-results/nodejs/playwright \
+      reports/allure-results/nodejs/selenium
 
 #
 # Python Allure report
@@ -72,7 +72,8 @@ allure generate \
   --clean \
   --output reports/allure-reports/report-python \
   --single-file reports/allure-results \
-      reports/python/cucumber/reports/allure-results \
-      reports/python/playwright/reports/allure-results \
-      reports/python/robotframework/reports/allure-results \
-      reports/python/selenium/reports/allure-results
+      reports/allure-results/python/cucumber \
+      reports/allure-results/python/playwright \
+      reports/allure-results/python/robotframework \
+      reports/allure-results/python/selenium
+

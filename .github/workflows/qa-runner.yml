@@ -46,20 +46,19 @@ jobs:
           mkdir reports/allure-results
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
           ./reports.sh
+          tar -czvf results.tar.gz reports
         env:
           HOME: /root
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact_test
-          path: reports
+          path: results.tar.gz
 
 
   report:
     needs: tests
     runs-on: ubuntu-latest
-    container:
-      image: eclipse-temurin:8-jre
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,19 +66,23 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact_test
-          path: reports
-      - name: Report
+          path: results.tar.gz
+      - name: Allure2 report
+        container:
+          image: eclipse-temurin:8-jre
         run: |
           apt-get update && apt-get install -y unzip
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
           unzip /tmp/allure.zip -d /usr/local/
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
+          tar -xvf results.tar.gz
           ./allure.sh --browser ${{ inputs.browser }}
+          tar -czvf reports.tar.gz reports
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact_report
-          path: reports
+          path: reports.tar.gz
 
 
   commit:
@@ -101,6 +104,7 @@ jobs:
           path: reports
       - name: Commit
         run: |
+          tar -czvf reports.tar.gz reports
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-*
@@ -109,3 +113,4 @@ jobs:
           git add -f docs/*
           git commit -m "Github Actions commit" || echo "Nothing to commit"
           git push origin main
+
