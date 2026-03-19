@@ -43,16 +43,15 @@ jobs:
           python3 -m venv ~/venv
           . ~/venv/bin/activate
           ./runner.sh --browser "${{ inputs.browser }}"
-          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/java/job.url
-          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/nodejs/job.url
-          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reporting/allure-results/python/job.url
+          mkdir reports/allure-results
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
         env:
           HOME: /root
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact_test
-          path: reporting
+          path: reports
 
 
   report:
@@ -67,9 +66,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact_test
-          path: reporting
+          path: reports
       - name: Report
         run: |
+          ./reports.sh
           apt-get update && apt-get install -y unzip
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
           unzip /tmp/allure.zip -d /usr/local/
@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifact_report
-          path: reporting
+          path: reports
 
 
   commit:
@@ -98,14 +98,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact_report
-          path: reporting
+          path: reports
       - name: Commit
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-*
-          mv reporting/report-* docs/ || { echo "no report to commit"; exit; }
-          mv reporting/allure-reports/report-* docs/ || { echo "no report to commit"; exit; }
+          mv reports/report-* docs/ || { echo "no report to commit"; exit; }
+          mv reports/allure-reports/report-* docs/ || { echo "no report to commit"; exit; }
           git add -f docs/*
           git commit -m "Github Actions commit" || echo "Nothing to commit"
           git push origin main
