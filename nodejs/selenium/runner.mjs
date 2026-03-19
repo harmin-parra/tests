@@ -1,4 +1,3 @@
-import { Status } from "allure-js-commons";
 import { glob } from "glob";
 import Mocha from "mocha";
 import * as os from "node:os";
@@ -7,7 +6,7 @@ const mocha = new Mocha({
   reporter: "allure-mocha",
   extension: "ts",
   reporterOptions: {
-    resultsDir: "../../reporting/allure-results/nodejs",
+    resultsDir: "reports/allure-results",
     extraReporters: "spec",
     links: {
       issue: {

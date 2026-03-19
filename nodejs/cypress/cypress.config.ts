@@ -9,7 +9,7 @@ export default defineConfig({
     reportPageTitle: 'Cypress Report',
     embeddedScreenshots: true,
     inlineAssets: true,
-    reportDir: "../../reporting/report-cypress",
+    reportDir: "reports/report-cypress",
   },
   e2e: {
     experimentalStudio: true,
@@ -18,7 +18,7 @@ export default defineConfig({
     fixturesFolder: 'fixtures',
     setupNodeEvents(on, config) {
       allureCypress(on, {
-        resultsDir: "../../reporting/allure-results/nodejs",
+        resultsDir: "reports/allure-results",
         links: {
           issue: {
             nameTemplate: "JIRA-%s",

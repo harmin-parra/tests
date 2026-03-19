@@ -5,21 +5,25 @@
 **/.pydevproject
 
 **/.classpath
+
+# Java files
 **/.gradle/
 **/target/
 **/bin/
 **/build/
 **/videos
 
+# Node.js files
 **/node_modules
 **/package-lock.json
 **/test-results/
+**/screenshots
 
+# Python files
 **/.pytest_cache
 **/__pycache__
-python/**/videos/
 
-reporting/*
+**/reports
 
 **/allure-results
 **/cypress/cypress/

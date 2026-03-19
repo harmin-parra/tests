@@ -2,6 +2,7 @@ import allure
 import os
 from playwright.sync_api import Browser
 import pages
+import sys
 import time
 
 
@@ -13,7 +14,7 @@ import time
 @allure.epic("Web interface (Playwright)")
 # @allure.story("Web Form")
 @allure.feature("Web Form")
-def test_web_form(browser: Browser):
+def test_web_form(browser: Browser, record_property):
     """ 
     Testing the following field types of a webform :
 
@@ -65,6 +66,14 @@ def test_web_form(browser: Browser):
         name="Submit form",
         attachment_type=allure.attachment_type.PNG
     )
+
+    # Add JUnit properties
+    page.screenshot(path="screenshots/image.png")
+    print("stdout for JUnit")
+    print("stderr for JUnit", file=sys.stderr)
+    record_property("issues", "JIRA-123, JIRA-987")
+    record_property("testrail_attachment", "screenshots/image.png")
+
     context.close()
     page.close()
     allure.attach.file(

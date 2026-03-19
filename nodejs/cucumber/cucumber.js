@@ -4,11 +4,11 @@ module.exports = {
     requireModule: ["ts-node/register"],
     require: ["steps/**/*.ts", "support/**/*.ts"],
     format: [
-      "html:../../reporting/report-cucumber/index.html",
+      "html:reports/report-cucumber/index.html",
       "allure-cucumberjs/reporter"
     ],
     formatOptions: {
-      resultsDir: "../../reporting/allure-results/nodejs",
+      resultsDir: "reports/allure-results",
       links: {
         issue: {
           pattern: [/@issue:(.*)/],

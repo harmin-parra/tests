@@ -24,77 +24,55 @@ if [ $BROWSER = "Msedge" ]; then
   BROWSER="Edge"
 fi
 
-#
-# Java tests
-#
-cat << EOF > reporting/allure-results/java/environment.properties
-Browser = $BROWSER
-OpenJDK = 25.0.1
-EOF
 
-if [ -f reporting/allure-results/java/job.url ]; then
-  cat << EOF > reporting/allure-results/java/executor.json
+#
+# Allure metadata
+#
+if [ -f repors/allure-results/job.url ]; then
+  cat << EOF > reports/allure-results/executor.json
 {
   "name": "${EXECUTOR_NAME}",
   "type": "${EXECUTOR_TYPE}",
   "buildName": "Build log",
-  "buildUrl": "$(cat reporting/allure-results/java/job.url)",
-  "reportName": "Demo Java report"
+  "buildUrl": "$(cat reports/allure-results/job.url)",
+  "reportName": "Test Report"
 }
 EOF
 fi
 
+
+#
+# Java Allure report
+#
 allure generate \
   --clean \
-  --output reporting/allure-reports/report-java \
-  --single-file reporting/allure-results/java
+  --output reports/allure-reports/report-java \
+  --single-file reports/allure-results \
+      java/cucumber/reports/allure-results \
+      java/playwright/reports/allure-results \
+      java/rest_assured/reports/allure-results \
+      java/selenium/reports/allure-results 
 
 #
-# Node.js tests
+# Node.js Allure report
 #
-cat << EOF > reporting/allure-results/nodejs/environment.properties
-Browser = $BROWSER
-Node.js = 24.11.1
-EOF
-
-if [ -f reporting/allure-results/nodejs/job.url ]; then
-  cat << EOF > reporting/allure-results/nodejs/executor.json
-{
-  "name": "${EXECUTOR_NAME}",
-  "type": "${EXECUTOR_TYPE}",
-  "buildName": "Build log",
-  "buildUrl": "$(cat reporting/allure-results/nodejs/job.url)",
-  "reportName": "Demo Node.js report"
-}
-EOF
-fi
-
 allure generate \
   --clean \
-  --output reporting/allure-reports/report-nodejs \
-  --single-file reporting/allure-results/nodejs
+  --output reports/allure-reports/report-nodejs \
+  --single-file reports/allure-results \
+      nodejs/cucumber/reports/allure-results \
+      nodejs/cypress/reports/allure-results \
+      nodejs/playwright/reports/allure-results \
+      nodejs/selenium/reports/allure-results
 
 #
-# Python tests
+# Python Allure report
 #
-cat << EOF > reporting/allure-results/python/environment.properties
-Browser = $BROWSER
-Python = 3.13.5
-EOF
-
-if [ -f reporting/allure-results/python/job.url ]; then
-  cat << EOF > reporting/allure-results/python/executor.json
-{
-  "name": "${EXECUTOR_NAME}",
-  "type": "${EXECUTOR_TYPE}",
-  "buildName": "Build log",
-  "buildUrl": "$(cat reporting/allure-results/python/job.url)",
-  "reportName": "Demo Python report"
-}
-EOF
-fi
-
 allure generate \
   --clean \
-  --output reporting/allure-reports/report-python \
-  --single-file reporting/allure-results/python
+  --output reports/allure-reports/report-python \
+  --single-file reports/allure-results \
+      python/cucumber/reports/allure-results \
+      python/playwright/reports/allure-results \
+      python/robotframework/reports/allure-results \
+      python/selenium/reports/allure-results

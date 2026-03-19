@@ -8,18 +8,18 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  outputDir: '../../reporting/playwright-results',
+  outputDir: 'reports/playwright-results',
   reporter: [
     ['list'],
-    ['html', { open: 'never', outputFolder: '../../reporting/report-playwright' }],
+    ['html', { open: 'never', outputFolder: 'reports/report-playwright' }],
     ['line'],
     ['junit', { 
-      outputFile: '../../reporting/report-junit/report.xml',
+      outputFile: 'reports/report-junit/report.xml',
       embedAnnotationsAsProperties: true
     }],
     ['allure-playwright', {
       detail: false,
-      resultsDir: '../../reporting/allure-results/nodejs',
+      resultsDir: 'reports/allure-results',
       suiteTitle: true,
       links: {
         issue: {

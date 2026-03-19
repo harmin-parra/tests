@@ -62,15 +62,6 @@ else
 fi
 cd ..
 
-echo =================
-echo Python - Selenium
-echo =================
-cd selenium
-unset PYTHONPATH
-export PYTHONPATH=$(pwd)
-pytest --driver $BROWSER --headless $HEADLESS  tests/  # --hub $HUB
-cd ..
-
 echo ===============
 echo Python - Pytest
 echo ===============
@@ -84,6 +75,15 @@ else
 fi
 cd ..
 
+echo =================
+echo Python - Selenium
+echo =================
+cd selenium
+unset PYTHONPATH
+export PYTHONPATH=$(pwd)
+pytest --driver $BROWSER --headless $HEADLESS  tests/  # --hub $HUB
+cd ..
+
 echo ========================
 echo Python - Robot Framework
 echo ========================
@@ -92,8 +92,8 @@ HEAD_OPT=""
 if [ $HEADLESS = "true" ]; then
   HEAD_OPT="headless"
 fi
-robot --outputdir ../../reporting/report-robot \
-      --listener allure_robotframework:../../reporting/allure-results/python \
+robot --outputdir reports/report-robot \
+      --listener allure_robotframework:reports/allure-results \
       --variable BROWSER:${BROWSER} --variable HEADLESS:${HEADLESS} \
       --variable DRIVER:${HEAD_OPT}${BROWSER} ./
 cd ..
@@ -167,6 +167,15 @@ echo "##############"
 echo "java: " $(java --version)
 cd java
 
+echo ===================
+echo Java - Cucumber-JVM
+echo ===================
+cd cucumber
+# ./mvnw -q dependency:resolve
+# ./mvnw test -Dtest=RunnerTest -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
+./gradlew test --tests="RunnerTest" -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
+cd ..
+
 echo =================
 echo Java - Playwright
 echo =================
@@ -184,15 +193,6 @@ cd selenium
 # ./mvnw -q dependency:resolve
 # ./mvnw test -Dtest="web_selenium/**" -Dbrowser=$BROWSER -Dheadless=$HEADLESS  # -Dhub=$HUB test
 ./gradlew test -Dbrowser=$BROWSER -Dheadless=$HEADLESS
-cd ..
-
-echo ===================
-echo Java - Cucumber-JVM
-echo ===================
-cd cucumber
-# ./mvnw -q dependency:resolve
-# ./mvnw test -Dtest=RunnerTest -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
-./gradlew test --tests="RunnerTest" -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
 echo ===================
