@@ -45,6 +45,7 @@ jobs:
           ./runner.sh --browser "${{ inputs.browser }}"
           mkdir reports/allure-results
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
+          ./reports.sh
         env:
           HOME: /root
       - name: Upload artifact
@@ -69,7 +70,6 @@ jobs:
           path: reports
       - name: Report
         run: |
-          ./reports.sh
           apt-get update && apt-get install -y unzip
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
           unzip /tmp/allure.zip -d /usr/local/
