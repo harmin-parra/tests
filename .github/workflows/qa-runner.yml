@@ -76,7 +76,7 @@ jobs:
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
           unzip /tmp/allure.zip -d /usr/local/
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
-          mv artifacts/results.tar.gz ./
+          # mv artifacts/results.tar.gz ./
           tar -xvf artifacts/results.tar.gz
           ./allure.sh --browser ${{ inputs.browser }}
           rm -rf artifacts/*
