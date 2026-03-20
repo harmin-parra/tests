@@ -107,7 +107,7 @@ jobs:
           path: artifacts
       - name: Commit
         run: |
-          tar -czvf artifacts/reports.tar.gz reports
+          tar -xvf artifacts/reports.tar.gz
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-*
