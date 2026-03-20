@@ -19,7 +19,7 @@ def merge_junit_files(directory: str, merged_file: str) -> None:
     for file in xml_files:
         tree = ET.parse(file)
         root = tree.getroot()
-    
+
         # Handle both <testsuites> and <testsuite> root formats
         if root.tag == "testsuites":
             suites = root.findall("testsuite")
@@ -27,7 +27,7 @@ def merge_junit_files(directory: str, merged_file: str) -> None:
             suites = [root]
         else:
             continue
-    
+
         for suite in suites:
             merged_root.append(suite)
             total_tests += int(suite.attrib.get("tests", 0))

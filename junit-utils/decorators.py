@@ -22,7 +22,7 @@ def decorate_summary(summaries: list[dict]) -> str:
         <table style="width: unset">
           <thead>
             <tr>
-              <td/>
+              <td></td>
               <th>Suites</th>
               <th>Total tests</th>
               <th>Failures</th>
