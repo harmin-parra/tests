@@ -46,7 +46,7 @@ jobs:
           mkdir reports/allure-results
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
           ./reports.sh
-          mkdir artifact
+          mkdir artifacts
           tar -czvf artifacts/results.tar.gz reports
         env:
           HOME: /root
