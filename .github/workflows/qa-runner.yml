@@ -46,14 +46,15 @@ jobs:
           mkdir reports/allure-results
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
           ./reports.sh
-          tar -czvf results.tar.gz reports
+          mkdir artifact
+          tar -czvf artifacts/results.tar.gz reports
         env:
           HOME: /root
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact_test
-          path: results.tar.gz
+          path: artifacts
 
 
   report:
@@ -68,21 +69,23 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact_test
-          path: results.tar.gz
+          path: artifacts
       - name: Allure2 report
         run: |
           apt-get update && apt-get install -y unzip
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
           unzip /tmp/allure.zip -d /usr/local/
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
-          tar -xvf results.tar.gz
+          mv artifacts/results.tar.gz ./
+          tar -xvf artifacts/results.tar.gz
           ./allure.sh --browser ${{ inputs.browser }}
-          tar -czvf reports.tar.gz reports
+          rm -rf artifacts/*
+          tar -czvf artifacts/reports.tar.gz reports
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact_report
-          path: reports.tar.gz
+          path: artifacts
 
 
   commit:
@@ -101,10 +104,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact_report
-          path: reports
+          path: artifacts
       - name: Commit
         run: |
-          tar -czvf reports.tar.gz reports
+          tar -czvf artifacts/reports.tar.gz reports
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-*
