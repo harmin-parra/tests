@@ -17,8 +17,10 @@ mv nodejs/playwright/reports/report-junit/* reports/report-junit/nodejs
 
 mv java/serenity/target/site/serenity reports/report-serenity
 mv java/playwright/reports/report-junit reports/report-junit/java
+
+# Merge Java junit reports
 set +e
-python junit/utils/merge_junit_xml.py -d reports/report-junit/java/xml -o reports/report-junit/java/report.xml
+python junit-utils/merge_junit_xml.py -d reports/report-junit/java/xml -o reports/report-junit/java/report.xml
 set -e
 
 #
