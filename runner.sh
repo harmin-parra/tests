@@ -211,7 +211,6 @@ cd serenity
 # ./mvnw -q dependency:resolve
 # ./mvnw clean verify -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
 ./gradlew test -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
-mv target/site/serenity ../../reporting/report-serenity
 cd ..
 
 # echo =============
