@@ -75,7 +75,7 @@ jobs:
           # apt-get update && apt-get install -y unzip
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.tgz -L -o /tmp/allure.tgz
           # unzip /tmp/allure.zip -d /usr/local/
-          tar -xvzf /tmp/allure.zip -C /usr/local
+          tar -xvzf /tmp/allure.tgz -C /usr/local
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
           # mv artifacts/results.tar.gz ./
           tar -xvf artifacts/results.tar.gz
