@@ -17,13 +17,13 @@
 **/node_modules
 **/package-lock.json
 **/test-results/
-**/screenshots
+**/cypress/cypress/
 
 # Python files
+**/.venv
 **/.pytest_cache
 **/__pycache__
 
 **/reports
-
-**/allure-results
-**/cypress/cypress/
+**/screenshots
+# **/allure-results
