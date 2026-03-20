@@ -97,9 +97,9 @@ robot --outputdir reports/report-robot \
       --listener allure_robotframework:reports/allure-results \
       --variable BROWSER:${BROWSER} --variable HEADLESS:${HEADLESS} \
       --variable DRIVER:${HEAD_OPT}${BROWSER} ./
-cd ..
-cd ..
+cd ...
 COMMENT
+cd .
 
 echo "#################"
 echo "# Node.js tests #"
@@ -162,8 +162,8 @@ npx cypress run --browser $BROWSER_OPT $HEAD_OPT
 # mkdir ../../reporting/report-cypress/videos/tests
 # mv ../../reporting/report-cypress/videos/*.mp4 ../../reporting/report-cypress/videos/tests/
 cd ..
-cd ..
 COMMENT
+cd ..
 
 echo "##############"
 echo "# Java tests #"
