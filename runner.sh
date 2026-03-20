@@ -36,14 +36,13 @@ cd python
 pip install -r requirements.txt > /dev/null
 playwright install > /dev/null
 rfbrowser init > /dev/null
-<< 'COMMENT'
+
 echo =================
 echo Python - Cucumber
 echo =================
 cd cucumber
 behave features/catalog.feature
 cd ..
-COMMENT
 
 echo ===================
 echo Python - Playwright
@@ -62,7 +61,6 @@ else
 fi
 cd ..
 
-<< 'COMMENT'
 echo ===============
 echo Python - Pytest
 echo ===============
@@ -97,9 +95,9 @@ robot --outputdir reports/report-robot \
       --listener allure_robotframework:reports/allure-results \
       --variable BROWSER:${BROWSER} --variable HEADLESS:${HEADLESS} \
       --variable DRIVER:${HEAD_OPT}${BROWSER} ./
-cd ...
-COMMENT
-cd .
+cd ..
+cd ..
+
 
 echo "#################"
 echo "# Node.js tests #"
@@ -108,7 +106,6 @@ echo "node.js: " $(nodejs --version)
 echo "npm: " $(npm --version)
 cd nodejs
 
-<< 'COMMENT'
 echo ==================
 echo Node.js - Cucumber
 echo ==================
@@ -117,7 +114,6 @@ npm install > /dev/null
 npx playwright install > /dev/null
 npx cucumber-js -- --browser=$BROWSER --headless=$HEADLESS
 cd ..
-COMMENT
 
 echo ====================
 echo Node.js - Playwright
@@ -133,7 +129,6 @@ fi
 npx playwright test --project $BROWSER $HEAD_OPT
 cd ..
 
-<< 'COMMENT'
 echo ==================
 echo Node.js - Selenium
 echo ==================
@@ -162,8 +157,8 @@ npx cypress run --browser $BROWSER_OPT $HEAD_OPT
 # mkdir ../../reporting/report-cypress/videos/tests
 # mv ../../reporting/report-cypress/videos/*.mp4 ../../reporting/report-cypress/videos/tests/
 cd ..
-COMMENT
 cd ..
+
 
 echo "##############"
 echo "# Java tests #"
@@ -171,7 +166,6 @@ echo "##############"
 echo "java: " $(java --version)
 cd java
 
-<< 'COMMENT'
 echo ===================
 echo Java - Cucumber-JVM
 echo ===================
@@ -180,7 +174,6 @@ cd cucumber
 # ./mvnw test -Dtest=RunnerTest -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 ./gradlew test --tests="RunnerTest" -Dcucumber.features=classpath:features/webform.feature -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
-COMMENT
 
 echo =================
 echo Java - Playwright
@@ -192,7 +185,6 @@ cd playwright
 ./gradlew test --tests="web_playwright.*" -Dbrowser=$BROWSER -Dheadless=$HEADLESS
 cd ..
 
-<< 'COMMENT'
 echo ===============
 echo Java - Selenium
 echo ===============
@@ -219,7 +211,6 @@ cd serenity
 # ./mvnw clean verify -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
 ./gradlew test -Dheadless.mode=$HEADLESS -Dwebdriver.driver=$BROWSER
 cd ..
-COMMENT
 
 # echo =============
 # echo Java - Karate
