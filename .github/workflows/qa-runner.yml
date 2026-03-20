@@ -47,7 +47,7 @@ jobs:
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
           ./reports.sh
           mkdir artifacts
-          tar -czvf artifacts/results.tar.gz reports
+          tar -czf artifacts/results.tar.gz reports
         env:
           HOME: /root
       - name: Upload artifact
@@ -72,16 +72,13 @@ jobs:
           path: artifacts
       - name: Allure2 report
         run: |
-          # apt-get update && apt-get install -y unzip
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.tgz -L -o /tmp/allure.tgz
-          # unzip /tmp/allure.zip -d /usr/local/
-          tar -xvzf /tmp/allure.tgz -C /usr/local
+          tar -xzf /tmp/allure.tgz -C /usr/local
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
-          # mv artifacts/results.tar.gz ./
-          tar -xvf artifacts/results.tar.gz
+          tar -xf artifacts/results.tar.gz
           ./allure.sh --browser ${{ inputs.browser }}
           rm -rf artifacts/*
-          tar -czvf artifacts/reports.tar.gz reports
+          tar -czf artifacts/reports.tar.gz reports
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -108,7 +105,7 @@ jobs:
           path: artifacts
       - name: Commit
         run: |
-          tar -xvf artifacts/reports.tar.gz
+          tar -xzf artifacts/reports.tar.gz
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-*

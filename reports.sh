@@ -1,21 +1,22 @@
 #!/bin/bash
 
 mkdir -p reports/allure-results/java reports/allure-results/python reports/allure-results/nodejs
+mkdir -p reports/report-junit/python reports/report-junit/nodejs
 
 #
 # Move tool-specific reports
 #
-mv python/playwright/reports/junit-report reports/report-junit
+mv python/playwright/reports/report-junit reports/report-junit/python
 mv python/pytest/reports reports/report-pytest
 mv python/robotframework/reports/report-robot reports/report-robot
 
 mv nodejs/cucumber/reports/report-cucumber reports/report-cucumber
 mv nodejs/cypress/reports/report-cypress reports/report-cypress
 mv nodejs/playwright/reports/report-playwright reports/report-playwright
-# mv nodejs/playwright/reports/report-junit reports/report-junit
+mv nodejs/playwright/reports/report-junit reports/report-junit/nodejs
 
 mv java/serenity/target/site/serenity reports/report-serenity
-# mv java/playwright/reports/junit-report reports/report-junit
+mv java/playwright/reports/report-junit reports/report-junit/java
 
 #
 # Move Allure results
