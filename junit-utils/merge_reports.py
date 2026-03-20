@@ -251,15 +251,18 @@ def verifySize(items: list) -> None:
             sys.exit(1)
 
 
-def format_duration(duration: int | float | str) -> str:
-    total_seconds = float(duration)
-    minutes = int(total_seconds // 60)
-    seconds = total_seconds % 60
+def format_duration(duration: int | float | str | None) -> str:
+    try:
+        total_seconds = float(duration)
+        minutes = int(total_seconds // 60)
+        seconds = total_seconds % 60
 
-    if minutes == 0:
-        return f"{seconds:.2f} s"
-    else:
-        return f"{minutes} m {seconds:.2f} s"
+        if minutes == 0:
+            return f"{seconds:.2f} s"
+        else:
+            return f"{minutes} m {seconds:.2f} s"
+    except (TypeError, ValueError):
+        return "N/A"
 
 
 if __name__ == "__main__":
