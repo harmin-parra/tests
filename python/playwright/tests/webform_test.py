@@ -76,7 +76,7 @@ def test_web_form(browser: Browser, record_property):
 
     context.close()
     page.close()
-    record_property("video", page.video.path())
+    record_property("video", os.path.join("videos", os.path.basename(page.video.path())))
     allure.attach.file(
         source=page.video.path(),
         name="Recorded video",
