@@ -19,13 +19,14 @@ mv java/serenity/target/site/serenity reports/report-serenity
 # Deal with junit reports
 #
 mv python/playwright/reports/report-junit/* reports/report-junit/python
-mv python/playwright/screenshots reports/report-junit/python
 mv nodejs/playwright/reports/report-junit/* reports/report-junit/nodejs
 mv java/playwright/reports/report-junit reports/report-junit/java
-python junit-utils/merge_junit_xml.py -d reports/report-junit/java/xml -o reports/report-junit/java/report.xml
+# python junit-utils/merge_junit_xml.py -d reports/report-junit/java/xml -o reports/report-junit/java/report.xml
 cp reports/report-junit/python/report.xml reports/report-junit/
 cp junit-utils/script.js reports/report-junit/
 cp junit-utils/style.css reports/report-junit/
+mv python/playwright/screenshots reports/report-junit/
+mv python/playwright/videos reports/report-junit/
 xsltproc --output reports/report-junit/index.html junit-utils/junit.xsl reports/report-junit/python/report.xml
 
 #
