@@ -106,6 +106,12 @@ a:active {
     box-sizing: border-box;
 }
 
+.modal-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Style for images */
 .modal-content-img {
     margin: auto;

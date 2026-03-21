@@ -69,13 +69,14 @@ def test_web_form(browser: Browser, record_property):
 
     # Add JUnit properties
     page.screenshot(path="screenshots/image.png")
-    print("stdout for JUnit")
-    print("stderr for JUnit", file=sys.stderr)
+    print("stdout for JUnit report")
+    print("stderr for JUnit report", file=sys.stderr)
     record_property("issues", "JIRA-123, JIRA-987")
     record_property("testrail_attachment", "screenshots/image.png")
 
     context.close()
     page.close()
+    record_property("video", page.video.path())
     allure.attach.file(
         source=page.video.path(),
         name="Recorded video",

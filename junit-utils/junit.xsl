@@ -179,7 +179,7 @@
                   </pre>
                 </xsl:if>
               </xsl:if>
-              <!-- Last screenshot -->
+              <!-- Screenshot -->
               <xsl:variable name="screenshot" select="string(properties/property[@name='testrail_attachment']/@value)"/>
               <xsl:if test="$screenshot">
                 <button class="link-button">
@@ -188,7 +188,19 @@
                       open_modal_img('</xsl:text><xsl:value-of select="$screenshot"/><xsl:text>')
                     </xsl:text>
                   </xsl:attribute>
-                  📎
+                  📎 <xsl:text>&#160;</xsl:text>
+                </button>
+              </xsl:if>
+              <!-- Video -->
+              <xsl:variable name="video" select="string(properties/property[@name='video']/@value)"/>
+              <xsl:if test="$video">
+                <button class="link-button">
+                  <xsl:attribute name="onclick">
+                    <xsl:text>
+                      open_modal_video('</xsl:text><xsl:value-of select="$video"/><xsl:text>')
+                    </xsl:text>
+                  </xsl:attribute>
+                  🎬 <xsl:text>&#160;</xsl:text>
                 </button>
               </xsl:if>
               <!-- Standard output -->
@@ -205,11 +217,11 @@
             <td>
               <!-- Issue -->
               <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
-              <xsl:if test="$issues and failure">
+              <xsl:if test="$issues">  <!-- and failure"> -->
                 🐞
                 <xsl:for-each select="str:tokenize($issues, ',')">
                   <xsl:variable name="key" select="normalize-space(.)"/>
-                  <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
+                  <a href="https://bugtracker.com/{$key}" target="_blank">
                     <xsl:value-of select="$key"/>
                   </a>
                   <!-- add space after each link except the last -->
