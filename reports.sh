@@ -6,20 +6,26 @@ mkdir -p reports/report-junit/python reports/report-junit/nodejs
 #
 # Move tool-specific reports
 #
-mv python/playwright/reports/report-junit/* reports/report-junit/python
 mv python/pytest/reports reports/report-pytest
 mv python/robotframework/reports/report-robot reports/report-robot
 
 mv nodejs/cucumber/reports/report-cucumber reports/report-cucumber
 mv nodejs/cypress/reports/report-cypress reports/report-cypress
 mv nodejs/playwright/reports/report-playwright reports/report-playwright
-mv nodejs/playwright/reports/report-junit/* reports/report-junit/nodejs
 
 mv java/serenity/target/site/serenity reports/report-serenity
-mv java/playwright/reports/report-junit reports/report-junit/java
 
-# Merge Java junit reports
+#
+# Deal with junit reports
+#
+mv python/playwright/reports/report-junit/* reports/report-junit/python
+mv nodejs/playwright/reports/report-junit/* reports/report-junit/nodejs
+mv java/playwright/reports/report-junit reports/report-junit/java
 python junit-utils/merge_junit_xml.py -d reports/report-junit/java/xml -o reports/report-junit/java/report.xml
+cp reports/report-junit/python/report.xml reports/report-junit/
+cp junit-utils/script.js reports/report-junit/
+cp junit-utils/style.css reports/report-junit/
+xsltproc --output reports/report-junit/python/report.html junit-utils/junit.xsl reports/report-junit/python/report.xml
 
 #
 # Move Allure results
@@ -38,4 +44,3 @@ mv nodejs/cucumber/reports/allure-results reports/allure-results/nodejs/cucumber
 mv nodejs/cypress/reports/allure-results reports/allure-results/nodejs/cypress
 mv nodejs/playwright/reports/allure-results reports/allure-results/nodejs/playwright
 mv nodejs/selenium/reports/allure-results reports/allure-results/nodejs/selenium
-
