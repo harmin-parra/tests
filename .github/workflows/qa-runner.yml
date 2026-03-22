@@ -38,11 +38,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Test
+      - name: Run tests
         run: |
           python3 -m venv ~/venv
           . ~/venv/bin/activate
           ./runner.sh --browser "${{ inputs.browser }}"
+        env:
+          HOME: /root
+      - name: Collect results
+        run: |
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/job.url
           ./reports.sh --browser "${{ inputs.browser }}"
           mkdir artifacts
@@ -69,11 +73,13 @@ jobs:
         with:
           name: artifact_test
           path: artifacts
-      - name: Allure2 report
+      - name: Install Allure2
         run: |
           curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.tgz -L -o /tmp/allure.tgz
           tar -xzf /tmp/allure.tgz -C /usr/local
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
+      - name: Allure2 report
+        run: |
           tar -xf artifacts/results.tar.gz
           ./allure2.sh --browser ${{ inputs.browser }}
           rm -rf artifacts/*
@@ -100,8 +106,8 @@ jobs:
           path: artifacts
       - name: Allure3 report
         run: |
-          tar -xf artifacts/results.tar.gz
           npm install allure
+          tar -xf artifacts/results.tar.gz
           ./allure3.sh --browser ${{ inputs.browser }}
           rm -rf artifacts/*
           tar -czf artifacts/allure3.tar.gz reports
