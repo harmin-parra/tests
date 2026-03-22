@@ -136,8 +136,8 @@ jobs:
           path: artifacts
       - name: Commit
         run: |
-          tar -xvzf artifacts/allure2.tar.gz
-          tar -xvzf artifacts/allure3.tar.gz
+          tar -xzf artifacts/allure2.tar.gz
+          tar -xzf artifacts/allure3.tar.gz
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-* > /dev/null || true
