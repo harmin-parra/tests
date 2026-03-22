@@ -43,9 +43,8 @@ jobs:
           python3 -m venv ~/venv
           . ~/venv/bin/activate
           ./runner.sh --browser "${{ inputs.browser }}"
-          mkdir reports/allure-results
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/job.url
-          ./reports.sh
+          ./reports.sh --browser "${{ inputs.browser }}"
           mkdir artifacts
           tar -czf artifacts/results.tar.gz reports
         env:

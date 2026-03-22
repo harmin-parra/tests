@@ -42,9 +42,8 @@ tests:
     - python3 -m venv ~/venv
     - . ~/venv/bin/activate
     - ./runner.sh --browser $BROWSER
-    - mkdir reports/allure-results
     - echo $CI_JOB_URL > reports/job.url
-    - ./reports.sh
+    - ./reports.sh --browser $BROWSER
   artifacts:
     paths:
       - reports
@@ -61,7 +60,7 @@ allure2:
     - ./allure.sh --browser $BROWSER
   artifacts:
     paths:
-      - report
+      - reports
     expire_in: 10 mins
 
 
@@ -73,7 +72,7 @@ allure3:
     - ./allure3.sh --browser $BROWSER
   artifacts:
     paths:
-      - report
+      - reports
     expire_in: 10 mins
 
 
