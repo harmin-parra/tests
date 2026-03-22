@@ -80,14 +80,14 @@ cat << EOF > environment.properties
 Browser = $BROWSER
 EOF
 # Create executor.json file
-if [ -f repors/allure-results/job.url ]; then
+if [ -f reports/job.url ]; then
   cat << EOF > executor.json
 {
   "browser": "${BROWSER}",
   "name": "${EXECUTOR_NAME}",
   "type": "${EXECUTOR_TYPE}",
   "buildName": "Build log",
-  "buildUrl": "$(cat reports/allure-results/job.url)",
+  "buildUrl": "$(cat reports/job.url)",
   "reportName": "Test Report"
 }
 EOF
@@ -96,6 +96,8 @@ fi
 cp environment.properties reports/allure-results/python/playwright
 cp environment.properties reports/allure-results/nodejs/playwright
 cp environment.properties reports/allure-results/java/playwright
-cp executor.json reports/allure-results/python/playwright
-cp executor.json reports/allure-results/nodejs/playwright
-cp executor.json reports/allure-results/java/playwright
+if [ -f reports/job.url ]; then
+  cp executor.json reports/allure-results/python/playwright
+  cp executor.json reports/allure-results/nodejs/playwright
+  cp executor.json reports/allure-results/java/playwright
+fi

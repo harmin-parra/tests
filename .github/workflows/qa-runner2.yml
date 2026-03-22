@@ -44,7 +44,7 @@ jobs:
           . ~/venv/bin/activate
           ./runner.sh --browser "${{ inputs.browser }}"
           mkdir reports/allure-results
-          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/job.url
           ./reports.sh
           mkdir artifacts
           tar -czf artifacts/results.tar.gz reports
