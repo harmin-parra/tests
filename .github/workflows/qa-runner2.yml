@@ -101,6 +101,7 @@ jobs:
           path: artifacts
       - name: Allure3 report
         run: |
+          tar -xf artifacts/results.tar.gz
           npm install allure
           ./allure3.sh --browser ${{ inputs.browser }}
           rm -rf artifacts/*
