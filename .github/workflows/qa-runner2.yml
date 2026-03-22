@@ -1,0 +1,147 @@
+name: qa-runner
+
+env:
+  ALLURE: 2.38.1
+  EXECUTOR_NAME: "Github Actions"
+  EXECUTOR_TYPE: "github"
+
+on:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'The browser to use'
+        default: 'firefox'
+        required: true
+        type: choice
+        options:
+        - chrome
+        - chromium
+        - firefox
+        - msedge
+      docker:
+        description: 'The docker to run'
+        default: harmin/qa-runner-debian
+        type: choice
+        options:
+        - harmin/qa-runner-debian:13
+        - harmin/qa-runner-ubuntu:13
+        - harmin/qa-runner-debian:12
+        - harmin/qa-runner-ubuntu:12
+        - harmin/qa-runner-debian:beta
+        - harmin/qa-runner-ubuntu:beta
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ inputs.docker }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test
+        run: |
+          python3 -m venv ~/venv
+          . ~/venv/bin/activate
+          ./runner.sh --browser "${{ inputs.browser }}"
+          mkdir reports/allure-results
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
+          ./reports.sh
+          mkdir artifacts
+          tar -czf artifacts/results.tar.gz reports
+        env:
+          HOME: /root
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_test
+          path: artifacts
+
+
+  allure2:
+    needs: tests
+    runs-on: ubuntu-latest
+    container:
+      image: eclipse-temurin:8-jre
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact_test
+          path: artifacts
+      - name: Allure2 report
+        run: |
+          curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.tgz -L -o /tmp/allure.tgz
+          tar -xzf /tmp/allure.tgz -C /usr/local
+          ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
+          tar -xf artifacts/results.tar.gz
+          ./allure2.sh --browser ${{ inputs.browser }}
+          rm -rf artifacts/*
+          tar -czf artifacts/allure2.tar.gz reports
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_allure2
+          path: artifacts
+
+
+  allure3:
+    needs: tests
+    runs-on: ubuntu-latest
+    container:
+      image: node:24
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact_test
+          path: artifacts
+      - name: Allure3 report
+        run: |
+          npm install allure
+          ./allure3.sh --browser ${{ inputs.browser }}
+          rm -rf artifacts/*
+          tar -czf artifacts/allure3.tar.gz reports
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_allure3
+          path: artifacts
+
+  commit:
+    needs: [allure2, allure3]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout reports repo
+        uses: actions/checkout@v4
+        # for commit in same repo, delete the 'with' section
+        with:
+          repository: harmin-parra/reports
+          ref: main
+          token: ${{ secrets.TOKEN_REPORT }}
+          persist-credentials: true
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact_allure2
+          path: artifacts
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact_allure3
+          path: artifacts
+      - name: Commit
+        run: |
+          tar -xzf artifacts/allure2.tar.gz
+          tar -xzf artifacts/allure3.tar.gz
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "noreply@github.com"
+          git rm -r docs/report-*
+          mv reports/report-* docs/ || { echo "no report to commit"; exit; }
+          mv reports/allure-reports/report-* docs/ || { echo "no report to commit"; exit; }
+          git add -f docs/*
+          git commit -m "Github Actions commit" || echo "Nothing to commit"
+          git push origin main

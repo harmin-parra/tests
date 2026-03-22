@@ -1,5 +1,29 @@
 #!/bin/bash
 
+BROWSER="firefox"
+
+# Read command-line arguments
+while [ $# -gt 0 ]; do
+  case $1 in
+    --browser)
+      BROWSER="$2"
+      shift 2
+      ;;
+    *)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Browser with initial uppercase
+BROWSER=${BROWSER,,}
+BROWSER=${BROWSER^}
+# Replace Msedge by Edge
+if [ $BROWSER = "Msedge" ]; then
+  BROWSER="Edge"
+fi
+
 mkdir -p reports/allure-results/java reports/allure-results/python reports/allure-results/nodejs
 mkdir -p reports/report-junit/python reports/report-junit/nodejs
 
@@ -28,6 +52,27 @@ cp junit-utils/style.css reports/report-junit/
 mv python/playwright/screenshots reports/report-junit/
 mv python/playwright/videos reports/report-junit/
 xsltproc --output reports/report-junit/index.html junit-utils/junit.xsl reports/report-junit/python/report.xml
+
+#
+# Generate Allure metadata
+#
+# Create environment.properties file
+cat << EOF > $(REPORTS_DIR)/$(ALLURE_RESULTS_DIR)/environment.properties
+Browser = $BROWSER
+EOF
+# Create executor.json file
+if [ -f repors/allure-results/job.url ]; then
+  cat << EOF > reports/allure-results/executor.json
+{
+  "browser": "${BROWSER}",
+  "name": "${EXECUTOR_NAME}",
+  "type": "${EXECUTOR_TYPE}",
+  "buildName": "Build log",
+  "buildUrl": "$(cat reports/allure-results/job.url)",
+  "reportName": "Test Report"
+}
+EOF
+fi
 
 #
 # Move Allure results
