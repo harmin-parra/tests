@@ -44,7 +44,7 @@ jobs:
           . ~/venv/bin/activate
           ./runner.sh --browser "${{ inputs.browser }}"
           mkdir reports/allure-results
-          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/allure-results/job.url
+          echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/job.url
           ./reports.sh
           mkdir artifacts
           tar -czf artifacts/results.tar.gz reports
@@ -57,7 +57,7 @@ jobs:
           path: artifacts
 
 
-  report:
+  allure2:
     needs: tests
     runs-on: ubuntu-latest
     container:
@@ -76,18 +76,44 @@ jobs:
           tar -xzf /tmp/allure.tgz -C /usr/local
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
           tar -xf artifacts/results.tar.gz
-          ./allure.sh --browser ${{ inputs.browser }}
+          ./allure2.sh --browser ${{ inputs.browser }}
           rm -rf artifacts/*
-          tar -czf artifacts/reports.tar.gz reports
+          tar -czf artifacts/allure2.tar.gz reports
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: artifact_report
+          name: artifact_allure2
           path: artifacts
 
 
+  allure3:
+    needs: tests
+    runs-on: ubuntu-latest
+    container:
+      image: node:24
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact_test
+          path: artifacts
+      - name: Allure3 report
+        run: |
+          tar -xf artifacts/results.tar.gz
+          npm install allure
+          ./allure3.sh --browser ${{ inputs.browser }}
+          rm -rf artifacts/*
+          tar -czf artifacts/allure3.tar.gz reports
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact_allure3
+          path: artifacts
+
   commit:
-    needs: report
+    needs: [allure2, allure3]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout reports repo
@@ -101,17 +127,25 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: artifact_report
+          name: artifact_allure2
+          path: artifacts
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: artifact_allure3
           path: artifacts
       - name: Commit
         run: |
-          tar -xzf artifacts/reports.tar.gz
+          tar -xzf artifacts/allure2.tar.gz
+          tar -xzf artifacts/allure3.tar.gz
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
-          git rm -r docs/report-*
+          git rm -r docs/report-* > /dev/null || true
+          git rm -r docs/allure*-reports > /dev/null || true
+          rm -rf docs/report-*
+          rm -rf docs/allure*-reports
           mv reports/report-* docs/ || { echo "no report to commit"; exit; }
-          mv reports/allure-reports/report-* docs/ || { echo "no report to commit"; exit; }
+          mv reports/allure*-reports docs/ || { echo "no report to commit"; exit; }
           git add -f docs/*
           git commit -m "Github Actions commit" || echo "Nothing to commit"
           git push origin main
-
