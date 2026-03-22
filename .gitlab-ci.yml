@@ -4,11 +4,11 @@ workflow:
 
 stages:
   - test
-  - report
+  - allure
   - commit
 
 variables:
-  ALLURE: "2.37.0"
+  ALLURE: "2.38.1"
   EXECUTOR_NAME: "Gitlab CI"
   EXECUTOR_TYPE: "gitlab"
   DOCKER:
@@ -42,28 +42,38 @@ tests:
     - python3 -m venv ~/venv
     - . ~/venv/bin/activate
     - ./runner.sh --browser $BROWSER
-  after_script:
-    - echo $CI_JOB_URL > reporting/allure-results/java/job.url
-    - echo $CI_JOB_URL > reporting/allure-results/nodejs/job.url
-    - echo $CI_JOB_URL > reporting/allure-results/python/job.url
+    - mkdir reports/allure-results
+    - echo $CI_JOB_URL > reports/job.url
+    - ./reports.sh
   artifacts:
     paths:
-      - reporting/
+      - reports
     expire_in: 10 mins
 
 
-allure report:
-  stage: report
+allure2:
+  stage: allure
   image: eclipse-temurin:8-jre
   script:
-    - apt-get update && apt-get install -y unzip
-    - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
-    - unzip /tmp/allure.zip -d /usr/local/
+    - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.tgz -L -o /tmp/allure.tgz
+    - tar -xzf /tmp/allure.tgz -C /usr/local
     - ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
     - ./allure.sh --browser $BROWSER
   artifacts:
     paths:
-      - reporting
+      - report
+    expire_in: 10 mins
+
+
+allure3:
+  stage: allure
+  image: node:24
+  script:
+    - npm install allure
+    - ./allure3.sh --browser $BROWSER
+  artifacts:
+    paths:
+      - report
     expire_in: 10 mins
 
 
@@ -77,11 +87,14 @@ commit:
     - git config --global user.email "gitlab@mg.gitlab.com"
   script:
     # - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/qa-demo/reports.git
-    - git clone https://oauth2:${TOKEN}@gitlab.com/qa-demo/reports.git
-    - cd reports
+    - git clone https://oauth2:${TOKEN}@gitlab.com/qa-demo/reports.git reports-repo
+    - cd reports-repo
     - git rm -r report-*
-    - mv ../reporting/report-* ./ || { echo "no report to commit"; exit; }
-    - mv ../reporting/allure-reports/report-* ./ || { echo "no report to commit"; exit; }
+    - git rm allure*-reports
+    - rm -rf report-*
+    - rm -rf allure*-reports
+    - mv ../reports/report-* ./ || { echo "no report to commit"; exit; }
+    - mv ../reports/allure*-reports ./ || { echo "no report to commit"; exit; }
     - git add *
     - git commit -m "Gitlab-CI commit"
     - git push
