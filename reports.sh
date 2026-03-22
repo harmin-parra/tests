@@ -57,7 +57,7 @@ xsltproc --output reports/report-junit/index.html junit-utils/junit.xsl reports/
 # Generate Allure metadata
 #
 # Create environment.properties file
-cat << EOF > $(REPORTS_DIR)/$(ALLURE_RESULTS_DIR)/environment.properties
+cat << EOF > reports/allure-results/environment.properties
 Browser = $BROWSER
 EOF
 # Create executor.json file
