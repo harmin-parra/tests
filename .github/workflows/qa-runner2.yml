@@ -141,7 +141,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
           git rm -r docs/report-* > /dev/null || true
-          git rm -r docs/allure*-reports
+          git rm -r docs/allure*-reports > /dev/null || true
           rm -rf docs/report-*
           rm -rf docs/allure*-reports
           mv reports/report-* docs/ || { echo "no report to commit"; exit; }
