@@ -24,7 +24,7 @@ function open_modal_video(filepath, type = null) {
     modal.style.display = "block";
     modal.style.paddingTop = "80px";
     modal_box.style.width = "90%";
-    modal_content.innerHTML = `<video width="50%" height="50%" controls><source src="${filepath}" type="video/${type}"></video>`;
+    modal_content.innerHTML = `<video width="60%" height="60%" controls><source src="${filepath}" type="video/${type}"></video>`;
     modal_content.className="modal-content";
 }
 

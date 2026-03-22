@@ -42,7 +42,16 @@
 
   <!-- If the root is <testsuites> -->
   <xsl:template match="testsuites">
-    <xsl:variable name="time" select="number(@time)"/>
+    <xsl:variable name="time">
+      <xsl:choose>
+        <xsl:when test="@time">
+          <xsl:value-of select="number(@time)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="sum(testsuite/@time)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:variable name="minutes" select="floor($time div 60)"/>
     <xsl:variable name="seconds" select="$time mod 60"/>
 
@@ -79,7 +88,7 @@
         Errors: <xsl:value-of select="@errors"/>,
         Skipped: <xsl:value-of select="@skipped"/>,
         Time:
-        <xsl:if test="$minutes &gt; 0">
+        <xsl:if test="$minutes > 0">
           <xsl:value-of select="$minutes"/><xsl:text> m </xsl:text>
         </xsl:if>
         <xsl:value-of select="format-number($seconds, '0.00')"/><xsl:text> s</xsl:text>
