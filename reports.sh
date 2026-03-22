@@ -16,14 +16,6 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-# Browser with initial uppercase
-BROWSER=${BROWSER,,}
-BROWSER=${BROWSER^}
-# Replace Msedge by Edge
-if [ $BROWSER = "Msedge" ]; then
-  BROWSER="Edge"
-fi
-
 mkdir -p reports/allure-results/java reports/allure-results/python reports/allure-results/nodejs
 mkdir -p reports/report-junit/python reports/report-junit/nodejs
 
@@ -54,8 +46,35 @@ mv python/playwright/videos reports/report-junit/
 xsltproc --output reports/report-junit/index.html junit-utils/junit.xsl reports/report-junit/python/report.xml
 
 #
+# Move Allure results
+#
+mv java/cucumber/reports/allure-results reports/allure-results/java/cucumber
+mv java/playwright/reports/allure-results reports/allure-results/java/playwright
+mv java/rest_assured/reports/allure-results reports/allure-results/java/rest_assured
+mv java/selenium/reports/allure-results reports/allure-results/java/selenium
+
+mv python/cucumber/reports/allure-results reports/allure-results/python/cucumber
+mv python/playwright/reports/allure-results reports/allure-results/python/playwright
+mv python/robotframework/reports/allure-results reports/allure-results/python/robotframework
+mv python/selenium/reports/allure-results reports/allure-results/python/selenium
+
+mv nodejs/cucumber/reports/allure-results reports/allure-results/nodejs/cucumber
+mv nodejs/cypress/reports/allure-results reports/allure-results/nodejs/cypress
+mv nodejs/playwright/reports/allure-results reports/allure-results/nodejs/playwright
+mv nodejs/selenium/reports/allure-results reports/allure-results/nodejs/selenium
+
+#
 # Generate Allure metadata
 #
+
+# Browser with initial uppercase
+BROWSER=${BROWSER,,}
+BROWSER=${BROWSER^}
+# Replace Msedge by Edge
+if [ $BROWSER = "Msedge" ]; then
+  BROWSER="Edge"
+fi
+
 # Create environment.properties file
 cat << EOF > environment.properties
 Browser = $BROWSER
@@ -73,27 +92,10 @@ if [ -f repors/allure-results/job.url ]; then
 }
 EOF
 fi
+
 cp environment.properties reports/allure-results/python/playwright
 cp environment.properties reports/allure-results/nodejs/playwright
 cp environment.properties reports/allure-results/java/playwright
 cp executor.json reports/allure-results/python/playwright
 cp executor.json reports/allure-results/nodejs/playwright
 cp executor.json reports/allure-results/java/playwright
-
-#
-# Move Allure results
-#
-mv java/cucumber/reports/allure-results reports/allure-results/java/cucumber
-mv java/playwright/reports/allure-results reports/allure-results/java/playwright
-mv java/rest_assured/reports/allure-results reports/allure-results/java/rest_assured
-mv java/selenium/reports/allure-results reports/allure-results/java/selenium
-
-mv python/cucumber/reports/allure-results reports/allure-results/python/cucumber
-mv python/playwright/reports/allure-results reports/allure-results/python/playwright
-mv python/robotframework/reports/allure-results reports/allure-results/python/robotframework
-mv python/selenium/reports/allure-results reports/allure-results/python/selenium
-
-mv nodejs/cucumber/reports/allure-results reports/allure-results/nodejs/cucumber
-mv nodejs/cypress/reports/allure-results reports/allure-results/nodejs/cypress
-mv nodejs/playwright/reports/allure-results reports/allure-results/nodejs/playwright
-mv nodejs/selenium/reports/allure-results reports/allure-results/nodejs/selenium
