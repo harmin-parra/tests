@@ -57,12 +57,12 @@ xsltproc --output reports/report-junit/index.html junit-utils/junit.xsl reports/
 # Generate Allure metadata
 #
 # Create environment.properties file
-cat << EOF > reports/allure-results/environment.properties
+cat << EOF > environment.properties
 Browser = $BROWSER
 EOF
 # Create executor.json file
 if [ -f repors/allure-results/job.url ]; then
-  cat << EOF > reports/allure-results/executor.json
+  cat << EOF > executor.json
 {
   "browser": "${BROWSER}",
   "name": "${EXECUTOR_NAME}",
@@ -73,6 +73,12 @@ if [ -f repors/allure-results/job.url ]; then
 }
 EOF
 fi
+cp environment.properties reports/allure-results/python/playwright
+cp environment.properties reports/allure-results/nodejs/playwright
+cp environment.properties reports/allure-results/java/playwright
+cp executor.json reports/allure-results/python/playwright
+cp executor.json reports/allure-results/nodejs/playwright
+cp executor.json reports/allure-results/java/playwright
 
 #
 # Move Allure results
