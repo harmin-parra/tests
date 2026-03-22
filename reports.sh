@@ -29,7 +29,7 @@ mv nodejs/cucumber/reports/report-cucumber reports/report-cucumber
 mv nodejs/cypress/reports/report-cypress reports/report-cypress
 mv nodejs/playwright/reports/report-playwright reports/report-playwright
 
-mv java/serenity/target/site/serenity reports/report-serenity
+mv java/serenity/reports reports/report-serenity
 
 #
 # Deal with junit reports
