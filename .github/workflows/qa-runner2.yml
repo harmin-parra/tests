@@ -1,4 +1,4 @@
-name: qa-runner
+name: qa-runner2
 
 env:
   ALLURE: 2.38.1
