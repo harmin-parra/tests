@@ -2,7 +2,7 @@ trigger: none
 
 variables:
   - name: allure
-    value: 2.36.0
+    value: 2.38.1
     readonly: true
   - name: EXECUTOR_NAME
     value: "Azure DevOps"
@@ -79,7 +79,6 @@ stages:
               artifactName: 'reports'
               downloadPath: './'
           - script: |
-              apt-get update && apt-get install -y unzip
               curl https://github.com/allure-framework/allure2/releases/download/${{ variables.allure }}/allure-${{ variables.allure }}.tgz -L -o /tmp/allure.tgz
               tar -xzf /tmp/allure.tgz -C /tmp/
               mv /tmp/allure-${{ variables.allure }} /tmp/allure
@@ -124,16 +123,16 @@ stages:
             inputs:
               artifactName: 'reports'
               downloadPath: './'
-
           - script: |
               git config --global user.name "Azure DevOps"
               git config --global user.email "azure@dev.azure.com"
-              git clone https://Personal%20Access%20Token:$(token)@dev.azure.com/harmin-parra/reports/_git/reports
-              cd reports
-              git rm -r report-*
-              mv ../reporting/report-* ./
-              mv ../reporting/allure-reports/report-* ./
+              git clone https://Personal%20Access%20Token:$(token)@dev.azure.com/harmin-parra/reports/_git/reports reports-repo
+              cd reports-repo
+              git rm -r report-* > /dev/null || true
+              git rm -r allure*-reports > /dev/null || true
+              mv ../reports/report-* ./
+              mv ../reports/allure*-reports ./
               git add *
               git commit -m "Azure DevOps commit"
               git push
-            displayName: "Commit reports"
+            displayName: "Commit report"
