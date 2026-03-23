@@ -6,7 +6,7 @@ const env = ['env1', 'env2', 'env3'];
 function env_json() {
   let result = {};
   for (let key in env) {
-    result[env[key]] = { 
+    result[env[key]] = {
       matcher: ({ labels }) =>
         labels.find(({ name, value }) => name === "env" && value === env[key]),
      };
