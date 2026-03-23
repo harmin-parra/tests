@@ -45,7 +45,7 @@ jobs:
           ./runner.sh --browser "${{ inputs.browser }}"
         env:
           HOME: /root
-      - name: Collect results
+      - name: Collect reports
         run: |
           echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} > reports/job.url
           ./reports.sh --browser "${{ inputs.browser }}"
@@ -139,7 +139,7 @@ jobs:
         with:
           name: artifact_allure3
           path: artifacts
-      - name: Commit
+      - name: Commit reports
         run: |
           tar -xzf artifacts/allure2.tar.gz
           tar -xzf artifacts/allure3.tar.gz

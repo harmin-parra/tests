@@ -57,7 +57,7 @@ allure2:
     - curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.tgz -L -o /tmp/allure.tgz
     - tar -xzf /tmp/allure.tgz -C /usr/local
     - ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
-    - ./allure.sh --browser $BROWSER
+    - ./allure2.sh --browser $BROWSER
   artifacts:
     paths:
       - reports

@@ -51,22 +51,24 @@ stages:
               python3 -m venv ~/venv
               . ~/venv/bin/activate
               ./runner.sh --browser ${{ parameters.browser }}
-              CI_JOB_URL="$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs"
-              echo $CI_JOB_URL > reporting/allure-results/java/job.url
-              echo $CI_JOB_URL > reporting/allure-results/nodejs/job.url
-              echo $CI_JOB_URL > reporting/allure-results/python/job.url
             displayName: "Run tests"
+
+          - script: |
+              CI_JOB_URL="$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs"
+              echo $CI_JOB_URL > reports/job.url
+              ./reports.sh --browser "${{ parameters.browser }}"
+            displayName: "Collect reports"
 
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: 'reporting'
-              artifactName: reporting
+              pathToPublish: 'reports'
+              artifactName: reports
 
 
-  - stage: Report
+  - stage: Allure
     dependsOn: test
     jobs:
-      - job: allure
+      - job: allure2
         condition: eq(${{ parameters.publish }}, 'true')
         pool:
           vmImage: 'ubuntu-latest'
@@ -74,25 +76,44 @@ stages:
         steps:
           - task: DownloadBuildArtifacts@0
             inputs:
-              artifactName: 'reporting'
+              artifactName: 'reports'
               downloadPath: './'
-
           - script: |
               apt-get update && apt-get install -y unzip
               curl https://github.com/allure-framework/allure2/releases/download/${{ variables.allure }}/allure-${{ variables.allure }}.tgz -L -o /tmp/allure.tgz
               tar -xzf /tmp/allure.tgz -C /tmp/
               mv /tmp/allure-${{ variables.allure }} /tmp/allure
-              ./allure.sh --browser ${{ parameters.browser }}
-            displayName: "Generate Allure report"
+              ./allure2.sh --browser ${{ parameters.browser }}
+            displayName: "Allure2 report"
 
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: 'reporting'
-              artifactName: reporting
+              pathToPublish: 'reports'
+              artifactName: reports
+
+      - job: allure3
+        condition: eq(${{ parameters.publish }}, 'true')
+        pool:
+          vmImage: 'ubuntu-latest'
+        container: node:24
+        steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              artifactName: 'reports'
+              downloadPath: './'
+          - script: |
+              npm install allure
+              ./allure3.sh --browser ${{ parameters.browser }}
+            displayName: "Allure3 report"
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: 'reports'
+              artifactName: reports
 
 
   - stage: Commit
-    dependsOn: report
+    dependsOn: allure
     jobs:
       - job: commit
         condition: eq(${{ parameters.publish }}, 'true')
@@ -101,7 +122,7 @@ stages:
         steps:
           - task: DownloadBuildArtifacts@0
             inputs:
-              artifactName: 'reporting'
+              artifactName: 'reports'
               downloadPath: './'
 
           - script: |
@@ -115,4 +136,4 @@ stages:
               git add *
               git commit -m "Azure DevOps commit"
               git push
-            displayName: "Commit report"
+            displayName: "Commit reports"
