@@ -1,43 +1,15 @@
-import { test as base } from '@playwright/test';
-import * as allure from "allure-js-commons";
-import { Junit } from '../support/junit-utils';
-import { addJiraReferences, logLastScreenshot } from '../support/utils';
-import { SoftAssert } from '../support/SoftAssert';
-import path from 'node:path';
+import { test as base, expect } from '@playwright/test';
+import { mainFixture, MainFixture, SoftAssertFixture, softAssertFixture } from '../support/fixtures';
 import fs from 'node:fs';
-import { COVERAGE_RAW_FOLDER } from '../support/shared-variables';
+import path from 'node:path';
+import { COVERAGE_RESULTS_FOLDER } from '../support/shared-variables';
 
 
-const regex = /-\s*C(\d+)$/;
+export const test = base
+  .extend<MainFixture>(mainFixture)
+  .extend<SoftAssertFixture>(softAssertFixture);
 
-
-type Fixtures = {
-  soft_assert: SoftAssert,
-};
-
-
-export const test = base.extend<Fixtures>({
-  soft_assert: async ({}, use) => {
-    let soft_assert = new SoftAssert();
-    await use(soft_assert);
-    soft_assert.verifyAll();
-  },
-
-  page: async ({ page }, use, testInfo) => {
-    const match = testInfo.title.match(regex);
-    const caseid: string = match ? match[1] : '0';
-    await allure.label("env", testInfo.project.name);
-    if (caseid != '0') {
-      await Junit.annotation_case_id(caseid);
-      await allure.tms(caseid);
-      await addJiraReferences(caseid);
-    }
-    await use(page);
-    if (testInfo.status == 'failed' && !page.isClosed()) {
-      await logLastScreenshot(page, caseid);
-    }
-  },
-});
+export { expect };
 
 
 test.beforeEach(async ({ page, browserName }) => {
@@ -55,7 +27,7 @@ test.afterEach(async ({ page, browserName }) => {
   const jsCoverage = await page.coverage.stopJSCoverage();
   const cssCoverage = await page.coverage.stopCSSCoverage();
 
-  const coverageDir = path.join(COVERAGE_RAW_FOLDER);
+  const coverageDir = path.join(COVERAGE_RESULTS_FOLDER);
   if (!fs.existsSync(coverageDir)) {
     fs.mkdirSync(coverageDir, { recursive: true });
   }
