@@ -13,7 +13,7 @@ jobs:
     container:
       image: eclipse-temurin:8-jre
     env:
-      ALLURE: "2.35.1"
+      ALLURE: "2.38.1"
       EXECUTOR_NAME: "Github Actions"
       EXECUTOR_TYPE: "github"
     steps:
@@ -29,10 +29,10 @@ jobs:
       - name: Report
         run: |
           apt-get update && apt-get install -y unzip
-          curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.zip -L -o /tmp/allure.zip
-          unzip /tmp/allure.zip -d /usr/local/
+          curl https://github.com/allure-framework/allure2/releases/download/${ALLURE}/allure-${ALLURE}.tgz -L -o /tmp/allure.tgz
+          tar -xzf /tmp/allure.tgz -C /usr/local
           ln -s /usr/local/allure-${ALLURE}/bin/allure /usr/local/bin/allure
-          ./allure.sh --browser ${{ inputs.browser }}
+          ./allure2.sh --browser ${{ inputs.browser }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
