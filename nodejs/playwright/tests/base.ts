@@ -1,5 +1,5 @@
 import { test as base, expect } from '@playwright/test';
-import { mainFixture, MainFixture, SoftAssertFixture, softAssertFixture } from '../support/fixtures';
+import { MainFixture, mainFixture, SoftAssertFixture, softAssertFixture } from '../support/fixtures';
 import fs from 'node:fs';
 import path from 'node:path';
 import { COVERAGE_RESULTS_FOLDER } from '../support/shared-variables';
