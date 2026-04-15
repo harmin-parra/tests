@@ -13,7 +13,7 @@ export default defineConfig({
     ['list'],
     ['html', { open: 'never', outputFolder: 'reports/report-playwright' }],
     ['line'],
-    ['junit', { 
+    ['junit', {
       outputFile: 'reports/report-junit/report.xml',
       embedAnnotationsAsProperties: true
     }],
