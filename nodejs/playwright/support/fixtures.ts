@@ -7,7 +7,7 @@ import { SoftAssert } from './SoftAssert';
 
 const regex = /-\s*C(\d+)$/;
 
-export type MainFixture = {
+export type PageFixture = {
   page: Page
 };
 
@@ -16,7 +16,7 @@ export type SoftAssertFixture = {
 }
 
 
-export const mainFixture = {
+export const pageFixture = {
     page: async ({ page }: { page: Page}, use: (arg: Page) => Promise<void>, testInfo: TestInfo) => {
     const match = testInfo.title.match(regex);
     const caseid: string = match ? match[1] : '0';

@@ -1,12 +1,12 @@
 import { test as base, expect } from '@playwright/test';
-import { MainFixture, mainFixture, SoftAssertFixture, softAssertFixture } from '../support/fixtures';
+import { PageFixture, pageFixture, SoftAssertFixture, softAssertFixture } from '../support/fixtures';
 import fs from 'node:fs';
 import path from 'node:path';
 import { COVERAGE_RESULTS_FOLDER } from '../support/shared-variables';
 
 
 export const test = base
-  .extend<MainFixture>(mainFixture)
+  .extend<PageFixture>(pageFixture)
   .extend<SoftAssertFixture>(softAssertFixture);
 
 export { expect };
