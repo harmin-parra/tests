@@ -42,10 +42,10 @@ export default defineConfig({
       args: ['--window-size=1440,900']
     },
     trace: 'on-first-retry',
+    /*
     video: {
       mode: 'on',
     },
-    /*
     contextOptions: {
       recordVideo: {
         dir: 'test-results',
