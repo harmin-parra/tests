@@ -17,7 +17,7 @@ function open_modal_img(filepath) {
     modal_content.innerHTML = `<a href="${filepath}" target="_blank"><img class="modal-content-img" src="${filepath}" style="width: 100%"></a>`;
 }
 
-function open_modal_video(filepath, type = "webm") {
+function open_modal_video(filepath, type = null) {
     if (!type) type = getExtension(filepath);
     modal.style.display = "block";
     modal.style.paddingTop = "80px";
