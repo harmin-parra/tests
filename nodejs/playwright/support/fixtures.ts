@@ -17,7 +17,7 @@ export type SoftAssertFixture = {
 
 
 export const pageFixture = {
-    page: async ({ page }: { page: Page}, use: (arg: Page) => Promise<void>, testInfo: TestInfo) => {
+  page: async ({ page }: { page: Page}, use: (arg: Page) => Promise<void>, testInfo: TestInfo) => {
     const match = testInfo.title.match(regex);
     const caseid: string = match ? match[1] : '0';
     await allure.label("env", testInfo.project.name);

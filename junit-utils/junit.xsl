@@ -209,7 +209,7 @@
                       open_modal_video('</xsl:text><xsl:value-of select="$video"/><xsl:text>')
                     </xsl:text>
                   </xsl:attribute>
-                  🎬 <xsl:text>&#160;</xsl:text>
+                  <!--🎬--> ▶️ <xsl:text>&#160;</xsl:text>
                 </button>
               </xsl:if>
               <!-- Standard output -->

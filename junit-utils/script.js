@@ -8,7 +8,6 @@ function open_modal_pre(content) {
     modal.style.paddingTop = "100px";
     modal_box.style.width = "80%";
     modal_content.innerHTML = `<pre>${content}</pre>`;
-    modal_content.className="";
 }
 
 function open_modal_img(filepath) {
@@ -16,16 +15,14 @@ function open_modal_img(filepath) {
     modal.style.paddingTop = "80px";
     modal_box.style.width = "90%";
     modal_content.innerHTML = `<a href="${filepath}" target="_blank"><img class="modal-content-img" src="${filepath}" style="width: 100%"></a>`;
-    modal_content.className="";
 }
 
-function open_modal_video(filepath, type = null) {
+function open_modal_video(filepath, type = "webm") {
     if (!type) type = getExtension(filepath);
     modal.style.display = "block";
     modal.style.paddingTop = "80px";
     modal_box.style.width = "90%";
-    modal_content.innerHTML = `<video width="60%" height="60%" controls><source src="${filepath}" type="video/${type}"></video>`;
-    modal_content.className="modal-content";
+    modal_content.innerHTML = `<video class="modal-content-img" style="width: 100%; height: 100%" controls><source src="${filepath}" type="video/${type}"></video>`;
 }
 
 // When the user clicks on span (x), close the modal
@@ -40,21 +37,11 @@ window.onclick = function (event) {
 }
 
 function getExtension(filepath) {
-  if (typeof filepath !== "string")
-    return null;
-
   const fileName = filepath.split(/[/\\]/).pop();
-
-  // Ignore files starting or ending with a dot
-  if (!fileName || fileName.startsWith('.') || fileName.endsWith('.'))
-    return null;
-
   const lastDotIndex = fileName.lastIndexOf('.');
 
-  // No dot → no extension
-  if (lastDotIndex <= 0)
+  if (lastDotIndex <= 0 || lastDotIndex == fileName.length - 1)
     return null;
-
-  let ext = fileName.slice(lastDotIndex + 1);
-  return ext.length < 2 ? null : ext;
+  else
+    return fileName.slice(lastDotIndex + 1);
 }
