@@ -25,11 +25,9 @@ test.beforeEach(async ({ page, browserName }) => {
 
 // Add video
 test.afterEach(async ({ page }) => {
-  const annotation = test.info().annotations.find(a => a.type === 'testId');
-  const videoPath = `videos/${annotation.description}.webm`;
   await page?.context()?.close();
   try {
-    await page?.video()?.saveAs(videoPath);
+    const videoPath = await page?.video()?.path();
     Junit.annotation_video(videoPath);
     await Attach.video("Recorded video", videoPath);
   } catch(error) { console.warn("Could not retrieve video"); }
