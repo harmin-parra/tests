@@ -32,4 +32,12 @@ export class Junit {
       });
     }
   }
+
+  static async annotation_video(videoPath: string) {
+    test.info().annotations.push({
+      type: 'video',
+      description: videoPath
+    });
+  }
+
 }

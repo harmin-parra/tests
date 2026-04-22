@@ -68,6 +68,12 @@ export class Attach {
     } catch(error) { }
   }
 
+  static async video(title: string, filepath: string): Promise<void> {
+    try {
+      await allure.attachmentPath(title, filepath, allure.ContentType.WEBM);
+    } catch(error) { }
+  }
+
   static async pdf(title: string, filepath: string): Promise<void> {
     try {
       await allure.attachment(title, fs.readFileSync(filepath), 'application/pdf');

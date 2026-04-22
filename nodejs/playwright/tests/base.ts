@@ -3,6 +3,8 @@ import { PageFixture, pageFixture, SoftAssertFixture, softAssertFixture } from '
 import fs from 'node:fs';
 import path from 'node:path';
 import { COVERAGE_RESULTS_FOLDER } from '../support/shared-variables';
+import { Junit } from '../support/junit-utils';
+import { Attach } from '../support/allure-utils';
 
 
 export const test = base
@@ -12,6 +14,7 @@ export const test = base
 export { expect };
 
 
+// Start coverage
 test.beforeEach(async ({ page, browserName }) => {
   if (browserName == "firefox" || browserName == "webkit")
     return;
@@ -20,6 +23,20 @@ test.beforeEach(async ({ page, browserName }) => {
 });
 
 
+// Add video
+test.afterEach(async ({ page }) => {
+  const annotation = test.info().annotations.find(a => a.type === 'testId');
+  const videoPath = `videos/${annotation.description}.webm`;
+  await page?.context()?.close();
+  try {
+    await page?.video()?.saveAs(videoPath);
+    Junit.annotation_video(videoPath);
+    await Attach.video("Recorded video", videoPath);
+  } catch(error) { console.warn("Could not retrieve video"); }
+});
+
+
+// Add coverage
 test.afterEach(async ({ page, browserName }) => {
   if (browserName == "firefox" || browserName == "webkit")
     return;
