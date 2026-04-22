@@ -3,6 +3,9 @@ import * as allure from "allure-js-commons";
 import { Junit } from './junit-utils';
 import { addJiraReferences, logLastScreenshot } from './utils';
 import { SoftAssert } from './SoftAssert';
+import path from 'node:path';
+import fsp from 'node:fs/promises';
+import { Attach } from './allure-utils';
 
 
 const regex = /-\s*C(\d+)$/;
@@ -26,10 +29,23 @@ export const pageFixture = {
       await allure.tms(caseid);
       await addJiraReferences(caseid);
     }
+
     await use(page);
+
+    // Last screnshots if failure
     if (testInfo.status == 'failed' && !page.isClosed()) {
       await logLastScreenshot(page, caseid);
     }
+
+    // Process video
+    await page?.context()?.close();
+    try {
+      const videoPath = await page?.video()?.path();
+      const filename = path.basename(videoPath);
+      await fsp.copyFile(videoPath, path.join("videos", filename));
+      Junit.annotation_video(path.join("videos", filename));
+      await Attach.video("Recorded video", videoPath);
+    } catch(error) { console.warn("Could not retrieve video"); }
   },
 }
 

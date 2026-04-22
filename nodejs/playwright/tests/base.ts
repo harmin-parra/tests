@@ -1,10 +1,8 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect, Page } from '@playwright/test';
 import { PageFixture, pageFixture, SoftAssertFixture, softAssertFixture } from '../support/fixtures';
 import fs from 'node:fs';
 import path from 'node:path';
 import { COVERAGE_RESULTS_FOLDER } from '../support/shared-variables';
-import { Junit } from '../support/junit-utils';
-import { Attach } from '../support/allure-utils';
 
 
 export const test = base
@@ -20,17 +18,6 @@ test.beforeEach(async ({ page, browserName }) => {
     return;
   await page.coverage.startJSCoverage();
   await page.coverage.startCSSCoverage();
-});
-
-
-// Add video
-test.afterEach(async ({ page }) => {
-  await page?.context()?.close();
-  try {
-    const videoPath = await page?.video()?.path();
-    Junit.annotation_video(videoPath);
-    await Attach.video("Recorded video", videoPath);
-  } catch(error) { console.warn("Could not retrieve video"); }
 });
 
 

@@ -18,6 +18,7 @@
 **/package-lock.json
 **/test-results/
 **/cypress/cypress/
+runtime/
 
 # Python files
 **/.venv
@@ -26,4 +27,5 @@
 
 **/reports
 **/screenshots
+**/videos
 # **/allure-results
