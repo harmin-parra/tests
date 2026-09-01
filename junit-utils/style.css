@@ -106,12 +106,6 @@ a:active {
     box-sizing: border-box;
 }
 
-.modal-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 /* Style for images */
 .modal-content-img {
     margin: auto;
@@ -134,4 +128,43 @@ a:active {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* Test history */
+.history {
+  display: flex;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.history_line {
+  width: 4px;
+  height: 20px;
+}
+
+.history_green { background: rgb(0, 190, 0); }
+.history_blue  { background: rgb(0, 115, 255) /* rgb(0, 128, 255); */ }
+.history_red   { background: rgb(209, 36, 47); }
+.history_gray  { background: gray; }
+
+/* Issues tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  position: absolute;
+  bottom: 100%;
+  right: -200%;
+  
+  padding: 5px 8px;
+  background: #cdcdcd;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
 }

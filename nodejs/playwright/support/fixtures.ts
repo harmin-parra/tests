@@ -6,21 +6,30 @@ import { SoftAssert } from './SoftAssert';
 import path from 'node:path';
 import fsp from 'node:fs/promises';
 import { Attach } from './allure-utils';
+import { ENV } from './constants';
+import { disposeDBClient, initializeDBClient } from '../db/facade';
 
 
 const regex = /-\s*C(\d+)$/;
 
 export type PageFixture = {
   page: Page
-};
+}
 
 export type SoftAssertFixture = {
   soft_assert: SoftAssert
 }
 
+export type DBFixture = {
+  db_pool: void
+}
+
+export type CoverageFixture = {
+  coverage: void
+}
 
 export const pageFixture = {
-  page: async ({ page }: { page: Page}, use: (arg: Page) => Promise<void>, testInfo: TestInfo) => {
+  page: async ({ page }: { page: Page }, use: (arg: Page) => Promise<void>, testInfo: TestInfo) => {
     const match = testInfo.title.match(regex);
     const caseid: string = match ? match[1] : '0';
     await allure.label("env", testInfo.project.name);
@@ -55,5 +64,15 @@ export const softAssertFixture = {
     let soft_assert = new SoftAssert();
     await use(soft_assert);
     soft_assert.verifyAll();
+  },
+}
+
+
+export const dbFixture = {
+  db_pool: async ({}, use: () => Promise<void>, testInfo: TestInfo) => {
+    const env = ENV;
+    await initializeDBClient(env);
+    await use();
+    await disposeDBClient();
   },
 }

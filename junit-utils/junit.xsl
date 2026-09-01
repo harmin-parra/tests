@@ -15,6 +15,7 @@
         <meta charset="UTF-8"/>
         <title>JUnit Report</title>
         <link rel="stylesheet" type="text/css" href="style.css"/>
+        <script src="brand.js" defer="defer"></script>
         <script src="script.js" defer="defer"></script>
       </head>
       <body>
@@ -25,7 +26,7 @@
           </div>
         </div>
 
-        <h1>JUnit Test Report</h1>
+        <h1 id="title">JUnit Test Report</h1>
 
         <!-- Handle both <testsuites> root or single <testsuite> root -->
         <xsl:choose>
@@ -42,17 +43,9 @@
 
   <!-- If the root is <testsuites> -->
   <xsl:template match="testsuites">
-    <xsl:variable name="time">
-      <xsl:choose>
-        <xsl:when test="@time">
-          <xsl:value-of select="number(@time)"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="sum(testsuite/@time)"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:variable name="minutes" select="floor($time div 60)"/>
+    <xsl:variable name="time" select="number(@time)"/>
+    <xsl:variable name="hours" select="floor($time div 3600)"/>
+    <xsl:variable name="minutes" select="floor(($time mod 3600) div 60)"/>
     <xsl:variable name="seconds" select="$time mod 60"/>
 
     <div class="summary">
@@ -62,7 +55,10 @@
       <strong>Errors: </strong> <xsl:value-of select="@errors"/> |
       <strong>Skipped: </strong> <xsl:value-of select="@skipped"/> |
       <strong>Total time: </strong>
-        <xsl:if test="$minutes &gt; 0">
+        <xsl:if test="$hours &gt; 0">
+          <xsl:value-of select="$hours"/><xsl:text> h </xsl:text>
+        </xsl:if>
+        <xsl:if test="$minutes &gt; 0 or $hours &gt; 0">
           <xsl:value-of select="$minutes"/><xsl:text> m </xsl:text>
         </xsl:if>
         <xsl:value-of select="format-number($seconds, '0.00')"/><xsl:text> s</xsl:text>
@@ -88,7 +84,7 @@
         Errors: <xsl:value-of select="@errors"/>,
         Skipped: <xsl:value-of select="@skipped"/>,
         Time:
-        <xsl:if test="$minutes > 0">
+        <xsl:if test="$minutes &gt; 0">
           <xsl:value-of select="$minutes"/><xsl:text> m </xsl:text>
         </xsl:if>
         <xsl:value-of select="format-number($seconds, '0.00')"/><xsl:text> s</xsl:text>
@@ -105,12 +101,16 @@
           <th>Time</th>
           <th>Details</th>
           <th>Issues</th>
+          <th>Author</th>
+          <th>Trend</th>
         </tr>
       </thead>
       <tbody>
         <xsl:for-each select="testcase">
           <tr>
+            <!-- Test spec file path -->
             <!--td><xsl:value-of select="@classname"/></td-->
+            <!-- Test name -->
             <td><xsl:value-of select="@name"/></td>
             <td>
               <xsl:choose>
@@ -120,51 +120,16 @@
                 <xsl:otherwise><span class="text_passed">✅ Passed</span></xsl:otherwise>
               </xsl:choose>
             </td>
-            <td><xsl:value-of select="format-number(number(@time), '0.0')"/></td> <!-- select="round(number(@time))" -->
-            <!--
+            <!-- Execution time -->
             <td>
-              <xsl:if test="failure">
-                <details>
-                  <summary>🔍 Stack trace ....</summary>
-                  <pre><xsl:value-of select="string(failure)"/></pre>
-                </details>
-              </xsl:if>
-
-              <xsl:if test="error">
-                <details>
-                  <summary>🔍 Message ....</summary>
-                  <pre><xsl:value-of select="error"/></pre>
-                </details>
-              </xsl:if>
-
-              <xsl:variable name="skipMessage" select="properties/property[@name='skip']/@value"/>
-              <xsl:if test="skipped and properties/property[@name='skip']">
-                <details>
-                  <summary>🔍 Message ....</summary>
-                  <pre><xsl:value-of select="$skipMessage"/></pre>
-                </details>
-              </xsl:if>
-
-              <xsl:variable name="screenshot" select="properties/property[@name='testrail_attachment']/@value"/>
-              <xsl:if test="string($screenshot)">
-                📎 <a href="{$screenshot}" target="_blank">screenshot</a>
-              </xsl:if>
-
-              <xsl:if test="system-out">
-                <details>
-                  <summary>📜 Standard Output</summary>
-                  <pre><xsl:value-of select="system-out"/></pre>
-                </details>
-              </xsl:if>
-
-              <xsl:if test="system-err">
-                <details>
-                  <summary>🛑 Error Output</summary>
-                  <pre><xsl:value-of select="system-err"/></pre>
-                </details>
-              </xsl:if>
+              <xsl:choose>
+                <xsl:when test="@time and number(@time) = number(@time)">
+                  <xsl:value-of select="format-number(number(@time), '0.0')"/> <!-- select="round(number(@time))" -->
+                </xsl:when>
+                <xsl:otherwise>0</xsl:otherwise>
+              </xsl:choose>
             </td>
-            -->
+            <!-- Details -->
             <td>
               <!-- Stack trace -->
               <xsl:if test="failure">
@@ -175,6 +140,18 @@
                   <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</button>
                   <pre style="display:none;">
                     <xsl:value-of select="$failureMessage"/>
+                  </pre>
+                </xsl:if>
+              </xsl:if>
+              <!-- Error message -->
+              <xsl:if test="error">
+                <xsl:variable name="errorMessage" select="string(error)"/>
+                <xsl:if test="$errorMessage">
+                  <!-- a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a -->
+                  <!-- a href="" onclick="event.preventDefault(); open_modal_pre(this.nextElementSibling.textContent)">🔍</a -->
+                  <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</button>
+                  <pre style="display:none;">
+                    <xsl:value-of select="$errorMessage"/>
                   </pre>
                 </xsl:if>
               </xsl:if>
@@ -189,7 +166,7 @@
                 </xsl:if>
               </xsl:if>
               <!-- Screenshot -->
-              <xsl:variable name="screenshot" select="string(properties/property[@name='testrail_attachment']/@value)"/>
+              <xsl:variable name="screenshot" select="string(properties/property[@name='image']/@value)"/>
               <xsl:if test="$screenshot">
                 <button class="link-button">
                   <xsl:attribute name="onclick">
@@ -197,7 +174,7 @@
                       open_modal_img('</xsl:text><xsl:value-of select="$screenshot"/><xsl:text>')
                     </xsl:text>
                   </xsl:attribute>
-                  📎 <xsl:text>&#160;</xsl:text>
+                  📎
                 </button>
               </xsl:if>
               <!-- Video -->
@@ -209,36 +186,143 @@
                       open_modal_video('</xsl:text><xsl:value-of select="$video"/><xsl:text>')
                     </xsl:text>
                   </xsl:attribute>
-                  <!--🎬--> ▶️ <xsl:text>&#160;</xsl:text>
+                  ▶️<!--🎬-->
+                </button>
+              </xsl:if>
+              <!-- PDF -->
+              <xsl:variable name="pdf" select="string(properties/property[@name='pdf']/@value)"/>
+              <xsl:if test="$pdf">
+                <button class="link-button">
+                  <a href="{$pdf}" target="_blank">📄</a>
                 </button>
               </xsl:if>
               <!-- Standard output -->
               <xsl:if test="system-out">
-                <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">📜</button>
+                <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">📙</button>
                 <pre style="display:none;"><xsl:value-of select="string(system-out)"/></pre>
               </xsl:if>
-              <!-- Error output -->
+              <!-- Standard error -->
               <xsl:if test="system-err">
-                <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🛑</button>
+                <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">📕</button>
                 <pre style="display:none;"><xsl:value-of select="string(system-err)"/></pre>
               </xsl:if>
             </td>
-            <td>
-              <!-- Issue -->
+            <!-- Issues -->
+            <!--td>
               <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
-              <xsl:if test="$issues">  <!-- and failure"> -->
+              <xsl:if test="$issues and (failure or error)">
                 🐞
                 <xsl:for-each select="str:tokenize($issues, ',')">
                   <xsl:variable name="key" select="normalize-space(.)"/>
-                  <a href="https://bugtracker.com/{$key}" target="_blank">
+                  <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
                     <xsl:value-of select="$key"/>
                   </a>
-                  <!-- add space after each link except the last -->
+                  < add space after each link except the last >
                   <xsl:if test="position() != last()">
                     <xsl:text> </xsl:text>
                   </xsl:if>
                 </xsl:for-each>
               </xsl:if>
+            </td-->
+            <!--td>
+              <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
+              <xsl:if test="$issues and (failure or error)">
+                <button class="link-button" onclick="open_modal_html(this.nextElementSibling.innerHTML)">🐞</button>
+                <pre style="display:none;">
+                  <xsl:for-each select="str:tokenize($issues, ',')">
+                    <xsl:variable name="key" select="normalize-space(.)"/>
+                    <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
+                      <xsl:value-of select="$key"/>
+                    </a>
+                    <br/>
+                  </xsl:for-each>
+                </pre>
+              </xsl:if>
+            </td-->
+            <td>
+              <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
+              <xsl:if test="$issues and (failure or error)">
+                <div class="tooltip">
+                  🐞
+                  <span class="tooltip-text">
+                  <xsl:for-each select="str:tokenize($issues, ',')">
+                    <xsl:variable name="key" select="normalize-space(.)"/>
+                    <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
+                      <xsl:value-of select="$key"/>
+                    </a>
+                    <br/>
+                  </xsl:for-each>
+                  </span>
+                </div>
+              </xsl:if>
+            </td>
+            <!-- Author -->
+            <td>
+              <xsl:variable name="author" select="properties/property[@name='author']/@value"/>
+              <xsl:if test="$author">
+                <xsl:value-of select="$author"/>
+              </xsl:if>
+            </td>
+            <!-- Trend -->
+            <!--td>
+              <xsl:variable name="passed"  select="count(properties/property[@name='history' and @value='passed'])"/>
+              <xsl:variable name="failed"  select="count(properties/property[@name='history' and @value='failed'])"/>
+              <xsl:variable name="skipped" select="count(properties/property[@name='history' and @value='skipped'])"/>
+              <xsl:variable name="other"   select="count(properties/property[@name='history' and @value='other'])"/>
+              <xsl:variable name="total" select="$passed + $failed + $skipped + $other"/>
+              <div class="history">
+                <xsl:choose>
+                  <xsl:when test="$total &gt; 0">
+                    <xsl:value-of select="round(100 * $passed div $total)"/>
+                  </xsl:when>
+                  <xsl:otherwise>0</xsl:otherwise>
+                </xsl:choose> %
+                <xsl:for-each select="properties/property[@name='history']">
+                  <xsl:choose>
+                    <xsl:when test="@value = 'passed'">
+                      <div class="history_line history_green"></div>
+                    </xsl:when>
+                    <xsl:when test="@value = 'failed'">
+                      <div class="history_line history_red"></div>
+                    </xsl:when>
+                    <xsl:when test="@value = 'skipped'">
+                      <div class="history_line history_blue"></div>
+                    </xsl:when>
+                    <xsl:when test="@value = 'other'">
+                      <div class="history_line history_gray"></div>
+                    </xsl:when>
+                  </xsl:choose>
+                </xsl:for-each>
+              </div>
+            </td-->
+            <td>
+              <xsl:variable name="results" select="properties/property[@name='history_results']/@value"/>
+              <xsl:variable name="trend" select="properties/property[@name='history_trend']/@value"/>
+              <div class="history">
+                <xsl:choose>
+                  <xsl:when test="number($trend) = number($trend)">
+                    <xsl:value-of select="round($trend)"/>
+                  </xsl:when>
+                  <xsl:otherwise>0</xsl:otherwise>
+                </xsl:choose> %
+                <xsl:for-each select="str:tokenize($results, ',')">
+                  <xsl:variable name="result" select="normalize-space(.)"/>
+                  <xsl:choose>
+                    <xsl:when test="$result = 'passed'">
+                      <div class="history_line history_green"></div>
+                    </xsl:when>
+                    <xsl:when test="$result = 'failed'">
+                      <div class="history_line history_red"></div>
+                    </xsl:when>
+                    <xsl:when test="$result = 'skipped'">
+                      <div class="history_line history_blue"></div>
+                    </xsl:when>
+                    <xsl:when test="$result = 'other'">
+                      <div class="history_line history_gray"></div>
+                    </xsl:when>
+                  </xsl:choose>
+                </xsl:for-each>
+              </div>
             </td>
           </tr>
         </xsl:for-each>

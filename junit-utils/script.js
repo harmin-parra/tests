@@ -1,13 +1,20 @@
 var modal = document.getElementById("modal");
 var modal_box = document.getElementById("modal-box");
-var modal_content = document.getElementById("modal-content");
 var close_btn = document.getElementById("close-btn");
+var modal_content = document.getElementById("modal-content");
 
 function open_modal_pre(content) {
     modal.style.display = "block";
     modal.style.paddingTop = "100px";
     modal_box.style.width = "80%";
     modal_content.innerHTML = `<pre>${content}</pre>`;
+}
+
+function open_modal_html(content) {
+    modal.style.display = "block";
+    modal.style.paddingTop = "100px";
+    modal_box.style.width = "80%";
+    modal_content.innerHTML = `${content}`;
 }
 
 function open_modal_img(filepath) {
@@ -17,7 +24,7 @@ function open_modal_img(filepath) {
     modal_content.innerHTML = `<a href="${filepath}" target="_blank"><img class="modal-content-img" src="${filepath}" style="width: 100%"></a>`;
 }
 
-function open_modal_video(filepath, type = null) {
+function open_modal_video(filepath, type = "webm") {
     if (!type) type = getExtension(filepath);
     modal.style.display = "block";
     modal.style.paddingTop = "80px";
@@ -45,3 +52,8 @@ function getExtension(filepath) {
   else
     return fileName.slice(lastDotIndex + 1);
 }
+
+// Set test title
+const title = document.getElementById("title");
+if (title && brand)
+  title.textContent = "JUnit Test Report for " + brand;

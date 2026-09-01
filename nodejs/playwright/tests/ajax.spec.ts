@@ -1,5 +1,4 @@
 import { test } from './base';
-import { expect } from '@playwright/test';
 import * as allure from "allure-js-commons";
 import { AjaxPage } from '../pages/ajax.page';
 import assert from 'node:assert';

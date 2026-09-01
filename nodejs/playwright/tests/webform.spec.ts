@@ -1,5 +1,4 @@
 import { test } from './base';
-import { expect } from '@playwright/test';
 import * as allure from "allure-js-commons";
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';

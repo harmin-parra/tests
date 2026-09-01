@@ -2,8 +2,8 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // Modules
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "types": ["node", "@playwright/test", "@types/mocha"],
 
@@ -11,7 +11,7 @@
     "noEmit": true,
 
     // Language and Environment
-    "target": "esnext",
+    "target": "ESNext",
 
     // Type Checking
     "strict": true,

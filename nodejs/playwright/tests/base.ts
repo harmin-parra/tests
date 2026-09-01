@@ -1,27 +1,61 @@
-import { test as base, expect, Page } from '@playwright/test';
-import { PageFixture, pageFixture, SoftAssertFixture, softAssertFixture } from '../support/fixtures';
-import fs from 'node:fs';
-import path from 'node:path';
-import { COVERAGE_RESULTS_FOLDER } from '../support/shared-variables';
+import { test as base, expect, TestInfo, type Locator, type Page } from '@playwright/test';
+import { CoverageFixture, DBFixture, dbFixture, PageFixture, pageFixture, SoftAssertFixture, softAssertFixture } from '../support/fixtures';
+import { addCoverageReport } from 'monocart-reporter';
 
+
+export { expect, type Locator, type Page };
 
 export const test = base
   .extend<PageFixture>(pageFixture)
-  .extend<SoftAssertFixture>(softAssertFixture);
+  .extend<SoftAssertFixture>(softAssertFixture)
+  .extend<DBFixture>(dbFixture);
+  /*
+  .extend<CoverageFixture>({
+    coverage: [
+      async ({ page, browserName }, use, testInfo: TestInfo) => {
+        if (!(process.env.CI == 'true' && browserName == 'chromium'))
+          await use();
+        else {
+          await page.coverage.startJSCoverage({ resetOnNavigation: false });
+          await use();
+          try {
+            const coverage = await page.coverage.stopJSCoverage();
+            if (coverage.length > 0)
+              await addCoverageReport(coverage, testInfo);
+          } catch(error) { }
+        }
+      },
+      { auto: true },
+    ],
+  });
+  */
 
-export { expect };
 
-
+/*
 // Start coverage
 test.beforeEach(async ({ page, browserName }) => {
   if (browserName == "firefox" || browserName == "webkit")
     return;
-  await page.coverage.startJSCoverage();
-  await page.coverage.startCSSCoverage();
+  await page.coverage.startJSCoverage({ resetOnNavigation: false });
+  // await page.coverage.startCSSCoverage({ resetOnNavigation: false });
 });
 
 
 // Add coverage
+test.afterEach(async ({ page, browserName }, testInfo: TestInfo) => {
+  if (browserName == "firefox" || browserName == "webkit")
+    return;
+  try {
+    const coverage = await page.coverage.stopJSCoverage();
+    if (coverage.length > 0)
+      await addCoverageReport(coverage, testInfo);
+    } catch(error) { }
+});
+*/
+
+/*
+The old chatGPT version
+
 test.afterEach(async ({ page, browserName }) => {
   if (browserName == "firefox" || browserName == "webkit")
     return;
@@ -46,3 +80,5 @@ test.afterEach(async ({ page, browserName }) => {
     JSON.stringify(cssCoverage, null, 2)
   );
 });
+
+*/

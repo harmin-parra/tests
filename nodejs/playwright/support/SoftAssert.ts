@@ -1,4 +1,4 @@
-import { type Locator } from "@playwright/test";
+import { expect, type Locator } from "@playwright/test";
 import { changeBackgroundColor, removeBackgroundColor } from "./locator-utils";
 import { Attach } from "./allure-utils";
 
@@ -14,7 +14,7 @@ export class SoftAssert {
   /**
    * Generic soft assertion that logs success or failure.
    */
-  assert(condition: boolean, description?: string): void {
+  verify(condition: boolean, description?: string): void {
     try {
       if (!condition) throw new Error();
       console.log(`✅ PASS: ${description ?? 'Assertion passed'}`);
@@ -69,6 +69,9 @@ export class SoftAssert {
     this.verification_pending = true;
   }
 
+  /**
+   * Assert that a value is nullish (null or undefined).
+   */
   doesNotExist<T>(value: T, description?: string): void {
     if (value != null) {
       console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
@@ -80,7 +83,10 @@ export class SoftAssert {
     this.verification_pending = true;
   }
 
-  exits<T>(value: T, description?: string): void {
+  /**
+   * Assert that a value is not nullish (null or undefined).
+   */
+  exist<T>(value: T, description?: string): void {
     if (value == null) {
       console.error(`❌ FAIL: ${description ?? 'Condition failed'}`);
       console.error(`   Expected: !(null|undefined), but got: ${value}`);
@@ -91,35 +97,46 @@ export class SoftAssert {
     this.verification_pending = true;
   }
 
+  /**
+   * Verify if an expression throws an exception.
+   * @param fn A function with the expression to evaluate.
+   * @param exception The Exception type to verify.
+   * @param description The description for the assertion log.
+   */
   // throws<T extends Error>(fn: (...args: unknown[]) => unknown, ex: new (...args: any[]) => T, description?: string) {
-  throws<T extends Error>(fn: (...args: unknown[]) => unknown, ex: ErrorConstructor<T>, description?: string) {
+  raise<T extends Error>(fn: (...args: unknown[]) => unknown, exception: ErrorConstructor<T>, description?: string) {
     try {
       fn()
       console.log(`❌ FAIL: ${description ?? 'Expected exception not thrown'}`);
-      console.log(`   Expected ${ex.name}, but nothing got thrown`);
-      this.errors.push(`${description ?? 'Expected exception not thrown'}: Expected: ${ex.name}, nothing got thrown`);
+      console.log(`   Expected ${exception.name}, but nothing got thrown`);
+      this.errors.push(`${description ?? 'Expected exception not thrown'}: Expected: ${exception.name}, nothing got thrown`);
     } catch(error) {
-      if (error instanceof ex) {
+      if (error instanceof exception) {
         console.log(`✅ PASS: ${description ?? 'Expected exception thrown'}`)
       } else {
         const actual = error instanceof Error ? error.constructor.name : typeof error;
         const message = error instanceof Error ? error.message : String(error);
         console.log(`❌ FAIL: ${description ?? 'Unexpected exception thrown'}`);
-        console.log(`   Expected ${ex.name}, but got ${actual}: ${message}`);
-        this.errors.push(`${description ?? 'Unexpected exception thrown'}: Expected: ${ex.name}, got: ${actual}`);
+        console.log(`   Expected ${exception.name}, but got ${actual}: ${message}`);
+        this.errors.push(`${description ?? 'Unexpected exception thrown'}: Expected: ${exception.name}, got: ${actual}`);
       }
     } finally {
       this.verification_pending = true;
     }
   }
 
-  // throws<T extends Error>(fn: (...args: unknown[]) => unknown, ex: new (...args: any[]) => T, description?: string) {
-  doesNotThrow<T extends Error>(fn: (...args: unknown[]) => unknown, ex: ErrorConstructor<T>, description?: string) {
+  /**
+   * Verify if an expression does not throw an exception.
+   * @param fn A function with the expression to evaluate.
+   * @param exception The Exception type to verify.
+   * @param description The description for the assertion log.
+   */
+  doesNotRaise<T extends Error>(fn: (...args: unknown[]) => unknown, exception: ErrorConstructor<T>, description?: string) {
     try {
       fn()
       console.log(`✅ PASS: ${description ?? 'Expected exception not thrown'}`);
     } catch(error) {
-      if (!(error instanceof ex)) {
+      if (!(error instanceof exception)) {
         console.log(`✅ PASS: ${description ?? 'Expected exception not thrown'}`)
       } else {
         const actual = error instanceof Error ? error.constructor.name : typeof error;
@@ -140,20 +157,22 @@ export class SoftAssert {
     if (this.errors.length > 0) {
       console.error('\n❌ Soft assertion failures:');
       this.errors.forEach((err, i) => console.error(`  ${i + 1}. ${err}`));
-      throw new Error(`Soft assertions failed`);
+      throw new Error("Soft assertions failed");
     } else if (this.verification_pending) {
       console.log('\n✅ All soft assertions passed!');
     }
+    // expect(this.errors.length, "Soft assertions failed").toBe(0);
     // reset for further use
     this.errors = [];
     this.verification_pending = false;
   }
 
-  async assertLocator(locator: Locator, description: string) {
+  async verifyLocator(locator: Locator, description: string) {
+    let visible = null;
     try {
       await locator.waitFor();
-      const visible = await locator.isVisible();
-      this.assert(visible, description);
+      visible = await locator.isVisible();
+      this.verify(visible, description);
       if (visible) {
         const bg = await locator.evaluate(element => element.style.backgroundColor);
         await changeBackgroundColor(locator);
@@ -162,7 +181,7 @@ export class SoftAssert {
         await changeBackgroundColor(locator, bg);
       }
     } catch(error) {
-      this.assert(false, description);
+      this.verify(false, description);
       console.error(error.toString());
     }
   }

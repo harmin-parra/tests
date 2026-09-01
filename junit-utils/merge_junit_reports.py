@@ -30,7 +30,7 @@ def read_properties(element: ET.Element) -> dict:
 
 def get_result_details(testcase: ET.Element) -> tuple[str, str, str, str]:
     """
-    Returns (status, message, type, details)
+    Returns (status, message, type, trace)
     """
     if testcase.find("failure") is not None:
         elem = testcase.find("failure")
@@ -49,9 +49,9 @@ def get_result_details(testcase: ET.Element) -> tuple[str, str, str, str]:
     error_type = elem.get("type")
 
     # Text inside the tag (stack trace / reason)
-    details = elem.text.strip() if elem is not None and elem.text is not None else None
+    trace = elem.text.strip() if elem is not None and elem.text is not None else None
 
-    return status, message, error_type, details
+    return status, message, error_type, trace
 
 
 def get_console_output(testcase: ET.Element) -> tuple[str, str]:
@@ -66,10 +66,10 @@ def get_console_output(testcase: ET.Element) -> tuple[str, str]:
         elem_err = testcase.find("system-err")
 
     # Text inside the tag (stack trace / reason)
-    text_out = elem_out.text.strip() if elem_out is not None and elem_out.text is not None else None
-    text_err = elem_err.text.strip() if elem_err is not None and elem_err.text is not None  else None
+    stdout = elem_out.text.strip() if elem_out is not None and elem_out.text is not None else None
+    stderr = elem_err.text.strip() if elem_err is not None and elem_err.text is not None  else None
 
-    return text_out, text_err
+    return stdout, stderr
 
 
 def get_info(testcase: ET.Element) -> dict:
@@ -77,17 +77,21 @@ def get_info(testcase: ET.Element) -> dict:
     test_props = read_properties(testcase)
     issues = test_props.get("issues")
     issues = issues.split(',') if issues not in (None, '') else issues
-    attachment = test_props.get("testrail_attachment")
-    status, message, error_type, text_msg = get_result_details(testcase)
-    text_out, text_err = get_console_output(testcase)
+    image = test_props.get("image")
+    pdf = test_props.get("pdf")
+    video = test_props.get("video")
+    status, message, error_type, trace = get_result_details(testcase)
+    stdout, stderr = get_console_output(testcase)
     return {
       'name': name,
       'status': status,
-      'text_msg': text_msg,
+      'trace': trace,
       'issues': issues,
-      'attachment': attachment,
-      'text_out': text_out,
-      'text_err': text_err,
+      'image': image,
+      'pdf': pdf,
+      'video': video,
+      'stdout': stdout,
+      'stderr': stderr,
     }
 
 
@@ -134,27 +138,27 @@ def parse_junit_report(xml_path: str) -> None:
             # --- testcase-level properties ---
             test_props = read_properties(testcase)
             issues = test_props.get("issues")
-            attachment = test_props.get("testrail_attachment")
+            attachment = test_props.get("image")
 
             if issues or attachment:
                 print(f"    Testcase properties:")
                 if issues:
                     print(f"      issues: {issues}")
                 if attachment:
-                    print(f"      testrail_attachment: {attachment}")
+                    print(f"      image: {attachment}")
 
-            status, message, error_type, text_msg = get_result_details(testcase)
+            status, message, error_type, trace = get_result_details(testcase)
             print(f"    Status: {status}")
             if status != "passed":
                 print(f"    Message: {message}")
                 print(f"    Type: {error_type}")
-                print(f"    Detail: {text_msg}")
+                print(f"    Detail: {trace}")
 
-            text_out, text_err = get_console_output(testcase)
-            if text_out:
-                print(f"    System Out: {text_out}")
-            if text_err:
-                print(f"    System Err: {text_err}")
+            stdout, stderr = get_console_output(testcase)
+            if stdout:
+                print(f"    System Out: {stdout}")
+            if stderr:
+                print(f"    System Err: {stderr}")
 
 
 def parse_junit_reports(xml_paths: list[str]) -> None:
@@ -251,18 +255,18 @@ def verifySize(items: list) -> None:
             sys.exit(1)
 
 
-def format_duration(duration: int | float | str | None) -> str:
-    try:
-        total_seconds = float(duration)
-        minutes = int(total_seconds // 60)
-        seconds = total_seconds % 60
+def format_duration(duration: int | float | str) -> str:
+    total_seconds = float(duration)
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = total_seconds % 60
 
-        if minutes == 0:
-            return f"{seconds:.2f} s"
-        else:
-            return f"{minutes} m {seconds:.2f} s"
-    except (TypeError, ValueError):
-        return "N/A"
+    if hours > 0:
+        return f"{hours} h {minutes} m {seconds:.2f} s"
+    elif minutes > 0:
+        return f"{minutes} m {seconds:.2f} s"
+    else:
+        return f"{seconds:.2f} s"
 
 
 if __name__ == "__main__":

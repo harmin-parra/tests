@@ -1,5 +1,6 @@
-import { expect, type Locator } from "@playwright/test";
+import { expect, type Locator, TestInfo } from "@playwright/test";
 import { sleep } from "./utils";
+import { NG_EVENT } from "./constants";
 
 
 const DELAY = 20_000
@@ -48,10 +49,6 @@ export async function waitFor(
   throw new Error(`Timeout: locator not ${state} within ${timeout}ms`);
 }
 
-export async function getElementValue(locator: Locator, timeout?: number): Promise<string> {
-  return await locator.evaluate((elem: any) => elem.value, { timeout: timeout });
-}
-
 export async function isElementPresent(locator: Locator, timeout: number = DELAY): Promise<boolean> {
   let exists = false;
   try {
@@ -88,4 +85,35 @@ export async function removeBackgroundColor(locator: Locator) {
   await locator.evaluate((elem) => {
     elem.style.removeProperty('background-color');
   });
+}
+
+export async function verifyElementState(
+  locator: Locator,
+  state: 'visible' | 'enabled' | 'disabled' | 'hidden' | 'checked' | 'editable',
+  timeout?: number
+) {
+  timeout = timeout ?? NG_EVENT;
+  switch(state) {
+    case 'visible':
+      await expect(locator, "Verify element visible").toBeVisible({ timeout: timeout });
+      break;
+    case 'enabled':
+      await expect(locator, "Verify element enabled").toBeEnabled({ timeout: timeout });
+      break;
+    case 'disabled':
+      await expect(locator, "Verify element disabled").toBeDisabled({ timeout: timeout });
+      break;
+    case 'hidden':
+      await expect(locator, "Verify element hidden").toBeHidden({ timeout: timeout });
+      break;
+    default:
+      throw new Error("Unknown state: " + state);
+  }
+}
+
+export async function hasClass(locator: Locator, className: string): Promise<boolean> {
+  return locator.evaluate(
+    (element, className) => element.classList.contains(className),
+    className
+  );
 }
