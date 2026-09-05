@@ -26,7 +26,14 @@
           </div>
         </div>
 
-        <h1 id="title">JUnit Test Report</h1>
+        <h1 id="title">
+            JUnit Test Report
+            <xsl:variable name="env" select="document('env.xml')/label"/>
+            <xsl:if test="$env">
+                <xsl:text> for </xsl:text>
+                <xsl:value-of select="$env"/>
+            </xsl:if>
+        </h1>
 
         <!-- Handle both <testsuites> root or single <testsuite> root -->
         <xsl:choose>
@@ -257,7 +264,7 @@
             <td>
               <xsl:variable name="history_folder" select="string(properties/property[@name='history_folder']/@value)"/>
               <xsl:if test="$history_folder">
-                <xsl:variable name="trend" select="document(concat($history_folder, '/trend'))/trend.xml"/>
+                <xsl:variable name="trend" select="document(concat($history_folder, '/trend.xml'))/trend"/>
                 <xsl:if test="$trend and number($trend) = number($trend)">
                   <button class="link-button" onclick="open_modal_bars('{$trend}', '{$history_folder}/history.json')">
                     <xsl:value-of select="$trend"/> %

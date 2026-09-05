@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import os from 'node:os';
 import path from "node:path";
 import type { FullConfig, Reporter, Suite, TestCase, TestResult } from "@playwright/test/reporter";
 import { getCaseid } from "./utils";
@@ -31,18 +32,18 @@ export default class HistoryReporter implements Reporter {
 
   constructor(options?: { historyFolder?: string, outputFolder?: string, limit?: number }) {
     this.outputFolder = options?.outputFolder ?? './';
-    this.historyFolder = options?.historyFolder ?? '/tmp/history';
+    this.historyFolder = options?.historyFolder ?? path.join(os.tmpdir(), 'history');
     this.limit = options?.limit ?? HISTORY_LIMIT;
   }
 
   onBegin(config: FullConfig, suite: Suite): void {
-    if (process.env.ENV == null || process.env.HISTORY == null)
+    if (process.env.ENV == null || process.env.HISTORY != "true")
       return;
     fs.mkdirSync(this.outputFolder, { recursive: true });
   }
 
   onTestEnd(test: TestCase, result: TestResult) {
-    if (process.env.ENV == null || process.env.HISTORY == null)
+    if (process.env.ENV == null || process.env.HISTORY != "true")
       return;
     const env = process.env.ENV;
     const filename = `${env}.json`;
