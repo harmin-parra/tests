@@ -5,6 +5,7 @@ import { generateStartDateTimeLabel } from "./date-utils";
 
 export const ENV = process.env.ENV;
 export const DELAY = (process.env.CI === 'true') ? 5000 : 5000;
+export const HISTORY_LIMIT: number = undefined;
 export const KEY_PRESS_DELAY = 50;
 export const TIMEOUT_WAIT = (process.env.CI === 'true') ? 10000 : 6000;
 export const TIMEOUT_ERROR = (process.env.CI === 'true') ? 10000 : 6000;

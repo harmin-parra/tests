@@ -1,4 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'node:path';
+import os from 'node:os';
 
 
 export default defineConfig({
@@ -32,7 +34,14 @@ export default defineConfig({
           urlTemplate: "https://tms.example.com/%s",
         }
       }
-    }]
+    }],
+    /*
+    ['./support/history-reporter.ts',{
+      outputFolder: './reports/history-report',
+      historyFolder: path.join(os.tmpdir(), 'history'),
+      limit: 30,
+    }],
+    */
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {

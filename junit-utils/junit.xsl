@@ -168,26 +168,12 @@
               <!-- Screenshot -->
               <xsl:variable name="screenshot" select="string(properties/property[@name='image']/@value)"/>
               <xsl:if test="$screenshot">
-                <button class="link-button">
-                  <xsl:attribute name="onclick">
-                    <xsl:text>
-                      open_modal_img('</xsl:text><xsl:value-of select="$screenshot"/><xsl:text>')
-                    </xsl:text>
-                  </xsl:attribute>
-                  📎
-                </button>
+                <button class="link-button" onclick="open_modal_img('{$screenshot}')">📎</button>
               </xsl:if>
               <!-- Video -->
               <xsl:variable name="video" select="string(properties/property[@name='video']/@value)"/>
               <xsl:if test="$video">
-                <button class="link-button">
-                  <xsl:attribute name="onclick">
-                    <xsl:text>
-                      open_modal_video('</xsl:text><xsl:value-of select="$video"/><xsl:text>')
-                    </xsl:text>
-                  </xsl:attribute>
-                  ▶️<!--🎬-->
-                </button>
+                <button class="link-button" onclick="open_modal_video('{$video}')">▶️</button> <!--🎬-->
               </xsl:if>
               <!-- PDF -->
               <xsl:variable name="pdf" select="string(properties/property[@name='pdf']/@value)"/>
@@ -208,6 +194,7 @@
               </xsl:if>
             </td>
             <!-- Issues -->
+            <!-- Issues inside td table cell -->
             <!--td>
               <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
               <xsl:if test="$issues and (failure or error)">
@@ -224,38 +211,48 @@
                 </xsl:for-each>
               </xsl:if>
             </td-->
+            <!-- Issues in modal with js -->
+            <td>
+              <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
+              <xsl:if test="$issues and (failure or error)">
+                <button class="link-button" onclick="open_modal_issues('{$issues}')">🐞</button>
+              </xsl:if>
+            </td>
+            <!-- Issues in modal with xsl -->
             <!--td>
               <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
               <xsl:if test="$issues and (failure or error)">
                 <button class="link-button" onclick="open_modal_html(this.nextElementSibling.innerHTML)">🐞</button>
-                <pre style="display:none;">
+                <div style="display:none;">
+                  <h4>Issues</h4>
                   <xsl:for-each select="str:tokenize($issues, ',')">
                     <xsl:variable name="key" select="normalize-space(.)"/>
-                    <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
+                    <a href="https://naxosdionysos.atlassian.net/browse/{$key}" style="color: blue;" target="_blank">
                       <xsl:value-of select="$key"/>
                     </a>
                     <br/>
                   </xsl:for-each>
-                </pre>
+                </div>                
               </xsl:if>
             </td-->
-            <td>
+            <!-- Issues in tooltip -->
+            <!--td>
               <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
               <xsl:if test="$issues and (failure or error)">
                 <div class="tooltip">
                   🐞
                   <span class="tooltip-text">
-                  <xsl:for-each select="str:tokenize($issues, ',')">
-                    <xsl:variable name="key" select="normalize-space(.)"/>
-                    <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
-                      <xsl:value-of select="$key"/>
-                    </a>
-                    <br/>
-                  </xsl:for-each>
+                    <xsl:for-each select="str:tokenize($issues, ',')">
+                      <xsl:variable name="key" select="normalize-space(.)"/>
+                      <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
+                        <xsl:value-of select="$key"/>
+                      </a>
+                      <br/>
+                    </xsl:for-each>
                   </span>
                 </div>
               </xsl:if>
-            </td>
+            </td-->
             <!-- Author -->
             <td>
               <xsl:variable name="author" select="properties/property[@name='author']/@value"/>
@@ -296,6 +293,19 @@
               </div>
             </td-->
             <td>
+              <xsl:variable name="history_folder" select="string(properties/property[@name='history_folder']/@value)"/>
+              <xsl:if test="$history_folder">
+                <xsl:variable name="trend" select="document(concat($history_folder, '/trend'))/trend.xml"/>
+                <xsl:if test="$trend and number($trend) = number($trend)">
+                  <button class="link-button" onclick="open_modal_bars('{$trend}', '{$history_folder}/history.json')">
+                    <xsl:value-of select="$trend"/> %
+                  </button>
+                </xsl:if>
+              </xsl:if>
+            </td>
+            <!--td>
+              <xsl:variable name="case_id" select="string(properties/property[@name='case_id']/@value)"/>
+              <xsl:variable name="history_folder" select="string(properties/property[@name='history_folder']/@value)"/>
               <xsl:variable name="results" select="properties/property[@name='history_results']/@value"/>
               <xsl:variable name="trend" select="properties/property[@name='history_trend']/@value"/>
               <div class="history">
@@ -323,7 +333,7 @@
                   </xsl:choose>
                 </xsl:for-each>
               </div>
-            </td>
+            </td-->
           </tr>
         </xsl:for-each>
       </tbody>
@@ -331,3 +341,4 @@
     <br/>
   </xsl:template>
 </xsl:stylesheet>
+

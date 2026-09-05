@@ -21,3 +21,17 @@ export async function sampleQuery(statement: string) { // : Promise<your_interfa
 export async function sampleTransaction(statements: string[]): Promise<number[]> {
   return transaction(statements);
 }
+
+/**
+ * To build an update statement from several key/value pairs
+ * 
+  let updates = [];
+  for (const [key, value] of Object.entries(data))
+    updates.push(`[${key}] = ${key}`);
+  let update = updates.join(', ');
+  let sql = `
+    UPDATE table
+    SET ${update}
+    WHERE id = ${id}
+  `;
+ */

@@ -47,26 +47,21 @@ export class Junit {
     });
   }
 
-  static async annotation_history(history: string[]) {
-    let passed = 0;
-    let total = 0;
-    let result = [];
-    for (const item of history) {
-      if (item == "passed")
-        passed++;
-      if (item != null && item != '') {
-        total++;
-        result.push(item);
-      }
-    }
+  static async annotation_history(folder: string) {
     test.info().annotations.push({
-      type: `history_trend`,
-      description: total != 0 ? String(Math.round(100 * passed / total)) : '0'
-    });
-    test.info().annotations.push({
-      type: `history_results`,
-      description: result.join(", ")
+      type: `history_folder`,
+      description: folder
     });
   }
 
+}
+
+
+function getInitials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map(word => word[0])
+    .join('')
+    .toUpperCase();
 }
