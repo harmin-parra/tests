@@ -138,9 +138,7 @@
                   <!-- a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a -->
                   <!-- a href="" onclick="event.preventDefault(); open_modal_pre(this.nextElementSibling.textContent)">🔍</a -->
                   <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</button>
-                  <pre style="display:none;">
-                    <xsl:value-of select="$failureMessage"/>
-                  </pre>
+                  <pre style="display:none;"><xsl:value-of select="$failureMessage"/></pre>
                 </xsl:if>
               </xsl:if>
               <!-- Error message -->
@@ -150,9 +148,7 @@
                   <!-- a href="javascript:void(0);" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</a -->
                   <!-- a href="" onclick="event.preventDefault(); open_modal_pre(this.nextElementSibling.textContent)">🔍</a -->
                   <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</button>
-                  <pre style="display:none;">
-                    <xsl:value-of select="$errorMessage"/>
-                  </pre>
+                  <pre style="display:none;"><xsl:value-of select="$errorMessage"/></pre>
                 </xsl:if>
               </xsl:if>
               <!-- Skip message -->
@@ -160,9 +156,7 @@
                 <xsl:variable name="skipMessage" select="string(properties/property[@name='skip']/@value)"/>
                 <xsl:if test="$skipMessage">
                   <button class="link-button" onclick="open_modal_pre(this.nextElementSibling.textContent)">🔍</button>
-                  <pre style="display:none;">
-                    <xsl:value-of select="$skipMessage"/>
-                  </pre>
+                  <pre style="display:none;"><xsl:value-of select="$skipMessage"/></pre>
                 </xsl:if>
               </xsl:if>
               <!-- Screenshot -->
@@ -178,9 +172,7 @@
               <!-- PDF -->
               <xsl:variable name="pdf" select="string(properties/property[@name='pdf']/@value)"/>
               <xsl:if test="$pdf">
-                <button class="link-button">
-                  <a href="{$pdf}" target="_blank">📄</a>
-                </button>
+                <button class="link-button"><a href="{$pdf}" target="_blank">📄</a></button>
               </xsl:if>
               <!-- Standard output -->
               <xsl:if test="system-out">
@@ -194,31 +186,14 @@
               </xsl:if>
             </td>
             <!-- Issues -->
-            <!-- Issues inside td table cell -->
-            <!--td>
-              <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
-              <xsl:if test="$issues and (failure or error)">
-                🐞
-                <xsl:for-each select="str:tokenize($issues, ',')">
-                  <xsl:variable name="key" select="normalize-space(.)"/>
-                  <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
-                    <xsl:value-of select="$key"/>
-                  </a>
-                  < add space after each link except the last >
-                  <xsl:if test="position() != last()">
-                    <xsl:text> </xsl:text>
-                  </xsl:if>
-                </xsl:for-each>
-              </xsl:if>
-            </td-->
-            <!-- Issues in modal with js -->
+            <!-- Issues in modal using js -->
             <td>
               <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
               <xsl:if test="$issues and (failure or error)">
                 <button class="link-button" onclick="open_modal_issues('{$issues}')">🐞</button>
               </xsl:if>
             </td>
-            <!-- Issues in modal with xsl -->
+            <!-- Issues in modal using xsl -->
             <!--td>
               <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
               <xsl:if test="$issues and (failure or error)">
@@ -253,6 +228,23 @@
                 </div>
               </xsl:if>
             </td-->
+            <!-- Issues inside table cell -->
+            <!--td>
+              <xsl:variable name="issues" select="properties/property[@name='issues']/@value"/>
+              <xsl:if test="$issues and (failure or error)">
+                🐞
+                <xsl:for-each select="str:tokenize($issues, ',')">
+                  <xsl:variable name="key" select="normalize-space(.)"/>
+                  <a href="https://naxosdionysos.atlassian.net/browse/{$key}" target="_blank">
+                    <xsl:value-of select="$key"/>
+                  </a>
+                  < add space after each link except the last >
+                  <xsl:if test="position() != last()">
+                    <xsl:text> </xsl:text>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:if>
+            </td-->
             <!-- Author -->
             <td>
               <xsl:variable name="author" select="properties/property[@name='author']/@value"/>
@@ -261,6 +253,19 @@
               </xsl:if>
             </td>
             <!-- Trend -->
+            <!-- Trend from file inputs in modal -->
+            <td>
+              <xsl:variable name="history_folder" select="string(properties/property[@name='history_folder']/@value)"/>
+              <xsl:if test="$history_folder">
+                <xsl:variable name="trend" select="document(concat($history_folder, '/trend'))/trend.xml"/>
+                <xsl:if test="$trend and number($trend) = number($trend)">
+                  <button class="link-button" onclick="open_modal_bars('{$trend}', '{$history_folder}/history.json')">
+                    <xsl:value-of select="$trend"/> %
+                  </button>
+                </xsl:if>
+              </xsl:if>
+            </td>
+            <!-- Trend from history annotation inside table cell -->
             <!--td>
               <xsl:variable name="passed"  select="count(properties/property[@name='history' and @value='passed'])"/>
               <xsl:variable name="failed"  select="count(properties/property[@name='history' and @value='failed'])"/>
@@ -292,17 +297,7 @@
                 </xsl:for-each>
               </div>
             </td-->
-            <td>
-              <xsl:variable name="history_folder" select="string(properties/property[@name='history_folder']/@value)"/>
-              <xsl:if test="$history_folder">
-                <xsl:variable name="trend" select="document(concat($history_folder, '/trend'))/trend.xml"/>
-                <xsl:if test="$trend and number($trend) = number($trend)">
-                  <button class="link-button" onclick="open_modal_bars('{$trend}', '{$history_folder}/history.json')">
-                    <xsl:value-of select="$trend"/> %
-                  </button>
-                </xsl:if>
-              </xsl:if>
-            </td>
+            <!-- Trend from trend & history annotations inside table cell -->
             <!--td>
               <xsl:variable name="case_id" select="string(properties/property[@name='case_id']/@value)"/>
               <xsl:variable name="history_folder" select="string(properties/property[@name='history_folder']/@value)"/>

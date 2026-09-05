@@ -9,13 +9,6 @@ export async function loadJson(filePath: string) {
   return JSON.parse(content);
 }
 
-export function appendLineToFile(filename: string = null, content: string) {
-  if (filename && filename.length > 0) {
-    const FILE = path.join(RUNTIME_FOLDER, filename);
-    fs.writeFileSync(FILE, content + '\n', { flag: 'a' });
-  }
-}
-
 export function readPropertyFile(filename: string): Record<string, string> {
   filename = path.join(RUNTIME_FOLDER, filename);
   const content = fs.readFileSync(filename, 'utf-8');
@@ -28,6 +21,13 @@ export function readPropertyFile(filename: string): Record<string, string> {
     properties[key.trim()] = rest.join('=').trim();
   }
   return properties;
+}
+
+export function appendLineToFile(filename: string = null, content: string) {
+  if (filename && filename.length > 0) {
+    const FILE = path.join(RUNTIME_FOLDER, filename);
+    fs.writeFileSync(FILE, content + '\n', { flag: 'a' });
+  }
 }
 
 function deleteFolderEntries(folder: string) {
@@ -61,50 +61,4 @@ export async function getRecentFiles(directory: string, prefix: string, count: n
     .filter(name => name.startsWith(prefix))
     .sort((a, b) => b.localeCompare(a))
     .slice(0, count);
-}
-
-async function waitForFile(
-  filePath: string,
-  timeout = 30_000,
-  interval = 1000
-): Promise<void> {
-  const start = Date.now();
-
-  while (Date.now() - start < timeout) {
-    try {
-      await access(filePath);
-      return;
-    } catch {
-      await new Promise(resolve => setTimeout(resolve, interval));
-    }
-  }
-
-  throw new Error(`File was not created within ${timeout}ms: ${filePath}`);
-}
-
-async function waitForFileStable(
-  filePath: string,
-  timeout = 30_000,
-  interval = 500
-): Promise<void> {
-  const start = Date.now();
-  let previousSize = -1;
-
-  while (Date.now() - start < timeout) {
-    try {
-      const { size } = await stat(filePath);
-
-      if (size > 0 && size === previousSize) {
-        return;
-      }
-
-      previousSize = size;
-    } catch {
-      previousSize = -1;
-    }
-
-    await new Promise(resolve => setTimeout(resolve, interval));
-  }
-
-  throw new Error(`File was not stable within ${timeout}ms: ${filePath}`);
 }
