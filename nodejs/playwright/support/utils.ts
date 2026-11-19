@@ -1,10 +1,3 @@
-import { type Page } from "@playwright/test";
-import { Junit } from "./junit-utils";
-import * as allure from "allure-js-commons";
-import { Attach } from "./allure-utils";
-import { getTestCaseFields, getTestCaseReferences } from "./testrail-utils";
-
-
 export function typeOf(value: any): string {
   let result = Object.prototype.toString.call(value).slice(8, -1);
   if (result == "Object")
@@ -50,22 +43,4 @@ export function extractLastBeforeUrlSegment(url: string): string {
 
 export function extractGuids(url: string): string[] {
   return url.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi);
-}
-
-export async function addJiraReferences(caseid: number | string): Promise<void> {
-  let refs: string[] = await getTestCaseReferences(caseid);
-  for (const ref of refs)
-    await allure.issue(ref);
-  await Junit.annotation_issues(refs);
-}
-
-export async function addTestRailFields(caseid: number | string): Promise<void> {
-  let fields: any = await getTestCaseFields(caseid);
-  for (const ref of fields.refs)
-    await allure.issue(ref);
-}
-
-export async function logLastScreenshot(page: Page, caseid: number | string = 0) {
-  const screenshotPath = await Attach.lastScreenshot(page, caseid);
-  await Junit.annotation_image(screenshotPath);
 }

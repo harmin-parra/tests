@@ -1,0 +1,6 @@
+<conf>
+    <env>ENV LABEL</env>
+    <history>true</history>
+    <issues>modal</issues>  <!-- modal or tooltip -->
+</conf>
+

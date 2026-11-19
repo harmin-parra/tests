@@ -1,12 +1,15 @@
+#!/usr/bin/env python3
+
 import requests
 import argparse
+
 
 # -----------------------------
 # CONFIG — UPDATE THESE VALUES
 # -----------------------------
-TESTRAIL_URL = "https://my_company.testrail.io/index.php?/api/v2/"
-USER = "user@email.com"
-API_KEY = "YOUR_TOKEN"
+TESTRAIL_URL = "https://mycompany.testrail.io/"
+USER = "user"
+API_KEY = "XXX"
 PROJECT_ID = 1
 
 # -----------------------------
@@ -28,7 +31,7 @@ def tr_post(api, payload):
 # GET SUITES
 # -----------------------------
 def get_suites() -> list[int]:
-    response = tr_get(f"get_suites/{PROJECT_ID}")
+    response = tr_get(f"index.php?/api/v2/get_suites/{PROJECT_ID}")
     suites = []
     for suite in response['suites']:
         suites.append(suite['id'])
@@ -48,7 +51,7 @@ def add_plan(name: str, description: str = None) -> int:
             "include_all": True
         })
     plan = tr_post(
-        f"add_plan/{PROJECT_ID}", 
+        f"index.php?/api/v2/add_plan/{PROJECT_ID}", 
         {
             "name": name,
             "description": description,
@@ -63,24 +66,14 @@ def add_plan(name: str, description: str = None) -> int:
 # -----------------------------
 def main():
     parser = argparse.ArgumentParser(description="Create plan in TestRail")
-    parser.add_argument(
-        "-n", "--name",
-        default="Test Plan",
-        help="Test plan name"
-    )
-    parser.add_argument(
-        "-d", "--description",
-        default='',
-        help="Test plan description"
-    )
+    parser.add_argument("-n", "--name", required=False, default="Test Plan", help="Test plan name")
+    parser.add_argument("-d", "--description", required=False, default='', help="Test plan description")
     args = parser.parse_args()
-
     name = args.name
     description = args.description
-
     plan_id = add_plan(name, description)
-
 
 # -----------------------------
 if __name__ == "__main__":
     main()
+

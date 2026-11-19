@@ -30,7 +30,7 @@ export function appendLineToFile(filename: string = null, content: string) {
   }
 }
 
-function deleteFolderEntries(folder: string) {
+export function deleteFolderEntries(folder: string) {
   const entries = fs.readdirSync(folder, { withFileTypes: true });
   for (const entry of entries) {
     if (entry.name.startsWith('.'))
@@ -44,7 +44,7 @@ function deleteFolderEntries(folder: string) {
   }
 }
 
-function recreateFolder(folder: string): void {
+export function recreateFolder(folder: string): void {
   try {
     fs.rmSync(folder, { recursive: true, force: true });
     fs.mkdirSync(folder, { recursive: true });

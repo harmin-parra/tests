@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+import json
 import sys
 import xml.etree.ElementTree as ET
 from decorators import (
@@ -8,10 +11,12 @@ from decorators import (
     decorate_testsuite,
     open_html,
     open_testsuite_table,
+    set_environment,
 )
 
 
 file_report = "report.html"
+NUM_REPORTS: int = None
 
 
 def read_properties(element: ET.Element) -> dict:
@@ -97,11 +102,8 @@ def get_info(testcase: ET.Element) -> dict:
 
 def get_summary(suites: int, roots: list[ET.Element]) -> list[dict]:
     summaries = []
-    counter = 1
     for testsuites in roots:
         summary = {
-          'env': testsuites.get("env", f"ENV{counter}"),
-          'screenshot_folder': testsuites.get("screenshot_folder", '.'),
           'suites': suites,
           'tests': testsuites.get("tests"),
           'failures': testsuites.get("failures"),
@@ -110,7 +112,6 @@ def get_summary(suites: int, roots: list[ET.Element]) -> list[dict]:
           'time': format_duration(testsuites.get("time")),
         }
         summaries.append(summary)
-        counter += 1
     return summaries
 
 
@@ -167,23 +168,20 @@ def parse_junit_reports(xml_paths: list[str]) -> None:
     f = open(file_report, "a")
     f.write(open_html())
 
-    tree = [None] * len(xml_paths)
-    root = [None] * len(xml_paths)
-    testsuites = [None] * len(xml_paths)
-    suite = [None] * len(xml_paths)
-    testcases = [None] * len(xml_paths)
-    testcase = [None] * len(xml_paths)
-    is_root_testsuites = None
+    tree: list[ET.ElementTree] = [None] * NUM_REPORTS
+    root: list[ET.Element] = [None] * NUM_REPORTS
+    testsuites: list[ET.Element] = [None] * NUM_REPORTS
+    is_root_testsuites: bool = None
     summaries = None
 
     # Root can be <testsuite> or <testsuites>
-    for i in range(len(xml_paths)):
+    for i in range(NUM_REPORTS):
         tree[i] = ET.parse(xml_paths[i])
         root[i] = tree[i].getroot()
         if root[i].tag == "testsuite":
             testsuites[i] = [root[i]]
             is_root_testsuites = False
-        else:
+        else:  # root[i].tag == "testsuites":
             testsuites[i] = root[i].findall("testsuite")
             is_root_testsuites = True
     verifySize(testsuites)
@@ -193,28 +191,31 @@ def parse_junit_reports(xml_paths: list[str]) -> None:
         f.write(decorate_summary(summaries))
 
     for i in range(len(testsuites[0])):
-        for s in range(len(xml_paths)):
-            suite[s] = testsuites[s][i]
-        verify(suite)
+        testsuite: list[ET.Element] = [None] * NUM_REPORTS
+        testcases: list[ET.Element] = [None] * NUM_REPORTS
+        for s in range(NUM_REPORTS):
+            testsuite[s] = testsuites[s][i]
+        verifyName(testsuite)
 
-        suite_name = suite[0].get("name")
+        suite_name = testsuite[0].get("name")
         f.write(decorate_testsuite(suite_name))
-        f.write(open_testsuite_table(summaries))
+        f.write(open_testsuite_table())
 
         for s in range(len(xml_paths)):
-            testcases[s] = suite[s].findall("testcase")
+            testcases[s] = testsuite[s].findall("testcase")
         verifySize(testcases)
 
         for j in range(len(testcases[0])):
+            testcase: list[ET.Element] = [None] * NUM_REPORTS
             cases = []
-            for s in range(len(xml_paths)):
+            for s in range(NUM_REPORTS):
                 testcase[s] = testcases[s][j]
                 cases.append(get_info(testcase[s]))
             verifyName(testcase)
 
             test_name = testcase[0].get("name")
             classname = testcase[0].get("classname")
-            f.write(decorate_testcase_row(cases, summaries))
+            f.write(decorate_testcase_row(cases))
 
         f.write(close_testsuite_table())
 
@@ -222,34 +223,17 @@ def parse_junit_reports(xml_paths: list[str]) -> None:
     f.close()
 
 
-def verify(items: list) -> None:
-    name = None
-    size = -1
+def verifyName(items: list[ET.Element]) -> None:
+    name = None if len(items) == 0 else items[0].get("name")
     for item in items:
-        if size == -1:
-            size = len(item)
-        if name is None:
-            name = item.get("name")
-        if size != len(item) or name != item.get("name"):
-            print("Items name and/or size mismatch", file=sys.stderr)
-            sys.exit(1)
-
-
-def verifyName(items: list) -> None:
-    name = None
-    for item in items:
-        if name is None:
-            name = item.get("name")
         if name != item.get("name"):
             print("Items name mismatch", file=sys.stderr)
             sys.exit(1)
 
 
 def verifySize(items: list) -> None:
-    size = -1
+    size = 0 if len(items) == 0 else len(items[0])
     for item in items:
-        if size == -1:
-            size = len(item)
         if size != len(item):
             print("Items size mismatch", file=sys.stderr)
             sys.exit(1)
@@ -270,8 +254,19 @@ def format_duration(duration: int | float | str) -> str:
 
 
 if __name__ == "__main__":
-    # parse_junit_report(sys.argv[1])
-    parse_junit_reports(sys.argv[1:])
+    # parse_junit_report(filepath)
+    filename = sys.argv[1] if len(sys.argv) > 1 else "reports.json"
+    data = []
+    xml_files: list[str] = []
+    sub_folders: list[str] = []
+    env: list[str] = []
+    with open(filename, "r", encoding="utf-8") as file:
+        data = json.load(file)
+    NUM_REPORTS = len(data)
+    for i in range(NUM_REPORTS):
+        xml_files.append(data[i]['junit_report'])
+        env.append(data[i]['env'])
+        sub_folders.append(data[i]['sub_folder'])
+    set_environment(sub_folders, env)
+    parse_junit_reports(xml_files)
 
-
-# python ./merge_reports.py folder/*.xml

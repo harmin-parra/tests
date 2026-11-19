@@ -1,0 +1,13 @@
+[
+    {
+        "env": "ENV1 LABEL",
+        "sub_folder": "report1",
+        "junit_report": "junit_report_1/results.xml" 
+    },
+    {
+        "env": "ENV2 LABEL",
+        "sub_folder": "report2",
+        "junit_report": "junit_report_2/results.xml" 
+    }
+]
+

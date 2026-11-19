@@ -1,0 +1,21 @@
+[Unit]
+Description=Jira API Server
+After=network.target
+
+[Service]
+User=qauser
+Group=qauser
+WorkingDirectory=/path/to/folder
+
+# Best practice: call python directly from venv
+ExecStart=/path/to/folder/.venv/bin/python /path/to/file
+
+# Restart=always
+# RestartSec=5
+
+# Optional but recommended
+Environment="PATH=/path/to/folder/.venv/bin:/usr/bin"
+Environment="PYTHONUNBUFFERED=1"
+
+[Install]
+WantedBy=multi-user.target

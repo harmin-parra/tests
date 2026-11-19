@@ -131,22 +131,43 @@ a:active {
 }
 
 /* Test history */
-.history {
+/* .history {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 10px;
   white-space: nowrap;
 }
 
 .history_line {
-  width: 5px;
+  width: 30px;
   height: 30px;
+  border-radius: 50%;
+} */
+
+.history {
+    display: flex;
+    width: 100%;
+    gap: 3px;
+}
+/*
+.history_line {
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    min-width: 0;
+    border-radius: 50%;
+}
+*/
+.history_line {
+    flex: 1 1 0;
+    max-width: 30px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
 }
 
 .history_green { background: rgb(0, 190, 0); }
 .history_blue  { background: rgb(0, 115, 255) /* rgb(0, 128, 255); */ }
-.history_red   { background: rgb(209, 36, 47); }
-.history_gray  { background: gray; }
+.history_red   { background: rgb(255, 0, 0) /* rgb(209, 36, 47); */ }
+.history_gray  { background: black; }
 
 /* Issues tooltip */
 .tooltip {
@@ -161,11 +182,48 @@ a:active {
   right: -200%;
   
   padding: 5px 8px;
-  background: #cdcdcd;
+  background: black;
+  color: white;
   border-radius: 4px;
   white-space: nowrap;
 }
 
 .tooltip:hover .tooltip-text {
   visibility: visible;
+}
+
+/* Issue status badge */
+.status {
+    /*background-color: #dbeafe;
+    color: #1e3a8a;
+    border: 1px solid #93c5fd; */
+    background-color: #f3f3f3;
+    color: #555;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 3px 8px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.history-tooltip {
+    position: fixed;
+    background: #333;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateX(-50%);
+    z-index: 999999;
+}
+
+.history-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
 }

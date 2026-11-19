@@ -1,4 +1,21 @@
-import { test } from '@playwright/test';
+import { test, type Page } from '@playwright/test';
+import { Attach } from "./allure-utils";
+import * as allure from "allure-js-commons";
+import { getTestCaseFields } from './testrail-utils';
+
+
+export async function addTestRailFields(caseid: number | string): Promise<void> {
+  let fields: any = await getTestCaseFields(caseid);
+  for (const ref of fields.refs)
+    await allure.issue(ref);
+  await Junit.annotation_issues(fields.refs);
+}
+
+export async function logLastScreenshot(page: Page, caseid: number | string = 0) {
+  const screenshotPath = await Attach.lastScreenshot(page, caseid);
+  if (screenshotPath)
+    await Junit.annotation_image(screenshotPath);
+}
 
 
 export class Junit {
@@ -44,13 +61,6 @@ export class Junit {
     test.info().annotations.push({
       type: 'pdf',
       description: filePath
-    });
-  }
-
-  static async annotation_history(folder: string) {
-    test.info().annotations.push({
-      type: `history_folder`,
-      description: folder
     });
   }
 

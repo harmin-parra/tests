@@ -37,7 +37,7 @@ export default defineConfig({
     }],
     /*
     ['./support/history-reporter.ts',{
-      outputFolder: './reports/history-report',
+      outputFolder: './reports/history-report/history',
       historyFolder: path.join(os.tmpdir(), 'history'),
       limit: 30,
     }],

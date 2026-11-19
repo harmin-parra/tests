@@ -1,6 +1,5 @@
 import { expect, type Locator, TestInfo } from "@playwright/test";
 import { sleep } from "./utils";
-import { NG_EVENT } from "./constants";
 
 
 const DELAY = 20_000
@@ -72,7 +71,7 @@ export async function isElementVisible(locator: Locator, timeout: number = DELAY
 }
 
 export async function assertElementSelected(locator: Locator, timeout?: number) {
-  await expect(locator).toContainClass("isSelected", { timeout: timeout});
+  await expect(locator).toContainClass("isSelected", { timeout: timeout });
 }
 
 export async function changeBackgroundColor(locator: Locator, value: any = 'greenyellow') {
@@ -92,7 +91,7 @@ export async function verifyElementState(
   state: 'visible' | 'enabled' | 'disabled' | 'hidden' | 'checked' | 'editable',
   timeout?: number
 ) {
-  timeout = timeout ?? NG_EVENT;
+  timeout = timeout ?? DELAY;
   switch(state) {
     case 'visible':
       await expect(locator, "Verify element visible").toBeVisible({ timeout: timeout });

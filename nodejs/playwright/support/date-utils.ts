@@ -46,14 +46,15 @@ export function generateStartDateLabel() {
 
 
 /**
- * Return a date in "dd/mm/yyyy" string format.
+ * Return a date in given string format.
  * @param value The date as Date object or as number of days to shift from the current date.
+ * @param format The desired format of the date.
  * @returns One of the following:
  *  - The current date if 'value' is null.
  *  - The date specified by 'value' if it is of type 'date'.
  *  - The current date shifted by the number of days indicated by 'value' if it is of type 'number'.
  */
-export function formatDate(value: number | Date = null): string {
+export function formatDate(value: number | Date = null, format: string = "dd/mm/yyyy"): string {
   let date: Date;
   if (value == null)
     date = new Date();
@@ -64,10 +65,13 @@ export function formatDate(value: number | Date = null): string {
   else
     throw new Error("Invalid parameter type");
   const pad = (n: number) => n.toString().padStart(2, '0');
-  const year = date.getFullYear();
+  const year = date.getFullYear().toString();
   const month = pad(date.getMonth() + 1);
   const day = pad(date.getDate());
-  return `${day}/${month}/${year}`;
+  return format
+    .replace('yyyy', year)
+    .replace('mm', month)
+    .replace('dd', day);
 }
 
 
