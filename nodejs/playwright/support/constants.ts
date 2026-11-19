@@ -15,8 +15,8 @@ export const DB_SYNC = (process.env.CI === 'true') ? 10000 : 10000;
 
 
 // Generate reference date
-const FOLDER = 'runtime';
-const DATE_FILE = path.join(FOLDER, "date-label.txt");
+const RUNTIME_FOLDER = 'runtime';
+const DATE_FILE = path.join(RUNTIME_FOLDER, "date-label.txt");
 
 export const DATE_START = init_date();
 export const DATE_LABEL = DATE_START.substring(0, 8);
